@@ -23,12 +23,43 @@ Una aplicación web completa desarrollada en Laravel que combina una tienda de e
 ## 📦 Instalación
 
 ### Requisitos Previos
-- PHP 8.3 o superior
+- PHP 8.1 o superior
 - Composer
 - PostgreSQL 17 o 18
-- Node.js y NPM (opcional)
+- Node.js y NPM (opcional, para compilar assets)
 
-### Pasos de Instalación
+### 🚀 Instalación Automática (Recomendado)
+
+La forma más fácil de instalar DigitalXpress es usando nuestros scripts de instalación automática:
+
+#### Para Linux/Mac:
+```bash
+git clone https://github.com/danielgonzalesarce/DigitalXpress.git
+cd DigitalXpress
+chmod +x install.sh
+./install.sh
+```
+
+#### Para Windows:
+```batch
+git clone https://github.com/danielgonzalesarce/DigitalXpress.git
+cd DigitalXpress
+install.bat
+```
+
+Los scripts automáticamente:
+- ✅ Verificarán que tengas todos los requisitos instalados
+- ✅ Instalarán las dependencias de PHP (Composer)
+- ✅ Instalarán las dependencias de Node.js (NPM)
+- ✅ Crearán el archivo `.env` desde `.env.example`
+- ✅ Generarán la clave de aplicación
+- ✅ Te preguntarán si deseas ejecutar las migraciones
+- ✅ Compilarán los assets
+- ✅ Limpiarán el caché
+
+### 📝 Instalación Manual
+
+Si prefieres instalar manualmente:
 
 1. **Clonar el repositorio**
    ```bash
@@ -39,30 +70,42 @@ Una aplicación web completa desarrollada en Laravel que combina una tienda de e
 2. **Instalar dependencias**
    ```bash
    composer install
+   npm install  # Opcional
    ```
 
 3. **Configurar entorno**
    ```bash
-   cp .env.example .env
+   cp .env.example .env  # Linux/Mac
+   copy .env.example .env  # Windows
    php artisan key:generate
    ```
 
 4. **Configurar base de datos**
    - Editar `.env` con tus credenciales de PostgreSQL
-   - Crear la base de datos en PostgreSQL
+   - Crear la base de datos en PostgreSQL:
+     ```sql
+     CREATE DATABASE digitalxpress;
+     ```
 
 5. **Ejecutar migraciones y seeders**
    ```bash
    php artisan migrate:fresh --seed
    ```
 
-6. **Iniciar servidor**
+6. **Compilar assets (opcional)**
+   ```bash
+   npm run build
+   ```
+
+7. **Iniciar servidor**
    ```bash
    php artisan serve
    ```
 
-7. **Acceder a la aplicación**
-   - Abrir navegador en `http://localhost:8000`
+8. **Acceder a la aplicación**
+   - Abrir navegador en `http://127.0.0.1:8000`
+
+> 📖 Para más detalles, consulta la [Guía de Instalación Completa](INSTALL.md)
 
 ## 👤 Usuarios de Prueba
 
