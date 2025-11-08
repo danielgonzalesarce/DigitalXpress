@@ -182,7 +182,7 @@
                             <i class="fas fa-phone text-success me-3"></i>
                             <div>
                                 <h6 class="mb-0">Teléfono</h6>
-                                <a href="tel:+1234567890" class="text-decoration-none">+1 (234) 567-890</a>
+                                <a href="tel:+51936068781" class="text-decoration-none">+51 936068781</a>
                             </div>
                         </div>
                     </div>
@@ -200,7 +200,7 @@
                             <i class="fab fa-whatsapp text-success me-3"></i>
                             <div>
                                 <h6 class="mb-0">WhatsApp</h6>
-                                <a href="https://wa.me/1234567890" class="text-decoration-none">+1 (234) 567-890</a>
+                                <a href="https://wa.me/51936068781" class="text-decoration-none">+51 936068781</a>
                             </div>
                         </div>
                     </div>

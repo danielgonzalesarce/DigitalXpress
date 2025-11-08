@@ -29,6 +29,24 @@ class ProductController extends Controller
             });
         }
 
+        // Filtrar por precio
+        if ($request->has('price_range') && $request->price_range) {
+            switch ($request->price_range) {
+                case 'under_100':
+                    $query->where('price', '<', 100);
+                    break;
+                case '100_500':
+                    $query->whereBetween('price', [100, 500]);
+                    break;
+                case '500_1000':
+                    $query->whereBetween('price', [500, 1000]);
+                    break;
+                case 'over_1000':
+                    $query->where('price', '>', 1000);
+                    break;
+            }
+        }
+
         // Ordenar
         $sortBy = $request->get('sort', 'name');
         $sortOrder = $request->get('order', 'asc');
@@ -47,7 +65,7 @@ class ProductController extends Controller
                 $query->orderBy('name', $sortOrder);
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(12)->appends($request->query());
         $categories = Category::where('is_active', true)->get();
 
         return view('products.index', compact('products', 'categories'));
@@ -55,12 +73,23 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        // Obtener productos relacionados de la misma categoría
+        // Priorizar productos destacados y con mejor rating
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
             ->where('in_stock', true)
+            ->orderBy('is_featured', 'desc') // Productos destacados primero
+            ->orderBy('rating', 'desc') // Mejor rating después
+            ->orderBy('review_count', 'desc') // Más reseñas después
             ->limit(4)
             ->get();
+
+        // Solo pasar productos relacionados si hay al menos 1
+        // Si no hay productos de la misma categoría, no mostrar la sección
+        if ($relatedProducts->count() == 0) {
+            $relatedProducts = collect(); // Colección vacía
+        }
 
         return view('products.show', compact('product', 'relatedProducts'));
     }

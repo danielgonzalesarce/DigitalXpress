@@ -197,7 +197,7 @@
 
     <div class="footer">
         <p><strong>DigitalXpress - Servicio Técnico Profesional</strong></p>
-        <p>📞 Teléfono: +1 (234) 567-890 | 📧 Email: soporte@digitalxpress.com</p>
+        <p>📞 Teléfono: +51 936068781 | 📧 Email: soporte@digitalxpress.com</p>
         <p>🌐 Web: www.digitalxpress.com</p>
         <p><em>Este reporte fue generado automáticamente el {{ date('d/m/Y') }} a las {{ date('H:i:s') }}</em></p>
     </div>

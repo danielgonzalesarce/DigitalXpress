@@ -14,6 +14,28 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        // Productos para el carrusel (productos destacados o últimos productos)
+        $carouselProducts = Product::where('is_featured', true)
+            ->where('is_active', true)
+            ->where('in_stock', true)
+            ->with('category')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Si no hay suficientes productos destacados, agregar los últimos productos
+        if ($carouselProducts->count() < 3) {
+            $additionalProducts = Product::where('is_active', true)
+                ->where('in_stock', true)
+                ->whereNotIn('id', $carouselProducts->pluck('id'))
+                ->with('category')
+                ->orderBy('created_at', 'desc')
+                ->limit(5 - $carouselProducts->count())
+                ->get();
+            
+            $carouselProducts = $carouselProducts->merge($additionalProducts);
+        }
+
         $featuredProducts = Product::where('is_featured', true)
             ->where('is_active', true)
             ->where('in_stock', true)
@@ -28,6 +50,6 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
-        return view('home', compact('categories', 'featuredProducts', 'latestProducts'));
+        return view('home', compact('categories', 'carouselProducts', 'featuredProducts', 'latestProducts'));
     }
 }

@@ -28,7 +28,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'laptops',
                 'is_featured' => true,
                 'rating' => 4.8,
-                'review_count' => 150
+                'review_count' => 150,
+                'attributes' => [
+                    'pantalla' => '13.6" Liquid Retina (2560 x 1664)',
+                    'procesador' => 'Apple M2 (8-core CPU, 10-core GPU)',
+                    'memoria_ram' => '8 GB / 16 GB / 24 GB',
+                    'almacenamiento' => '256 GB / 512 GB / 1 TB / 2 TB SSD',
+                    'graficos' => 'GPU integrada de 10 núcleos',
+                    'bateria' => 'Hasta 18 horas',
+                    'sistema_operativo' => 'macOS',
+                    'puertos' => '2x Thunderbolt 4, 3.5mm jack',
+                    'peso' => '1.24 kg',
+                    'dimensiones' => '30.41 x 21.5 x 1.13 cm'
+                ]
             ],
             [
                 'name' => 'Laptop Gaming ASUS ROG Strix G16',
@@ -41,7 +53,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'laptops',
                 'is_featured' => true,
                 'rating' => 4.7,
-                'review_count' => 67
+                'review_count' => 67,
+                'attributes' => [
+                    'pantalla' => '16" FHD 165Hz IPS',
+                    'procesador' => 'Intel Core i7-13650HX',
+                    'memoria_ram' => '16 GB DDR5',
+                    'almacenamiento' => '512 GB / 1 TB NVMe SSD',
+                    'tarjeta_grafica' => 'NVIDIA RTX 4070 8GB',
+                    'bateria' => '90 Wh',
+                    'sistema_operativo' => 'Windows 11',
+                    'puertos' => 'USB-C, USB-A, HDMI, Ethernet',
+                    'peso' => '2.5 kg',
+                    'refrigeracion' => 'Sistema de refrigeración avanzado'
+                ]
             ],
 
             // Relojes
@@ -56,7 +80,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'relojes',
                 'is_featured' => true,
                 'rating' => 4.6,
-                'review_count' => 203
+                'review_count' => 203,
+                'attributes' => [
+                    'pantalla' => 'Always-On Retina LTPO OLED',
+                    'procesador' => 'Apple S9 SiP',
+                    'almacenamiento' => '64 GB',
+                    'bateria' => 'Hasta 18 horas',
+                    'resistencia_agua' => 'WR50 (hasta 50m)',
+                    'sensores' => 'ECG, Oxímetro, Acelerómetro, Giroscopio',
+                    'conectividad' => 'GPS, Bluetooth 5.3, Wi-Fi',
+                    'sistema_operativo' => 'watchOS 10',
+                    'material' => 'Aluminio o Acero inoxidable',
+                    'tamaño' => '41mm o 45mm'
+                ]
             ],
             [
                 'name' => 'Samsung Galaxy Watch 6',
@@ -83,7 +119,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'televisores',
                 'is_featured' => true,
                 'rating' => 4.7,
-                'review_count' => 90
+                'review_count' => 90,
+                'attributes' => [
+                    'tamaño_pantalla' => '55 pulgadas',
+                    'resolucion' => '4K UHD (3840 x 2160)',
+                    'tecnologia_pantalla' => 'QLED',
+                    'hdr' => 'HDR10, HDR10+, HLG',
+                    'procesador' => 'Crystal Processor 4K',
+                    'sistema_operativo' => 'Tizen OS',
+                    'puertos' => '4x HDMI 2.1, 2x USB, Ethernet',
+                    'conectividad' => 'Wi-Fi 6, Bluetooth 5.2',
+                    'audio' => 'Dolby Atmos, 2.0.2 canales',
+                    'consumo_energia' => 'Clase A'
+                ]
             ],
             [
                 'name' => 'Smart TV LG OLED 65" 4K',
@@ -96,7 +144,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'televisores',
                 'is_featured' => true,
                 'rating' => 4.9,
-                'review_count' => 70
+                'review_count' => 70,
+                'attributes' => [
+                    'tamaño_pantalla' => '65 pulgadas',
+                    'resolucion' => '4K UHD (3840 x 2160)',
+                    'tecnologia_pantalla' => 'OLED evo',
+                    'hdr' => 'HDR10, Dolby Vision, HLG',
+                    'procesador' => 'α9 Gen5 AI Processor',
+                    'sistema_operativo' => 'webOS 23',
+                    'puertos' => '4x HDMI 2.1, 3x USB, Ethernet',
+                    'conectividad' => 'Wi-Fi 6E, Bluetooth 5.0',
+                    'audio' => 'Dolby Atmos, 2.2.2 canales (40W)',
+                    'gaming' => '120Hz, VRR, ALLM, G-Sync'
+                ]
             ],
 
             // Mouses
@@ -165,7 +225,19 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'audifonos',
                 'is_featured' => true,
                 'rating' => 4.9,
-                'review_count' => 400
+                'review_count' => 400,
+                'attributes' => [
+                    'tipo' => 'Over-ear inalámbricos',
+                    'cancelacion_ruido' => 'ANC (Active Noise Cancelling)',
+                    'bateria' => 'Hasta 30 horas (con ANC)',
+                    'carga_rapida' => '3 minutos = 3 horas',
+                    'conectividad' => 'Bluetooth 5.2, NFC',
+                    'codec_audio' => 'LDAC, AAC, SBC',
+                    'respuesta_frecuencia' => '4 Hz - 40 kHz',
+                    'microfonos' => '8 micrófonos con cancelación de ruido',
+                    'peso' => '250 g',
+                    'compatibilidad' => 'Android, iOS, PC'
+                ]
             ],
             [
                 'name' => 'AirPods Pro 3',
@@ -178,23 +250,22 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'audifonos',
                 'is_featured' => true,
                 'rating' => 4.5,
-                'review_count' => 128
+                'review_count' => 128,
+                'attributes' => [
+                    'tipo' => 'In-ear inalámbricos',
+                    'cancelacion_ruido' => 'Cancelación adaptativa activa',
+                    'bateria' => 'Hasta 6 horas (con estuche 30 horas)',
+                    'carga_inalambrica' => 'MagSafe y Qi',
+                    'conectividad' => 'Bluetooth 5.3, Chip H2',
+                    'audio_espacial' => 'Sí, con seguimiento de cabeza',
+                    'resistencia_agua' => 'IPX4',
+                    'microfonos' => 'Micrófonos con cancelación de ruido',
+                    'peso' => '5.4 g (cada uno)',
+                    'compatibilidad' => 'iOS, iPadOS, macOS'
+                ]
             ],
 
             // Celulares
-            [
-                'name' => 'iPhone 15 Pro Max',
-                'slug' => 'iphone-15-pro-max',
-                'description' => 'El último iPhone con chip A17 Bionic, sistema de cámara Pro avanzado y Dynamic Island.',
-                'short_description' => 'iPhone 15 Pro Max',
-                'price' => 1299.00,
-                'sku' => 'IP15PM-001',
-                'stock_quantity' => 18,
-                'category_slug' => 'celulares',
-                'is_featured' => true,
-                'rating' => 4.8,
-                'review_count' => 500
-            ],
             [
                 'name' => 'Samsung Galaxy S24 Ultra',
                 'slug' => 'samsung-galaxy-s24-ultra',
@@ -206,7 +277,44 @@ class ProductSeeder extends Seeder
                 'category_slug' => 'celulares',
                 'is_featured' => true,
                 'rating' => 4.7,
-                'review_count' => 450
+                'review_count' => 450,
+                'attributes' => [
+                    'pantalla' => '6.8" Dynamic AMOLED 2X 120Hz',
+                    'procesador' => 'Snapdragon 8 Gen 3',
+                    'memoria_ram' => '12 GB',
+                    'almacenamiento' => '256 GB / 512 GB / 1 TB',
+                    'camara_principal' => '200 MP + 50 MP + 12 MP',
+                    'camara_frontal' => '12 MP',
+                    'bateria' => '5000 mAh',
+                    'sistema_operativo' => 'Android 14',
+                    'resistencia_agua' => 'IP68',
+                    's_pen' => 'Incluido'
+                ]
+            ],
+            [
+                'name' => 'iPhone 16 Pro',
+                'slug' => 'iphone-16-pro',
+                'description' => 'El iPhone más avanzado con chip A18 Pro, sistema de cámara Pro mejorado y Dynamic Island.',
+                'short_description' => 'iPhone 16 Pro con chip A18 Pro',
+                'price' => 1299.00,
+                'sku' => 'IPH16PRO-001',
+                'stock_quantity' => 35,
+                'category_slug' => 'celulares',
+                'is_featured' => true,
+                'rating' => 4.8,
+                'review_count' => 320,
+                'attributes' => [
+                    'pantalla' => '6.3" Super Retina XDR OLED',
+                    'procesador' => 'Apple A18 Pro',
+                    'memoria_ram' => '8 GB',
+                    'almacenamiento' => '128 GB / 256 GB / 512 GB / 1 TB',
+                    'camara_principal' => '48 MP + 12 MP + 12 MP',
+                    'camara_frontal' => '12 MP TrueDepth',
+                    'bateria' => 'Hasta 23 horas de video',
+                    'sistema_operativo' => 'iOS 18',
+                    'resistencia_agua' => 'IP68',
+                    'carga_inalambrica' => 'MagSafe y Qi'
+                ]
             ],
 
             // Cámaras

@@ -79,21 +79,49 @@
 
         .category-nav {
             background-color: var(--bg-light);
-            padding: 1rem 0;
+            padding: 2rem 0;
+            width: 100%;
+            margin: 0;
+        }
+
+        .category-nav nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem; /* Espaciado aumentado entre elementos */
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            max-width: 1200px; /* Ancho máximo para limitar el ancho */
+            margin: 0 auto; /* Centrar el contenido */
         }
 
         .category-nav .nav-link {
             color: var(--text-dark);
             font-weight: 500;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 2rem; /* Padding aumentado */
             border-radius: 8px;
             transition: all 0.3s ease;
+            font-size: 1.1rem; /* Tamaño de fuente ligeramente mayor */
+            white-space: nowrap; /* Evita que el texto se divida */
         }
 
         .category-nav .nav-link:hover,
         .category-nav .nav-link.active {
             background-color: var(--primary-color);
             color: white;
+        }
+
+        /* Responsive: ajustar espaciado en pantallas pequeñas */
+        @media (max-width: 768px) {
+            .category-nav nav {
+                gap: 1.5rem; /* Menos espaciado en móviles */
+                padding: 0 1rem;
+            }
+
+            .category-nav .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
         }
 
         /* Modal Styles */
@@ -259,17 +287,13 @@
 
     <!-- Category Navigation -->
     <div class="category-nav">
-        <div class="container">
-            <nav class="nav justify-content-center">
-                <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('home') }}">Todos</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'smartphones']) }}">Smartphones</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'laptops']) }}">Laptops</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'audio']) }}">Audio</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'wearables']) }}">Wearables</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'gaming']) }}">Gaming</a>
-                <a class="nav-link" href="{{ route('products.index', ['category' => 'accesorios']) }}">Accesorios</a>
-            </nav>
-        </div>
+        <nav class="nav justify-content-center">
+            <a class="nav-link {{ request('category') == 'accesorios' || (request()->is('/') && !request('category')) ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'accesorios']) }}">Accesorios</a>
+            <a class="nav-link {{ request('category') == 'camaras' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'camaras']) }}">Cámaras</a>
+            <a class="nav-link {{ request('category') == 'laptops' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'laptops']) }}">Laptops</a>
+            <a class="nav-link {{ request('category') == 'celulares' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'celulares']) }}">Celulares</a>
+            <a class="nav-link {{ request('category') == 'relojes' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'relojes']) }}">Relojes</a>
+        </nav>
     </div>
 
     <!-- Main Content -->
@@ -314,28 +338,28 @@
                 <div class="col-md-2">
                     <h6 class="fw-bold mb-3">Categorías</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none">Smartphones</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Laptops</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Audio</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Gaming</a></li>
+                        <li><a href="{{ route('products.index', ['category' => 'celulares']) }}" class="text-light text-decoration-none">Celulares</a></li>
+                        <li><a href="{{ route('products.index', ['category' => 'laptops']) }}" class="text-light text-decoration-none">Laptops</a></li>
+                        <li><a href="{{ route('products.index', ['category' => 'accesorios']) }}" class="text-light text-decoration-none">Accesorios</a></li>
+                        <li><a href="{{ route('products.index', ['category' => 'camaras']) }}" class="text-light text-decoration-none">Cámaras</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
                     <h6 class="fw-bold mb-3">Soporte</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none">Centro de Ayuda</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Garantías</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Devoluciones</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Contacto</a></li>
+                        <li><a href="{{ route('pages.help-center') }}" class="text-light text-decoration-none">Centro de Ayuda</a></li>
+                        <li><a href="{{ route('pages.warranties') }}" class="text-light text-decoration-none">Garantías</a></li>
+                        <li><a href="{{ route('pages.returns') }}" class="text-light text-decoration-none">Devoluciones</a></li>
+                        <li><a href="{{ route('pages.contact') }}" class="text-light text-decoration-none">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
                     <h6 class="fw-bold mb-3">Empresa</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none">Sobre Nosotros</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Términos</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Privacidad</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Blog</a></li>
+                        <li><a href="{{ route('pages.about') }}" class="text-light text-decoration-none">Sobre Nosotros</a></li>
+                        <li><a href="{{ route('pages.terms') }}" class="text-light text-decoration-none">Términos</a></li>
+                        <li><a href="{{ route('pages.privacy') }}" class="text-light text-decoration-none">Privacidad</a></li>
+                        <li><a href="{{ route('pages.blog') }}" class="text-light text-decoration-none">Blog</a></li>
                     </ul>
                 </div>
             </div>

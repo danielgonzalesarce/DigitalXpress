@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-md-2">
-                                <img src="https://images.unsplash.com/photo-{{ rand(1500000000000, 1600000000000) }}?w=100&h=100&fit=crop" 
+                                <img src="{{ $item->product->image_url }}" 
                                      class="img-fluid rounded" alt="{{ $item->product->name }}">
                             </div>
                             <div class="col-md-4">
@@ -124,9 +124,9 @@
                         <strong>Total:</strong>
                         <strong>${{ number_format($total, 2) }}</strong>
                     </div>
-                    <button class="btn btn-success w-100 mb-3">
+                    <a href="{{ route('checkout.index') }}" class="btn btn-success w-100 mb-3">
                         <i class="fas fa-credit-card me-1"></i> Proceder al Pago
-                    </button>
+                    </a>
                     <div class="text-center">
                         <small class="text-muted">
                             <i class="fas fa-shield-alt me-1"></i>

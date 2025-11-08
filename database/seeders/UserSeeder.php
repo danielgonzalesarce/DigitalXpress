@@ -15,35 +15,43 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Usuario Administrador
-        User::create([
-            'name' => 'Daniel Admin',
-            'email' => 'admin@digitalxpress.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@digitalxpress.com'],
+            [
+                'name' => 'Daniel Admin',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Usuario Cliente de Prueba
-        User::create([
-            'name' => 'María García',
-            'email' => 'cliente@digitalxpress.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'cliente@digitalxpress.com'],
+            [
+                'name' => 'María García',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Usuario Técnico
-        User::create([
-            'name' => 'Carlos Técnico',
-            'email' => 'tecnico@digitalxpress.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'tecnico@digitalxpress.com'],
+            [
+                'name' => 'Carlos Técnico',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Usuario VIP
-        User::create([
-            'name' => 'Ana VIP',
-            'email' => 'vip@digitalxpress.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'vip@digitalxpress.com'],
+            [
+                'name' => 'Ana VIP',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }

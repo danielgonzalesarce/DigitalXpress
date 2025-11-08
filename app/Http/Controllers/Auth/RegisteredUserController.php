@@ -17,9 +17,9 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): RedirectResponse
+    public function create(): View
     {
-        return redirect()->route('home');
+        return view('auth.register');
     }
 
     /**
@@ -45,6 +45,16 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Verificar si el usuario es administrador (email @digitalxpress.com)
+        $emailParts = explode('@', $user->email);
+        $emailDomain = isset($emailParts[1]) ? strtolower(trim($emailParts[1])) : '';
+        
+        // Si es admin, redirigir al panel de administración
+        if ($emailDomain === 'digitalxpress.com') {
+            return redirect(route('admin.dashboard', absolute: false));
+        }
+
+        // Si no es admin, redirigir al home normal
         return redirect(route('home', absolute: false));
     }
 }

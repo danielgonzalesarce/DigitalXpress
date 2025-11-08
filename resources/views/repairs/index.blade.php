@@ -147,7 +147,7 @@
                 <i class="fas fa-info-circle me-2"></i>
                 <strong>¿Necesitas ayuda inmediata?</strong> 
                 Contacta con nuestro equipo técnico al 
-                <a href="tel:+1234567890" class="text-decoration-none fw-bold">+1 (234) 567-890</a>
+                <a href="tel:+51936068781" class="text-decoration-none fw-bold">+51 936068781</a>
             </div>
         </div>
     </div>

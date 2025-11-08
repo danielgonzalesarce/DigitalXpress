@@ -14,9 +14,9 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): RedirectResponse
+    public function create(): View
     {
-        return redirect()->route('home');
+        return view('auth.login');
     }
 
     /**
@@ -28,6 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Verificar si el usuario es administrador (email @digitalxpress.com)
+        $user = Auth::user();
+        $emailParts = explode('@', $user->email);
+        $emailDomain = isset($emailParts[1]) ? strtolower(trim($emailParts[1])) : '';
+        
+        // Si es admin, redirigir al panel de administración
+        if ($emailDomain === 'digitalxpress.com') {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
+        // Si no es admin, redirigir al home normal
         return redirect()->intended(route('home', absolute: false));
     }
 

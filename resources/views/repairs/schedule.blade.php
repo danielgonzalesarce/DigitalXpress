@@ -179,7 +179,7 @@
                 <div class="card-body">
                     <p class="mb-3">¿Necesitas ayuda inmediata?</p>
                     <div class="d-grid gap-2">
-                        <a href="tel:+1234567890" class="btn btn-success">
+                        <a href="tel:+51936068781" class="btn btn-success">
                             <i class="fas fa-phone me-2"></i> Llamar Ahora
                         </a>
                         <a href="mailto:soporte@digitalxpress.com" class="btn btn-outline-success">

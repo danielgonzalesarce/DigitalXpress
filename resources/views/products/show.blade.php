@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="position-relative">
-                <img src="https://images.unsplash.com/photo-{{ rand(1500000000000, 1600000000000) }}?w=600&h=400&fit=crop" 
+                <img src="{{ $product->image_url }}" 
                      class="img-fluid rounded-3 shadow" alt="{{ $product->name }}">
                 @if($product->is_featured)
                 <div class="position-absolute top-0 start-0 m-3">
@@ -65,18 +65,41 @@
                 </div>
             </div>
 
-            @if($product->attributes)
+            <!-- Especificaciones Técnicas -->
             <div class="mb-4">
-                <h5>Especificaciones</h5>
-                <div class="row">
-                    @foreach($product->attributes as $key => $value)
-                    <div class="col-6 mb-2">
-                        <strong>{{ ucfirst($key) }}:</strong> {{ $value }}
+                <h4 class="fw-bold mb-3">
+                    <i class="fas fa-info-circle text-primary me-2"></i>
+                    Especificaciones Técnicas
+                </h4>
+                @if($product->attributes && count($product->attributes) > 0)
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            @foreach($product->attributes as $key => $value)
+                            <div class="col-md-6">
+                                <div class="specification-item p-3 border rounded">
+                                    <div class="d-flex align-items-center">
+                                        <div class="spec-icon me-3">
+                                            <i class="fas fa-check-circle text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <strong class="text-dark d-block mb-1">{{ ucfirst(str_replace('_', ' ', $key)) }}</strong>
+                                            <span class="text-muted">{{ $value }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
-                    @endforeach
                 </div>
+                @else
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Las especificaciones técnicas de este producto estarán disponibles próximamente.
+                </div>
+                @endif
             </div>
-            @endif
 
             <form action="{{ route('cart.add', $product) }}" method="POST" class="mb-4">
                 @csrf
@@ -108,28 +131,47 @@
     </div>
 
     <!-- Related Products -->
-    @if($relatedProducts->count() > 0)
-    <div class="mt-5">
-        <h3 class="fw-bold mb-4">Productos Relacionados</h3>
+    @if($relatedProducts && $relatedProducts->count() > 0)
+    <div class="mt-5 pt-4 border-top">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold mb-0">
+                <i class="fas fa-th-large text-primary me-2"></i>
+                Productos Relacionados
+            </h3>
+            <span class="badge bg-primary">{{ $relatedProducts->count() }} producto{{ $relatedProducts->count() > 1 ? 's' : '' }} de {{ $product->category->name }}</span>
+        </div>
+        <p class="text-muted mb-4">Otros productos de la misma categoría que te pueden interesar</p>
         <div class="row g-4">
             @foreach($relatedProducts as $relatedProduct)
             <div class="col-lg-3 col-md-6">
                 <div class="card product-card h-100">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-{{ rand(1500000000000, 1600000000000) }}?w=300&h=200&fit=crop" 
-                             class="card-img-top" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
+                    <div class="position-relative product-image-container">
+                        <a href="{{ route('products.show', $relatedProduct) }}" class="product-image-link">
+                            <img src="{{ $relatedProduct->image_url }}" 
+                                 class="card-img-top product-image" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
+                            <div class="product-overlay">
+                                <a href="{{ route('products.show', $relatedProduct) }}" class="btn btn-primary btn-view-details">
+                                    <i class="fas fa-eye me-2"></i> Ver más detalles
+                                </a>
+                            </div>
+                        </a>
                         <div class="position-absolute top-0 end-0 m-2">
-                            <button class="btn btn-light btn-sm rounded-circle">
+                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn">
                                 <i class="fas fa-heart"></i>
                             </button>
                         </div>
+                        @if($relatedProduct->is_featured)
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-success">Destacado</span>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="mb-2">
                             <span class="badge bg-secondary">{{ $relatedProduct->category->name }}</span>
                         </div>
                         <h6 class="card-title fw-bold">{{ $relatedProduct->name }}</h6>
-                        <p class="card-text text-muted small">{{ Str::limit($relatedProduct->short_description, 80) }}</p>
+                        <p class="card-text text-muted small">{{ Str::limit($relatedProduct->short_description ?? $relatedProduct->description, 80) }}</p>
                         <div class="d-flex align-items-center mb-2">
                             <div class="text-warning me-2">
                                 @for($i = 1; $i <= 5; $i++)
@@ -162,4 +204,48 @@
     </div>
     @endif
 </div>
+
+<style>
+    /* Estilos para especificaciones técnicas */
+    .specification-item {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef !important;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .specification-item:hover {
+        background-color: #ffffff;
+        border-color: var(--primary-color, #0d6efd) !important;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .spec-icon {
+        font-size: 1.25rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(13, 110, 253, 0.1);
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .specification-item strong {
+        font-size: 0.9rem;
+        color: #212529;
+    }
+
+    .specification-item span {
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+        .specification-item {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
 @endsection

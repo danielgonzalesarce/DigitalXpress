@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RepairController;
 use Illuminate\Support\Facades\Route;
 
-// Página principal
+// Página principal - Accesible sin autenticación (sin login/registro)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Productos
@@ -32,12 +35,62 @@ Route::delete('/carrito/eliminar/{cartItem}', [CartController::class, 'remove'])
 Route::delete('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/carrito/limpiar', [CartController::class, 'cleanup'])->name('cart.cleanup');
 
+// Checkout
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+// Panel de Administración (solo usuarios con @digitalxpress.com)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Productos
+    Route::get('/products', [AdminController::class, 'products'])->name('products');
+    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
+    Route::get('/products/{product}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
+    Route::put('/products/{product}', [AdminController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{product}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
+    
+    // Inventario
+    Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
+    
+    // Pedidos
+    Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [AdminController::class, 'orderDetails'])->name('order.details');
+    Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('order.update-status');
+    
+    // Análisis
+    Route::get('/revenue', [AdminController::class, 'revenue'])->name('revenue');
+    
+    // Usuarios
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    
+    // Configuración
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+});
+
 // Perfil de usuario
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Páginas estáticas
+Route::get('/centro-ayuda', [PageController::class, 'helpCenter'])->name('pages.help-center');
+Route::get('/garantias', [PageController::class, 'warranties'])->name('pages.warranties');
+Route::get('/devoluciones', [PageController::class, 'returns'])->name('pages.returns');
+Route::get('/contacto', [PageController::class, 'contact'])->name('pages.contact');
+Route::get('/sobre-nosotros', [PageController::class, 'about'])->name('pages.about');
+Route::get('/terminos', [PageController::class, 'terms'])->name('pages.terms');
+Route::get('/privacidad', [PageController::class, 'privacy'])->name('pages.privacy');
+Route::get('/blog', [PageController::class, 'blog'])->name('pages.blog');
 
 // Rutas de autenticación
 require __DIR__.'/auth.php';
