@@ -119,10 +119,10 @@ php artisan route:clear
 ### 10. Iniciar el Servidor
 
 ```bash
-php artisan serve
+php artisan serve --port=8081
 ```
 
-El proyecto estará disponible en: `http://127.0.0.1:8000`
+El proyecto estará disponible en: `http://127.0.0.1:8081`
 
 ## 👤 Usuarios de Prueba
 

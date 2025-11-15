@@ -159,10 +159,10 @@ echo 2. Si no ejecutaste las migraciones, ejecuta:
 echo    php artisan migrate:fresh --seed
 echo.
 echo 3. Inicia el servidor de desarrollo:
-echo    php artisan serve
+echo    php artisan serve --port=8081
 echo.
 echo 4. Abre tu navegador en:
-echo    http://127.0.0.1:8000
+echo    http://127.0.0.1:8081
 echo.
 echo 👤 Usuarios de prueba:
 echo    Admin: admin@digitalxpress.com / password

@@ -8,6 +8,7 @@ Una aplicación web completa desarrollada en Laravel que combina una tienda de e
 - **🛒 Carrito Inteligente**: Funciona para usuarios registrados e invitados
 - **🔧 Servicio Técnico**: Dashboard completo para gestión de reparaciones
 - **🔐 Autenticación Avanzada**: Modal personalizado con validaciones
+- **🔑 Login con Google**: Autenticación OAuth con Google (crear cuenta e iniciar sesión)
 - **📄 Reportes PDF**: Generación automática de reportes de reparaciones
 - **📱 Diseño Responsive**: Optimizado para todos los dispositivos
 
@@ -16,7 +17,7 @@ Una aplicación web completa desarrollada en Laravel que combina una tienda de e
 - **Backend**: Laravel 12.7.1, PHP 8.3+
 - **Base de Datos**: PostgreSQL 17/18
 - **Frontend**: Bootstrap 5, HTML5, CSS3, JavaScript
-- **Autenticación**: Laravel Breeze
+- **Autenticación**: Laravel Breeze, Laravel Socialite (Google OAuth)
 - **PDF**: DomPDF
 - **Iconos**: Font Awesome
 
@@ -99,11 +100,19 @@ Si prefieres instalar manualmente:
 
 7. **Iniciar servidor**
    ```bash
-   php artisan serve
+   php artisan serve --port=8081
    ```
 
 8. **Acceder a la aplicación**
-   - Abrir navegador en `http://127.0.0.1:8000`
+   - Abrir navegador en `http://127.0.0.1:8081`
+
+### 🔑 Configurar Autenticación con Google (Opcional)
+
+Si deseas habilitar el login con Google:
+
+1. Sigue la guía en [GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md)
+2. Configura las credenciales en el archivo `.env`
+3. Los usuarios podrán iniciar sesión y crear cuenta con Google
 
 > 📖 Para más detalles, consulta la [Guía de Instalación Completa](INSTALL.md)
 

@@ -40,7 +40,12 @@
 
     <!-- Orders Table -->
     <div class="orders-section">
-        <h3 class="mb-4">Lista de Pedidos</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Lista de Pedidos</h3>
+            <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Crear Pedido
+            </a>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -87,9 +92,30 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('admin.order.details', $order) }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-eye"></i> Ver Detalles
-                            </a>
+                            <div class="btn-group" role="group">
+                                <a href="{{ route('admin.order.details', $order) }}" 
+                                   class="btn btn-sm btn-outline-info" 
+                                   title="Ver Detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.orders.edit', $order) }}" 
+                                   class="btn btn-sm btn-outline-primary" 
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.orders.destroy', $order) }}" 
+                                      method="POST" 
+                                      class="d-inline"
+                                      onsubmit="return confirm('¿Estás seguro de eliminar este pedido?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-outline-danger" 
+                                            title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty

@@ -45,5 +45,10 @@ class PageController extends Controller
     {
         return view('pages.blog');
     }
+
+    public function development()
+    {
+        return view('pages.development');
+    }
 }
 

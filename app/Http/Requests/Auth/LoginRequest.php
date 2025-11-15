@@ -46,7 +46,7 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
-            ]);
+            ])->redirectTo(route('home'));
         }
 
         RateLimiter::clear($this->throttleKey());

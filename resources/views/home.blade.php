@@ -7,7 +7,7 @@
 @if($carouselProducts->count() > 0)
 <section class="hero-section-wrapper">
     <div class="hero-section" id="heroSection">
-        <div class="container">
+    <div class="container">
         <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <!-- Indicadores -->
             <div class="carousel-indicators">
@@ -26,11 +26,11 @@
                         <div class="col-lg-6 d-flex flex-column justify-content-center">
                             <div class="mb-2">
                                 @if($product->is_on_sale)
-                                    <span class="badge bg-success fs-6 px-3 py-2">Oferta Especial</span>
+                    <span class="badge bg-success fs-6 px-3 py-2">Oferta Especial</span>
                                 @else
                                     <span class="badge bg-primary fs-6 px-3 py-2">Producto Destacado</span>
                                 @endif
-                            </div>
+                </div>
                             <h1 class="display-5 fw-bold mb-2">{{ $product->name }}</h1>
                             <p class="lead mb-2">{{ $product->category->name ?? 'Tecnología' }}</p>
                             <p class="mb-3 small">{{ Str::limit($product->short_description ?? $product->description, 100) }}</p>
@@ -41,19 +41,19 @@
                                 @else
                                     <span class="h3 text-success fw-bold me-3">${{ number_format($product->price, 2) }}</span>
                                 @endif
-                            </div>
+                </div>
                             <div class="d-flex gap-3 mb-2">
                                 <a href="{{ route('products.show', $product) }}" class="btn btn-success btn-lg px-4">
                                     Ver Producto
-                                </a>
+                    </a>
                                 <a href="{{ route('products.index') }}" class="btn btn-outline-light btn-lg px-4">
                                     Ver Todos
                                 </a>
-                            </div>
-                            @auth
+                </div>
+                @auth
                                 <div class="mt-2">
                                     <div class="alert alert-light d-flex align-items-center py-2" role="alert">
-                                        <i class="fas fa-user-circle me-2 text-primary"></i>
+                            <i class="fas fa-user-circle me-2 text-primary"></i>
                                         <div class="small">
                                             <strong>¡Bienvenido, {{ Auth::user()->name }}!</strong>
                                         </div>
@@ -82,7 +82,7 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Siguiente</span>
             </button>
-        </div>
+            </div>
         </div>
     </div>
 </section>

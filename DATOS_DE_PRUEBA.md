@@ -54,11 +54,11 @@ Este es un sistema de **simulación/demo completamente independiente**.
 ## 🎯 INSTRUCCIONES DE PRUEBA
 
 ### 1. **Agregar productos al carrito:**
-   - Ve a `http://127.0.0.1:8000/productos`
+   - Ve a `http://127.0.0.1:8081/productos`
    - Haz clic en "Agregar al Carrito" en varios productos
 
 ### 2. **Hacer checkout:**
-   - Ve a `http://127.0.0.1:8000/carrito`
+   - Ve a `http://127.0.0.1:8081/carrito`
    - Haz clic en "Proceder al Pago"
 
 ### 3. **Completar datos:**

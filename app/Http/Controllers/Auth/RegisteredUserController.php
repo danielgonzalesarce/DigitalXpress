@@ -29,6 +29,29 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Validar el dominio del email antes de la validación estándar
+        $email = strtolower(trim($request->email));
+        $emailParts = explode('@', $email);
+        $emailDomain = isset($emailParts[1]) ? strtolower(trim($emailParts[1])) : '';
+
+        // No permitir registro con @digitalxpress.com
+        if ($emailDomain === 'digitalxpress.com') {
+            return redirect()->back()
+                ->withInput($request->only('name', 'email'))
+                ->withErrors([
+                    'email' => 'Los usuarios con dominio @digitalxpress.com solo pueden ser creados por el administrador desde el panel administrativo. Por favor, utiliza un email con dominio @gmail.com para registrarte.',
+                ]);
+        }
+
+        // Solo permitir registro con @gmail.com
+        if ($emailDomain !== 'gmail.com') {
+            return redirect()->back()
+                ->withInput($request->only('name', 'email'))
+                ->withErrors([
+                    'email' => 'Solo se permiten registros con direcciones de correo @gmail.com.',
+                ]);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -45,16 +68,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Verificar si el usuario es administrador (email @digitalxpress.com)
-        $emailParts = explode('@', $user->email);
-        $emailDomain = isset($emailParts[1]) ? strtolower(trim($emailParts[1])) : '';
-        
-        // Si es admin, redirigir al panel de administración
-        if ($emailDomain === 'digitalxpress.com') {
-            return redirect(route('admin.dashboard', absolute: false));
-        }
-
-        // Si no es admin, redirigir al home normal
+        // Redirigir al home normal
         return redirect(route('home', absolute: false));
     }
 }

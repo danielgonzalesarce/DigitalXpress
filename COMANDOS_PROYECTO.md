@@ -2,19 +2,31 @@
 
 ## ⚡ COMANDO PRINCIPAL
 
-### **Iniciar el Servidor de Desarrollo:**
+### **Iniciar el Servidor de Desarrollo (Puerto 8081):**
+
+**Opción 1 - Usando Composer (Recomendado):**
 ```bash
-php artisan serve
+composer serve
 ```
 
-### **Iniciar en un Puerto Específico:**
+**Opción 2 - Usando Script Helper (Windows):**
 ```bash
-php artisan serve --port=8000
+serve.bat
+```
+
+**Opción 3 - Usando Script Helper (Linux/Mac):**
+```bash
+./serve.sh
+```
+
+**Opción 4 - Comando Artisan Directo:**
+```bash
+php artisan serve --port=8081
 ```
 
 ### **Iniciar en una IP y Puerto Específicos:**
 ```bash
-php artisan serve --host=127.0.0.1 --port=8000
+php artisan serve --host=127.0.0.1 --port=8081
 ```
 
 ---
@@ -99,22 +111,22 @@ php artisan about
 
 ## 🌐 ACCESO AL PROYECTO
 
-Una vez que ejecutes `php artisan serve`, el proyecto estará disponible en:
+Una vez que ejecutes `php artisan serve --port=8081`, el proyecto estará disponible en:
 
-- **URL Local**: `http://127.0.0.1:8000`
-- **URL Alternativa**: `http://localhost:8000`
+- **URL Local**: `http://127.0.0.1:8081`
+- **URL Alternativa**: `http://localhost:8081`
 
 ---
 
 ## 📱 PÁGINAS PRINCIPALES
 
-- **Inicio**: `http://127.0.0.1:8000/`
-- **Login**: `http://127.0.0.1:8000/login`
-- **Registro**: `http://127.0.0.1:8000/register`
-- **Productos**: `http://127.0.0.1:8000/productos`
-- **Carrito**: `http://127.0.0.1:8000/carrito`
-- **Checkout**: `http://127.0.0.1:8000/checkout`
-- **Panel Admin**: `http://127.0.0.1:8000/admin/dashboard`
+- **Inicio**: `http://127.0.0.1:8081/`
+- **Login**: `http://127.0.0.1:8081/login`
+- **Registro**: `http://127.0.0.1:8081/register`
+- **Productos**: `http://127.0.0.1:8081/productos`
+- **Carrito**: `http://127.0.0.1:8081/carrito`
+- **Checkout**: `http://127.0.0.1:8081/checkout`
+- **Panel Admin**: `http://127.0.0.1:8081/admin/dashboard`
 
 ---
 
@@ -138,7 +150,7 @@ copy .env.example .env
 php artisan key:generate
 php artisan migrate:fresh --seed
 npm run build
-php artisan serve
+php artisan serve --port=8081
 ```
 
-¡Listo! El proyecto estará corriendo en `http://127.0.0.1:8000` 🚀
+¡Listo! El proyecto estará corriendo en `http://127.0.0.1:8081` 🚀

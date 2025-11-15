@@ -9,6 +9,15 @@
             <div class="modal-body">
                 <p class="text-muted mb-4">Inicia sesión en tu cuenta o regístrate para acceder a todos nuestros servicios</p>
                 
+                <!-- Mensajes de error -->
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs nav-fill mb-4" id="authTabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -33,6 +42,7 @@
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" 
                                        id="email" name="email" 
+                                       value="{{ old('email') }}"
                                        placeholder="Ingresa tu E-mail" 
                                        autocomplete="new-password" 
                                        required autofocus>
@@ -70,10 +80,10 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
-                            <button class="btn btn-outline-secondary w-100">
+                            <a href="{{ route('pages.development') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -85,6 +95,7 @@
                                 <label for="register_name" class="form-label">Nombre</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" 
                                        id="register_name" name="name" 
+                                       value="{{ old('name') }}"
                                        placeholder="Ingresa tu Nombre" 
                                        autocomplete="new-password" 
                                        required>
@@ -96,12 +107,14 @@
                                 <label for="register_email" class="form-label">Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" 
                                        id="register_email" name="email" 
-                                       placeholder="Ingresa tu E-mail" 
+                                       value="{{ old('email') }}"
+                                       placeholder="Ingresa tu E-mail (@gmail.com)" 
                                        autocomplete="new-password" 
                                        required>
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="form-text text-muted">Solo se permiten direcciones de correo @gmail.com</small>
                             </div>
                             <div class="mb-3">
                                 <label for="register_password" class="form-label">Contraseña</label>
@@ -135,10 +148,10 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
-                            <button class="btn btn-outline-secondary w-100">
+                            <a href="{{ route('pages.development') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

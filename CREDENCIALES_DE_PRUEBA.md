@@ -13,7 +13,7 @@ Este es un sistema de **autenticación funcional** para pruebas y demostraciones
 - **Nombre**: `Test User`
 
 ### 🚀 **Cómo usar:**
-1. Ve a `http://127.0.0.1:8000/login`
+1. Ve a `http://127.0.0.1:8081/login`
 2. Ingresa las credenciales de arriba
 3. Haz clic en "Iniciar Sesión"
 4. ¡Serás redirigido al inicio!
@@ -23,7 +23,7 @@ Este es un sistema de **autenticación funcional** para pruebas y demostraciones
 ## 📝 CREAR NUEVO USUARIO
 
 ### ✅ **Registro de Usuario:**
-1. Ve a `http://127.0.0.1:8000/register`
+1. Ve a `http://127.0.0.1:8081/register`
 2. Completa el formulario:
    - **Nombre Completo**: `Tu Nombre`
    - **Correo Electrónico**: `tu@email.com`
@@ -76,14 +76,14 @@ Este es un sistema de **autenticación funcional** para pruebas y demostraciones
 
 ### **1. Probar Login:**
 ```
-URL: http://127.0.0.1:8000/login
+URL: http://127.0.0.1:8081/login
 Email: test@digitalxpress.com
 Contraseña: password
 ```
 
 ### **2. Probar Registro:**
 ```
-URL: http://127.0.0.1:8000/register
+URL: http://127.0.0.1:8081/register
 Completa el formulario con tus datos
 ```
 

@@ -53,12 +53,30 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/products/{product}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
     
     // Inventario
-    Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
+    Route::get('/inventory', [AdminController::class, 'inventoryIndex'])->name('inventory');
+    Route::get('/inventory/create', [AdminController::class, 'createInventoryMovement'])->name('inventory.create');
+    Route::post('/inventory', [AdminController::class, 'storeInventoryMovement'])->name('inventory.store');
+    Route::get('/inventory/{product}/edit', [AdminController::class, 'editInventoryMovement'])->name('inventory.edit');
+    Route::put('/inventory/{product}', [AdminController::class, 'updateInventoryMovement'])->name('inventory.update');
+    Route::delete('/inventory/{product}', [AdminController::class, 'destroyInventoryMovement'])->name('inventory.destroy');
     
     // Pedidos
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/create', [AdminController::class, 'createOrder'])->name('orders.create');
+    Route::post('/orders', [AdminController::class, 'storeOrder'])->name('orders.store');
     Route::get('/orders/{order}', [AdminController::class, 'orderDetails'])->name('order.details');
+    Route::get('/orders/{order}/edit', [AdminController::class, 'editOrder'])->name('orders.edit');
+    Route::put('/orders/{order}', [AdminController::class, 'updateOrder'])->name('orders.update');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('order.update-status');
+    Route::delete('/orders/{order}', [AdminController::class, 'destroyOrder'])->name('orders.destroy');
+    
+    // Reparaciones
+    Route::get('/repairs', [AdminController::class, 'repairs'])->name('repairs');
+    Route::get('/repairs/create', [AdminController::class, 'createRepair'])->name('repairs.create');
+    Route::post('/repairs', [AdminController::class, 'storeRepair'])->name('repairs.store');
+    Route::get('/repairs/{repair}/edit', [AdminController::class, 'editRepair'])->name('repairs.edit');
+    Route::put('/repairs/{repair}', [AdminController::class, 'updateRepair'])->name('repairs.update');
+    Route::delete('/repairs/{repair}', [AdminController::class, 'destroyRepair'])->name('repairs.destroy');
     
     // Análisis
     Route::get('/revenue', [AdminController::class, 'revenue'])->name('revenue');
@@ -70,6 +88,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    
+    // Categorías
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories');
+    Route::get('/categories/create', [AdminController::class, 'createCategory'])->name('categories.create');
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [AdminController::class, 'editCategory'])->name('categories.edit');
+    Route::put('/categories/{category}', [AdminController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{category}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
     
     // Configuración
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
@@ -91,6 +117,7 @@ Route::get('/sobre-nosotros', [PageController::class, 'about'])->name('pages.abo
 Route::get('/terminos', [PageController::class, 'terms'])->name('pages.terms');
 Route::get('/privacidad', [PageController::class, 'privacy'])->name('pages.privacy');
 Route::get('/blog', [PageController::class, 'blog'])->name('pages.blog');
+Route::get('/en-desarrollo', [PageController::class, 'development'])->name('pages.development');
 
 // Rutas de autenticación
 require __DIR__.'/auth.php';

@@ -49,12 +49,14 @@
                     </select>
                 </div>
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-sort me-2 text-muted"></i>
-                    <select id="sortFilter" name="sort" class="form-select filter-select" style="width: auto; min-width: 180px;">
-                        <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Nombre</option>
-                        <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }}>Precio</option>
-                        <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Calificación</option>
-                        <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más recientes</option>
+                    <i class="fas fa-tags me-2 text-muted"></i>
+                    <select id="categoryFilter" name="category" class="form-select filter-select" style="width: auto; min-width: 180px;">
+                        <option value="">Todas las categorías</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -478,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Funcionalidad de filtros automáticos
     const priceFilter = document.getElementById('priceFilter');
-    const sortFilter = document.getElementById('sortFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
 
     function applyFilters() {
         const url = new URL(window.location.href);
@@ -492,12 +494,12 @@ document.addEventListener('DOMContentLoaded', function() {
             params.delete('price_range');
         }
 
-        // Actualizar parámetro de ordenamiento
-        const sortValue = sortFilter.value;
-        if (sortValue) {
-            params.set('sort', sortValue);
+        // Actualizar parámetro de categoría
+        const categoryValue = categoryFilter.value;
+        if (categoryValue) {
+            params.set('category', categoryValue);
         } else {
-            params.set('sort', 'name'); // Valor por defecto
+            params.delete('category');
         }
 
         // Resetear a página 1 cuando se cambian los filtros
@@ -512,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
         applyFilters();
     });
 
-    sortFilter.addEventListener('change', function() {
+    categoryFilter.addEventListener('change', function() {
         applyFilters();
     });
 });

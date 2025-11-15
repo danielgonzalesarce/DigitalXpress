@@ -583,6 +583,12 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories') ? 'active' : '' }}">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorías</span>
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="{{ route('repairs.index') }}" class="nav-link {{ request()->routeIs('repairs.*') ? 'active' : '' }}">
                     <i class="fas fa-wrench"></i>
                     <span>Reparaciones</span>

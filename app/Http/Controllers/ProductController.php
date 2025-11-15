@@ -66,7 +66,21 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(12)->appends($request->query());
-        $categories = Category::where('is_active', true)->get();
+        
+        // Categorías específicas que se mostrarán (las mismas que en la navegación)
+        $allowedCategorySlugs = ['accesorios', 'laptops', 'relojes', 'televisores', 'celulares', 'camaras'];
+        
+        $categories = Category::where('is_active', true)
+            ->whereIn('slug', $allowedCategorySlugs)
+            ->whereHas('products', function ($query) {
+                $query->where('is_active', true)
+                      ->where('in_stock', true);
+            })
+            ->get()
+            ->sortBy(function ($category) use ($allowedCategorySlugs) {
+                return array_search($category->slug, $allowedCategorySlugs);
+            })
+            ->values();
 
         return view('products.index', compact('products', 'categories'));
     }

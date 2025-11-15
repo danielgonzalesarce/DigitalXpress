@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'DigitalXpress - Tu tienda de tecnología')</title>
+    <!-- Script para aplicar tema antes de renderizar (evita flash) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,14 +23,209 @@
             --bg-light: #f9fafb;
         }
 
+        [data-theme="dark"] {
+            --primary-color: #3b82f6;
+            --secondary-color: #60a5fa;
+            --accent-color: #10b981;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-light: #1f2937;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             color: var(--text-dark);
+            background-color: white;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background-color: #111827;
+            color: var(--text-dark);
+        }
+
+        [data-theme="dark"] .navbar {
+            background-color: #1f2937 !important;
+            border-bottom: 1px solid #374151;
+        }
+
+        [data-theme="dark"] .navbar-brand,
+        [data-theme="dark"] .nav-link {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .category-nav {
+            background-color: #1f2937;
+        }
+
+        [data-theme="dark"] .category-nav .nav-link {
+            color: #d1d5db;
+        }
+
+        [data-theme="dark"] .category-nav .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--secondary-color);
+        }
+
+        [data-theme="dark"] .category-nav .nav-link.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+            border-bottom: 3px solid var(--secondary-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        [data-theme="dark"] .feature-card {
+            background-color: #1f2937;
+            color: #f9fafb;
+            border: 1px solid #374151;
+        }
+
+        [data-theme="dark"] .product-card {
+            background-color: #1f2937;
+            color: #f9fafb;
+            border: 1px solid #374151;
+        }
+
+        [data-theme="dark"] .modal-content {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .modal-header {
+            border-bottom: 1px solid #374151;
+        }
+
+        [data-theme="dark"] .form-control {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .form-control:focus {
+            background-color: #374151;
+            border-color: var(--primary-color);
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .footer {
+            background-color: #0f172a;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .alert {
+            background-color: #1f2937;
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .dropdown-menu {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+
+        [data-theme="dark"] .dropdown-item {
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .dropdown-item:hover {
+            background-color: #374151;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .nav-tabs .nav-link {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+
+        [data-theme="dark"] .nav-tabs .nav-link.active {
+            background-color: #1f2937;
+            color: #f9fafb;
+            border-bottom-color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .text-muted {
+            color: #9ca3af !important;
+        }
+
+        [data-theme="dark"] .bg-white {
+            background-color: #1f2937 !important;
+        }
+
+        [data-theme="dark"] .bg-light {
+            background-color: #1f2937 !important;
+        }
+
+        [data-theme="dark"] .card {
+            background-color: #1f2937;
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .table {
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
+            background-color: #374151;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            color: #f9fafb;
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle .fa-moon {
+            display: none;
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-moon {
+            display: inline-block;
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-sun {
+            display: none;
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            position: relative;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link.active {
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        [data-theme="dark"] .navbar-nav .nav-link.active {
+            border-bottom: 3px solid var(--secondary-color);
         }
 
         .hero-section {
@@ -103,12 +305,20 @@
             transition: all 0.3s ease;
             font-size: 1.1rem; /* Tamaño de fuente ligeramente mayor */
             white-space: nowrap; /* Evita que el texto se divida */
+            position: relative;
+            border-bottom: 3px solid transparent;
         }
 
-        .category-nav .nav-link:hover,
+        .category-nav .nav-link:hover {
+            background-color: rgba(30, 58, 138, 0.1);
+            color: var(--primary-color);
+        }
+
         .category-nav .nav-link.active {
-            background-color: var(--primary-color);
-            color: white;
+            color: var(--primary-color);
+            font-weight: 700;
+            border-bottom: 3px solid var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
         }
 
         /* Responsive: ajustar espaciado en pantallas pequeñas */
@@ -176,17 +386,17 @@
                 <!-- User Actions -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.index') }}">
+                        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
                             <i class="fas fa-store me-1"></i> Tienda
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('repairs.index') }}">
+                        <a class="nav-link {{ request()->routeIs('repairs.*') ? 'active' : '' }}" href="{{ route('repairs.index') }}">
                             <i class="fas fa-tools me-1"></i> Reparaciones
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="{{ route('cart.index') }}">
+                        <a class="nav-link position-relative {{ request()->routeIs('cart.*') ? 'active' : '' }}" href="{{ route('cart.index') }}">
                             <i class="fas fa-shopping-cart me-1"></i> Carrito
                             @if($cartCount > 0)
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -196,6 +406,12 @@
                         </a>
                     </li>
                     @auth
+                        <li class="nav-item d-flex align-items-center me-2">
+                            <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                                <i class="fas fa-sun"></i>
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 <div class="me-2">
@@ -279,6 +495,12 @@
                                 <i class="fas fa-user me-1"></i> Ingresar
                             </a>
                         </li>
+                        <li class="nav-item d-flex align-items-center">
+                            <button class="theme-toggle ms-3" id="themeToggle" aria-label="Cambiar tema">
+                                <i class="fas fa-sun"></i>
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </li>
                     @endauth
                 </ul>
             </div>
@@ -286,15 +508,18 @@
     </nav>
 
     <!-- Category Navigation -->
+    @if(isset($categoriesWithProducts) && $categoriesWithProducts->count() > 0)
     <div class="category-nav">
         <nav class="nav justify-content-center">
-            <a class="nav-link {{ request('category') == 'accesorios' || (request()->is('/') && !request('category')) ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'accesorios']) }}">Accesorios</a>
-            <a class="nav-link {{ request('category') == 'camaras' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'camaras']) }}">Cámaras</a>
-            <a class="nav-link {{ request('category') == 'laptops' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'laptops']) }}">Laptops</a>
-            <a class="nav-link {{ request('category') == 'celulares' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'celulares']) }}">Celulares</a>
-            <a class="nav-link {{ request('category') == 'relojes' ? 'active' : '' }}" href="{{ route('products.index', ['category' => 'relojes']) }}">Relojes</a>
+            @foreach($categoriesWithProducts as $category)
+                <a class="nav-link {{ request('category') == $category->slug || (request()->is('/') && !request('category') && $loop->first) ? 'active' : '' }}" 
+                   href="{{ route('products.index', ['category' => $category->slug]) }}">
+                    {{ $category->name }}
+                </a>
+            @endforeach
         </nav>
     </div>
+    @endif
 
     <!-- Main Content -->
     <main>
@@ -422,6 +647,55 @@
     @endauth
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para modo oscuro/claro -->
+    <script>
+        (function() {
+            // Obtener el tema guardado o usar 'light' por defecto
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const html = document.documentElement;
+            
+            // Aplicar el tema guardado
+            html.setAttribute('data-theme', savedTheme);
+            
+            // Función para cambiar el tema
+            function toggleTheme() {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+            
+            // Agregar event listener a todos los botones de tema
+            document.addEventListener('DOMContentLoaded', function() {
+                const themeToggles = document.querySelectorAll('#themeToggle');
+                themeToggles.forEach(toggle => {
+                    toggle.addEventListener('click', toggleTheme);
+                });
+            });
+        })();
+    </script>
+    
+    <!-- Script para mantener el modal abierto si hay errores de validación -->
+    @if($errors->has('email') || $errors->has('password') || $errors->has('name') || session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Abrir el modal automáticamente si hay errores
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+            
+            // Si hay errores de registro, cambiar al tab de registro
+            @if($errors->has('name') || ($errors->has('email') && !$errors->has('password')))
+            const registerTab = document.getElementById('register-tab');
+            if (registerTab) {
+                registerTab.click();
+            }
+            @endif
+        });
+    </script>
+    @endif
+    
     @stack('scripts')
 </body>
 </html>
