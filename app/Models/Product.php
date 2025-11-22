@@ -1,5 +1,34 @@
 <?php
 
+/**
+ * Modelo Product
+ * 
+ * Representa un producto en el catálogo de DigitalXpress.
+ * 
+ * Propiedades principales:
+ * - Información básica: nombre, descripción, SKU
+ * - Precios: precio regular y precio de oferta
+ * - Stock: cantidad disponible y estado
+ * - Categorización: pertenece a una categoría
+ * - Imágenes: almacenadas como array JSON
+ * - Atributos: características adicionales como array JSON
+ * - Rating: calificación y cantidad de reseñas
+ * 
+ * Relaciones:
+ * - belongsTo Category: cada producto pertenece a una categoría
+ * - hasMany CartItem: puede estar en múltiples carritos
+ * - hasMany OrderItem: puede estar en múltiples pedidos
+ * - hasMany Favorite: puede ser favorito de múltiples usuarios
+ * 
+ * Accessors (atributos calculados):
+ * - current_price: retorna el precio de oferta si existe, sino el precio regular
+ * - is_on_sale: indica si el producto está en oferta
+ * - image_url: obtiene la URL de la imagen del producto (con lógica compleja de búsqueda)
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,6 +37,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+    /**
+     * Campos que pueden ser asignados masivamente (mass assignment)
+     * Estos campos pueden ser llenados usando create() o update()
+     */
     protected $fillable = [
         'name',
         'slug',
@@ -30,39 +63,99 @@ class Product extends Model
         'category_id'
     ];
 
+    /**
+     * Conversiones automáticas de tipos de datos
+     * Laravel convierte automáticamente estos campos al tipo especificado
+     */
     protected $casts = [
-        'manage_stock' => 'boolean',
-        'in_stock' => 'boolean',
-        'is_featured' => 'boolean',
-        'is_active' => 'boolean',
-        'images' => 'array',
-        'attributes' => 'array',
-        'price' => 'decimal:2',
-        'sale_price' => 'decimal:2',
-        'weight' => 'decimal:2',
-        'rating' => 'decimal:2',
+        'manage_stock' => 'boolean', // Convertir a booleano
+        'in_stock' => 'boolean', // Convertir a booleano
+        'is_featured' => 'boolean', // Convertir a booleano
+        'is_active' => 'boolean', // Convertir a booleano
+        'images' => 'array', // Convertir JSON a array PHP
+        'attributes' => 'array', // Convertir JSON a array PHP
+        'price' => 'decimal:2', // Convertir a decimal con 2 decimales
+        'sale_price' => 'decimal:2', // Convertir a decimal con 2 decimales
+        'weight' => 'decimal:2', // Convertir a decimal con 2 decimales
+        'rating' => 'decimal:2', // Convertir a decimal con 2 decimales
     ];
 
+    /**
+     * ============================================
+     * RELACIONES CON OTROS MODELOS
+     * ============================================
+     */
+
+    /**
+     * Relación: Un producto pertenece a una categoría
+     * 
+     * @return BelongsTo Relación con el modelo Category
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * Relación: Un producto puede estar en múltiples carritos
+     * 
+     * @return HasMany Relación con el modelo CartItem
+     */
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
     }
 
+    /**
+     * Relación: Un producto puede estar en múltiples pedidos
+     * 
+     * @return HasMany Relación con el modelo OrderItem
+     */
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
+    /**
+     * Relación: Un producto puede ser favorito de múltiples usuarios
+     * 
+     * @return HasMany Relación con el modelo Favorite
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * ============================================
+     * ACCESSORS (Atributos Calculados)
+     * ============================================
+     * 
+     * Estos métodos permiten acceder a valores calculados
+     * como si fueran propiedades del modelo: $product->current_price
+     */
+
+    /**
+     * Obtener el precio actual del producto
+     * Si tiene precio de oferta, retorna ese; sino retorna el precio regular
+     * 
+     * Uso: $product->current_price
+     * 
+     * @return float Precio actual (oferta o regular)
+     */
     public function getCurrentPriceAttribute()
     {
         return $this->sale_price ?? $this->price;
     }
 
+    /**
+     * Verificar si el producto está en oferta
+     * Un producto está en oferta si tiene sale_price y es menor que el precio regular
+     * 
+     * Uso: $product->is_on_sale
+     * 
+     * @return bool True si está en oferta, false en caso contrario
+     */
     public function getIsOnSaleAttribute()
     {
         return $this->sale_price && $this->sale_price < $this->price;

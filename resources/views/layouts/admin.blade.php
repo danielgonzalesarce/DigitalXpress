@@ -7,561 +7,15 @@
     <title>@yield('title', 'Panel de Administración') - DigitalXpress Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --accent-color: #3b82f6;
-            --sidebar-width: 280px;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        /* Sidebar */
-        .admin-sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-sidebar .logo-section {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .admin-sidebar .logo-section a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            transition: opacity 0.3s;
-        }
-
-        .admin-sidebar .logo-section a:hover {
-            opacity: 0.8;
-        }
-
-        .admin-sidebar .logo-section h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .admin-sidebar .logo-section p {
-            margin: 0;
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-
-        .admin-sidebar .nav-menu {
-            padding: 1rem 0;
-        }
-
-        .admin-sidebar .nav-item {
-            margin: 0.25rem 0;
-        }
-
-        .admin-sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .admin-sidebar .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left-color: white;
-        }
-
-        .admin-sidebar .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border-left-color: white;
-            font-weight: 600;
-        }
-
-        .admin-sidebar .nav-link i {
-            width: 20px;
-            margin-right: 0.75rem;
-        }
-
-        .admin-sidebar .badge-notification {
-            margin-left: auto;
-            background: #ef4444;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .admin-sidebar .user-profile {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.1);
-        }
-
-        .admin-sidebar .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #10b981;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .admin-sidebar .user-info h6 {
-            margin: 0;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .admin-sidebar .user-info p {
-            margin: 0;
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-
-        .admin-sidebar .user-badge {
-            display: inline-block;
-            background: #10b981;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        .admin-sidebar .logout-btn {
-            width: 100%;
-            margin-top: 1rem;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 0.5rem;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-        }
-
-        .admin-sidebar .logout-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        /* Main Content */
-        .admin-main {
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .admin-header {
-            background: white;
-            padding: 1rem 2rem;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .admin-header .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .admin-header .hamburger {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #6b7280;
-            cursor: pointer;
-        }
-
-        .admin-header .page-title h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .admin-header .page-title p {
-            margin: 0;
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-
-        .admin-header .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .admin-header .search-bar {
-            position: relative;
-        }
-
-        .admin-header .search-bar input {
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            width: 250px;
-            font-size: 0.875rem;
-        }
-
-        .admin-header .search-bar i {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-        }
-
-        .admin-header .notification-btn {
-            position: relative;
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            color: #6b7280;
-            cursor: pointer;
-        }
-
-        .admin-header .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-
-        /* Content Area */
-        .admin-content {
-            padding: 2rem;
-        }
-
-        /* Modal de Confirmación Personalizado */
-        #confirmModal .modal-dialog {
-            max-width: 450px;
-        }
-
-        .confirm-modal-content {
-            background: #282828;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .confirm-modal-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-        }
-
-        .confirm-modal-header .modal-title {
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .confirm-modal-body {
-            padding: 2rem 1.5rem;
-            color: #ffffff;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .confirm-modal-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-
-        .confirm-cancel-btn {
-            background: #3a3a3a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .confirm-cancel-btn:hover {
-            background: #4a4a4a;
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-
-        .confirm-accept-btn {
-            background: #3366ff;
-            border: none;
-            color: #ffffff;
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .confirm-accept-btn:hover {
-            background: #2551e6;
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(51, 102, 255, 0.4);
-        }
-
-        /* Overlay del Modal */
-        #confirmModal .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-        }
-
-        /* Animación de entrada */
-        #confirmModal.modal.fade .modal-dialog {
-            transform: scale(0.9);
-            transition: transform 0.3s ease-out;
-        }
-
-        #confirmModal.modal.show .modal-dialog {
-            transform: scale(1);
-        }
-
-        /* Cards */
-        .metric-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .metric-card .metric-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .metric-card .metric-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0.5rem 0;
-        }
-
-        .metric-card .metric-label {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin: 0;
-        }
-
-        .metric-card .metric-change {
-            font-size: 0.75rem;
-            color: #10b981;
-            margin-top: 0.5rem;
-        }
-
-        /* Alert Banner */
-        .alert-banner {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .alert-banner i {
-            color: #f59e0b;
-            font-size: 1.25rem;
-        }
-
-        .alert-banner a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            margin-left: auto;
-        }
-
-        /* Orders Section */
-        .orders-section {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-top: 1.5rem;
-        }
-
-        .orders-section h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1.5rem;
-        }
-
-        .order-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-            transition: background 0.2s;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
-        .order-item:hover {
-            background: #f9fafb;
-        }
-
-        .order-item .order-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: #eff6ff;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .order-item .order-info {
-            flex: 1;
-        }
-
-        .order-item .order-info h6 {
-            margin: 0;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .order-item .order-info p {
-            margin: 0;
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-
-        .order-item .order-total {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .order-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .order-status.pending {
-            background: #f3f4f6;
-            color: #6b7280;
-        }
-
-        .order-status.processing {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-
-        .order-status.completed {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        /* Help Button */
-        .help-button {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            font-size: 1.25rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .help-button:hover {
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .admin-sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .admin-sidebar.show {
-                transform: translateX(0);
-            }
-
-            .admin-main {
-                margin-left: 0;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
 <body>
+    <!-- Overlay para móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar" id="adminSidebar">
         <div class="logo-section">
             <a href="{{ route('admin.dashboard') }}" style="text-decoration: none; color: inherit; display: block;">
                 <h4><i class="fas fa-shield-alt me-2"></i>Admin Panel</h4>
@@ -589,7 +43,7 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="{{ route('repairs.index') }}" class="nav-link {{ request()->routeIs('repairs.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.repairs') }}" class="nav-link {{ request()->routeIs('admin.repairs*') ? 'active' : '' }}">
                     <i class="fas fa-wrench"></i>
                     <span>Reparaciones</span>
                 </a>
@@ -598,14 +52,8 @@
                 <a href="{{ route('admin.inventory') }}" class="nav-link {{ request()->routeIs('admin.inventory') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
                     <span>Inventario</span>
-                    @php
-                        $lowStockCount = \App\Models\Product::where('is_active', true)
-                            ->where('stock_quantity', '<', 10)
-                            ->where('stock_quantity', '>', 0)
-                            ->count();
-                    @endphp
-                    @if($lowStockCount > 0)
-                    <span class="badge-notification">{{ $lowStockCount }}</span>
+                    @if(isset($inventoryBadgeCount) && $inventoryBadgeCount > 0)
+                    <span class="badge-notification">{{ $inventoryBadgeCount }}</span>
                     @endif
                 </a>
             </div>
@@ -674,7 +122,9 @@
                 </div>
                 <button class="notification-btn">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">5</span>
+                    @if(isset($adminNotifications) && $adminNotifications > 0)
+                    <span class="notification-badge">{{ $adminNotifications }}</span>
+                    @endif
                 </button>
             </div>
         </header>
@@ -714,9 +164,154 @@
     </div>
 
     <!-- Help Button -->
-    <button class="help-button" title="Ayuda">
+    <button class="help-button" title="Ayuda" data-bs-toggle="modal" data-bs-target="#helpModal">
         <i class="fas fa-question"></i>
     </button>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">
+                        <i class="fas fa-question-circle me-2"></i>
+                        Centro de Ayuda - Panel de Administración
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="accordion" id="helpAccordion">
+                        <!-- Dashboard -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#helpDashboard">
+                                    <i class="fas fa-chart-line me-2"></i> Dashboard
+                                </button>
+                            </h2>
+                            <div id="helpDashboard" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>El dashboard muestra un resumen general del sistema:</p>
+                                    <ul>
+                                        <li><strong>Total Productos:</strong> Cantidad de productos activos en el sistema</li>
+                                        <li><strong>Valor Inventario:</strong> Valor total del inventario calculado</li>
+                                        <li><strong>Stock Bajo/Sin Stock:</strong> Alertas de productos con poco o sin stock</li>
+                                        <li><strong>Pedidos Recientes:</strong> Últimos 5 pedidos realizados</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Productos -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpProducts">
+                                    <i class="fas fa-cube me-2"></i> Productos
+                                </button>
+                            </h2>
+                            <div id="helpProducts" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Gestiona todos los productos de tu tienda:</p>
+                                    <ul>
+                                        <li><strong>Crear:</strong> Agrega nuevos productos con imágenes, precios y descripciones</li>
+                                        <li><strong>Editar:</strong> Modifica cualquier información del producto, incluyendo imágenes</li>
+                                        <li><strong>Eliminar:</strong> Elimina productos del sistema (se eliminan también las imágenes asociadas)</li>
+                                        <li><strong>Filtrar:</strong> Busca productos por nombre, SKU o categoría</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pedidos -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpOrders">
+                                    <i class="fas fa-shopping-cart me-2"></i> Pedidos
+                                </button>
+                            </h2>
+                            <div id="helpOrders" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Administra los pedidos de los clientes:</p>
+                                    <ul>
+                                        <li><strong>Ver Detalles:</strong> Consulta información completa de cada pedido</li>
+                                        <li><strong>Editar:</strong> Modifica estado, método de pago y otros datos del pedido</li>
+                                        <li><strong>Actualizar Estado:</strong> Cambia el estado del pedido (pendiente, procesando, enviado, entregado, cancelado)</li>
+                                        <li><strong>Eliminar:</strong> Elimina pedidos del sistema</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reparaciones -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpRepairs">
+                                    <i class="fas fa-wrench me-2"></i> Reparaciones
+                                </button>
+                            </h2>
+                            <div id="helpRepairs" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Gestiona las reparaciones de dispositivos:</p>
+                                    <ul>
+                                        <li><strong>Crear:</strong> Registra nuevas solicitudes de reparación</li>
+                                        <li><strong>Editar:</strong> Actualiza información, estado y costos de reparación</li>
+                                        <li><strong>Filtrar:</strong> Busca por número, cliente, dispositivo o estado</li>
+                                        <li><strong>Estados:</strong> Pendiente, En Progreso, Completado, Cancelado</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpSettings">
+                                    <i class="fas fa-cog me-2"></i> Configuración
+                                </button>
+                            </h2>
+                            <div id="helpSettings" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Configura los aspectos generales del sistema:</p>
+                                    <ul>
+                                        <li><strong>Información de la Tienda:</strong> Nombre, descripción, contacto (se muestra en el footer del sitio)</li>
+                                        <li><strong>Envíos:</strong> Configura costos y umbrales de envío gratis</li>
+                                        <li><strong>Métodos de Pago:</strong> Habilita o deshabilita métodos de pago disponibles</li>
+                                    </ul>
+                                    <p class="mt-3"><strong>Nota:</strong> Los cambios en la configuración se reflejan inmediatamente en el sitio web.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consejos Generales -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpTips">
+                                    <i class="fas fa-lightbulb me-2"></i> Consejos Generales
+                                </button>
+                            </h2>
+                            <div id="helpTips" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Todos los cambios se guardan automáticamente en la base de datos</li>
+                                        <li>Usa los filtros de búsqueda para encontrar rápidamente lo que necesitas</li>
+                                        <li>Las imágenes se almacenan en <code>storage/app/public/</code></li>
+                                        <li>Puedes editar múltiples campos a la vez en los formularios</li>
+                                        <li>Los mensajes de éxito/error aparecen en la parte superior de cada página</li>
+                                        <li>El panel es completamente responsive y funciona en móviles</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="{{ route('pages.help-center') }}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i> Ver Centro de Ayuda Completo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -766,10 +361,48 @@
             modal.show();
         }
 
-        // Toggle sidebar on mobile
-        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
-            document.querySelector('.admin-sidebar').classList.toggle('show');
-        });
+        // Alternar barra lateral (funciona en todas las pantallas)
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const adminMain = document.querySelector('.admin-main');
+
+        if (sidebarToggle && adminSidebar) {
+            sidebarToggle.addEventListener('click', function() {
+                // Alternar clase 'hidden' para ocultar/mostrar
+                adminSidebar.classList.toggle('hidden');
+                
+                // En móvil, también alternar 'show' para la animación
+                if (window.innerWidth <= 768) {
+                    adminSidebar.classList.toggle('show');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.toggle('show');
+                    }
+                }
+            });
+
+            // Cerrar sidebar al hacer clic en el overlay (solo móvil)
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    adminSidebar.classList.add('hidden');
+                    adminSidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                });
+            }
+
+            // Cerrar sidebar al redimensionar ventana (si está oculto y se hace más grande)
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    // En desktop, si está oculto, mantenerlo oculto pero quitar 'show'
+                    if (adminSidebar.classList.contains('hidden')) {
+                        adminSidebar.classList.remove('show');
+                    }
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('show');
+                    }
+                }
+            });
+        }
     </script>
     @stack('scripts')
 </body>

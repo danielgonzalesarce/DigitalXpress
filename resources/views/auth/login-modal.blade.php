@@ -1,10 +1,19 @@
 <!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" 
+     @if($errors->has('email') || $errors->has('password') || $errors->has('name') || session('error') || session('register_error'))
+     data-bs-backdrop="static" data-bs-keyboard="false"
+     @endif>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold" id="loginModalLabel">Bienvenido a DigitalXpress</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" 
+                        @if($errors->has('email') || $errors->has('password') || $errors->has('name') || session('error') || session('register_error'))
+                        onclick="return false;" style="pointer-events: none; opacity: 0.5;"
+                        @else
+                        data-bs-dismiss="modal"
+                        @endif
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p class="text-muted mb-4">Inicia sesión en tu cuenta o regístrate para acceder a todos nuestros servicios</p>
@@ -18,15 +27,38 @@
                     </div>
                 @endif
                 
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Por favor, corrige los siguientes errores:</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs nav-fill mb-4" id="authTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                        <button class="nav-link {{ ($errors->has('email') && $errors->has('password')) || (!$errors->has('name') && !session('register_error')) ? 'active' : '' }}" 
+                                id="login-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#login" 
+                                type="button" 
+                                role="tab">
                             Iniciar Sesión
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">
+                        <button class="nav-link {{ $errors->has('name') || session('register_error') ? 'active' : '' }}" 
+                                id="register-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#register" 
+                                type="button" 
+                                role="tab">
                             Registrarse
                         </button>
                     </li>
@@ -35,7 +67,7 @@
                 <!-- Tab Content -->
                 <div class="tab-content" id="authTabContent">
                     <!-- Login Tab -->
-                    <div class="tab-pane fade show active" id="login" role="tabpanel">
+                    <div class="tab-pane fade {{ ($errors->has('email') && $errors->has('password')) || (!$errors->has('name') && !session('register_error')) ? 'show active' : '' }}" id="login" role="tabpanel">
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="mb-3">
@@ -88,7 +120,7 @@
                     </div>
 
                     <!-- Register Tab -->
-                    <div class="tab-pane fade" id="register" role="tabpanel">
+                    <div class="tab-pane fade {{ $errors->has('name') || session('register_error') ? 'show active' : '' }}" id="register" role="tabpanel">
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
                             <div class="mb-3">

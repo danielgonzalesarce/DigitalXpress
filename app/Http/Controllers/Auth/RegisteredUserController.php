@@ -38,6 +38,7 @@ class RegisteredUserController extends Controller
         if ($emailDomain === 'digitalxpress.com') {
             return redirect()->back()
                 ->withInput($request->only('name', 'email'))
+                ->with('register_error', true)
                 ->withErrors([
                     'email' => 'Los usuarios con dominio @digitalxpress.com solo pueden ser creados por el administrador desde el panel administrativo. Por favor, utiliza un email con dominio @gmail.com para registrarte.',
                 ]);
@@ -47,16 +48,48 @@ class RegisteredUserController extends Controller
         if ($emailDomain !== 'gmail.com') {
             return redirect()->back()
                 ->withInput($request->only('name', 'email'))
+                ->with('register_error', true)
                 ->withErrors([
                     'email' => 'Solo se permiten registros con direcciones de correo @gmail.com.',
                 ]);
         }
 
-        $request->validate([
+        try {
+            $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+            ], [
+                'name.required' => 'El nombre es obligatorio.',
+                'name.string' => 'El nombre debe ser texto.',
+                'name.max' => 'El nombre no puede tener más de 255 caracteres.',
+                'email.required' => 'El correo electrónico es obligatorio.',
+                'email.string' => 'El correo electrónico debe ser texto.',
+                'email.email' => 'El correo electrónico debe ser una dirección válida.',
+                'email.unique' => 'Este correo electrónico ya está registrado.',
+                'password.required' => 'La contraseña es obligatoria.',
+                'password.confirmed' => 'Las contraseñas no coinciden.',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Traducir mensajes de validación de contraseña a español
+            $errors = $e->errors();
+            if (isset($errors['password'])) {
+                foreach ($errors['password'] as $key => $message) {
+                    if (str_contains($message, 'The password')) {
+                        $errors['password'][$key] = str_replace(
+                            ['The password', 'must be at least', 'characters'],
+                            ['La contraseña', 'debe tener al menos', 'caracteres'],
+                            $message
+                        );
+                    }
+                }
+            }
+            
+            return redirect()->back()
+                ->withInput($request->only('name', 'email'))
+                ->with('register_error', true)
+                ->withErrors($errors);
+        }
 
         $user = User::create([
             'name' => $request->name,

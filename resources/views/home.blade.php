@@ -155,9 +155,18 @@
                             </a>
                         </div>
                         <div class="position-absolute top-0 end-0 m-2">
-                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn">
+                            @auth
+                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" 
+                                    data-product-id="{{ $product->id }}"
+                                    onclick="toggleFavorite({{ $product->id }})">
                                 <i class="fas fa-heart"></i>
                             </button>
+                            @else
+                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" 
+                                    onclick="alert('Debes iniciar sesión para agregar favoritos')">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            @endauth
                         </div>
                         @if($product->is_on_sale)
                         <div class="position-absolute top-0 start-0 m-2">
@@ -227,9 +236,18 @@
                             </a>
                         </div>
                         <div class="position-absolute top-0 end-0 m-2">
-                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn">
+                            @auth
+                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" 
+                                    data-product-id="{{ $product->id }}"
+                                    onclick="toggleFavorite({{ $product->id }})">
                                 <i class="fas fa-heart"></i>
                             </button>
+                            @else
+                            <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" 
+                                    onclick="alert('Debes iniciar sesión para agregar favoritos')">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            @endauth
                         </div>
                         @if($product->is_on_sale)
                         <div class="position-absolute top-0 start-0 m-2">
@@ -490,16 +508,28 @@
     .product-favorite-btn {
         z-index: 10;
         transition: all 0.3s ease;
+        border: none;
+    }
+
+    .product-favorite-btn.favorite-active {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-color: #dc3545 !important;
+    }
+
+    .product-favorite-btn.favorite-active i {
+        color: white !important;
     }
 
     .product-favorite-btn:hover {
         background-color: #dc3545 !important;
         color: white !important;
         transform: scale(1.1);
+        border-color: #dc3545 !important;
     }
 
     .product-favorite-btn:hover i {
-        color: white;
+        color: white !important;
     }
 
     /* Asegurar que los badges estén sobre el overlay */
@@ -607,6 +637,103 @@
                 });
             });
         }
+
+        // Funcionalidad de favoritos
+        window.toggleFavorite = async function(productId) {
+            const btn = event.target.closest('.product-favorite-btn');
+            const isFavorite = btn.classList.contains('favorite-active');
+            
+            try {
+                const method = isFavorite ? 'DELETE' : 'POST';
+                const response = await fetch(`/favoritos/${productId}`, {
+                    method: method,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                // Verificar si la respuesta es JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    // Si no es JSON, probablemente es una redirección de autenticación
+                    if (response.status === 401 || response.status === 403) {
+                        showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+                        return;
+                    }
+                    // Si es HTML (redirección), mostrar mensaje
+                    if (contentType && contentType.includes('text/html')) {
+                        showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+                        return;
+                    }
+                    throw new Error('Respuesta inesperada del servidor');
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (isFavorite) {
+                        btn.classList.remove('favorite-active');
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-light');
+                    } else {
+                        btn.classList.add('favorite-active');
+                        btn.classList.remove('btn-light');
+                        btn.classList.add('btn-danger');
+                    }
+                    if (data.message) {
+                        showNotification(data.message, isFavorite ? 'info' : 'success');
+                    }
+                } else if (data.message) {
+                    showNotification(data.message, 'warning');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Solo mostrar error si no es un error de autenticación
+                if (!error.message.includes('JSON')) {
+                    showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+                }
+            }
+        };
+
+        // Cargar estado de favoritos al cargar la página
+        @auth
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoriteButtons = document.querySelectorAll('.product-favorite-btn[data-product-id]');
+            
+            favoriteButtons.forEach(btn => {
+                const productId = btn.getAttribute('data-product-id');
+                
+                // Verificar si está en favoritos
+                fetch(`/favoritos/verificar/${productId}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => {
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        }
+                        return { is_favorite: false };
+                    })
+                    .then(data => {
+                        if (data.is_favorite) {
+                            btn.classList.add('favorite-active');
+                            btn.classList.remove('btn-light');
+                            btn.classList.add('btn-danger');
+                        }
+                    })
+                    .catch(error => {
+                        // Silenciar errores de verificación para no molestar al usuario
+                        console.debug('No se pudo verificar favorito:', error);
+                    });
+            });
+        });
+        @endauth
     });
 </script>
 @endpush

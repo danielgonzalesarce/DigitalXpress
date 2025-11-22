@@ -83,7 +83,14 @@
         <div>
             <strong>Atención:</strong> Tienes {{ $lowStockCount }} productos con stock bajo y {{ $outOfStockCount }} productos sin stock.
         </div>
-        <a href="#">Ver detalles</a>
+        @if($lowStockCount > 0 && $outOfStockCount > 0)
+            {{-- Si hay ambos, mostrar todos los productos con problemas de stock --}}
+            <a href="{{ route('admin.inventory', ['stock_status' => 'low_stock']) }}">Ver detalles</a>
+        @elseif($lowStockCount > 0)
+            <a href="{{ route('admin.inventory', ['stock_status' => 'low_stock']) }}">Ver detalles</a>
+        @elseif($outOfStockCount > 0)
+            <a href="{{ route('admin.inventory', ['stock_status' => 'out_of_stock']) }}">Ver detalles</a>
+        @endif
     </div>
     @endif
 

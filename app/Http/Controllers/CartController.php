@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * CartController
+ * 
+ * Controlador para la gestión del carrito de compras.
+ * Maneja tanto usuarios autenticados como invitados (usando session_id).
+ * 
+ * Funcionalidades:
+ * - Ver carrito
+ * - Agregar productos al carrito
+ * - Actualizar cantidad de productos
+ * - Eliminar productos del carrito
+ * - Vaciar carrito completo
+ * - Limpiar productos no disponibles
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
@@ -9,6 +27,18 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    /**
+     * Mostrar el contenido del carrito de compras
+     * 
+     * Obtiene todos los items del carrito según el tipo de usuario:
+     * - Usuario autenticado: busca por user_id
+     * - Usuario invitado: busca por session_id
+     * 
+     * Filtra automáticamente productos que ya no están disponibles
+     * y calcula el total del carrito.
+     * 
+     * @return \Illuminate\View\View Vista con items del carrito y total
+     */
     public function index()
     {
         if (Auth::check()) {
@@ -35,6 +65,19 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'total'));
     }
 
+    /**
+     * Agregar un producto al carrito de compras
+     * 
+     * Verifica que el producto esté disponible y en stock.
+     * Si el producto ya está en el carrito, suma la cantidad solicitada.
+     * Si no está, crea un nuevo item en el carrito.
+     * 
+     * Maneja tanto usuarios autenticados como invitados.
+     * 
+     * @param Request $request Contiene la cantidad a agregar
+     * @param Product $product Modelo del producto a agregar
+     * @return \Illuminate\Http\RedirectResponse Redirige con mensaje de éxito/error
+     */
     public function add(Request $request, Product $product)
     {
         // Verificar que el producto esté activo y en stock
@@ -42,42 +85,48 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Este producto no está disponible');
         }
 
+        // Validar cantidad: debe ser entero, mínimo 1, máximo el stock disponible
         $request->validate([
             'quantity' => 'required|integer|min:1|max:' . $product->stock_quantity
         ]);
 
+        // Buscar si el producto ya está en el carrito
         if (Auth::check()) {
-            // Usuario autenticado
+            // Usuario autenticado: buscar por user_id
             $existingItem = CartItem::where('user_id', Auth::id())
                 ->where('product_id', $product->id)
                 ->first();
         } else {
-            // Usuario invitado
+            // Usuario invitado: buscar por session_id
             $sessionId = session()->getId();
             $existingItem = CartItem::where('session_id', $sessionId)
-                ->whereNull('user_id')
+                ->whereNull('user_id') // Asegurar que no pertenezca a otro usuario
                 ->where('product_id', $product->id)
                 ->first();
         }
 
         if ($existingItem) {
+            // Si ya existe, sumar la cantidad nueva a la existente
             $newQuantity = $existingItem->quantity + $request->quantity;
             
-            // Verificar que no exceda el stock
+            // Verificar que la cantidad total no exceda el stock disponible
             if ($newQuantity > $product->stock_quantity) {
                 return redirect()->back()->with('error', 'No hay suficiente stock disponible');
             }
             
+            // Actualizar cantidad y precio (por si cambió)
             $existingItem->quantity = $newQuantity;
             $existingItem->price = $product->current_price; // Actualizar precio por si cambió
             $existingItem->save();
         } else {
+            // Si no existe, crear nuevo item en el carrito
             $cartData = [
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'price' => $product->current_price,
+                'price' => $product->current_price, // Guardar precio actual del producto
             ];
 
+            // Asignar user_id o session_id según el tipo de usuario
             if (Auth::check()) {
                 $cartData['user_id'] = Auth::id();
             } else {

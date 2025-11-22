@@ -38,6 +38,32 @@
         </div>
     </div>
 
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #10b981;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+            <div class="flex-grow-1">
+                <strong>¡Éxito!</strong>
+                <p class="mb-0">{{ session('success') }}</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #ef4444;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-circle fa-2x me-3 text-danger"></i>
+            <div class="flex-grow-1">
+                <strong>Error</strong>
+                <p class="mb-0">{{ session('error') }}</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    @endif
+
     <!-- Orders Table -->
     <div class="orders-section">
         <div class="d-flex justify-content-between align-items-center mb-4">

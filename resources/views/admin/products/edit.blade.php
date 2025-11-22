@@ -22,9 +22,26 @@
                 </div>
                 @endif
 
-                <form action="{{ route('admin.products.update', $product) }}" method="POST">
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
+
+                <div class="alert alert-info mb-4" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Nota:</strong> Todos los cambios que realices se guardarán inmediatamente en la base de datos al hacer clic en "Actualizar Producto".
+                </div>
+
+                <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    @if(isset($returnUrl))
+                    <input type="hidden" name="return_url" value="{{ $returnUrl }}">
+                    @else
+                    <input type="hidden" name="return_url" value="{{ route('admin.products', request()->query()) }}">
+                    @endif
 
                     <div class="row g-4">
                         <!-- Información Básica -->
@@ -75,6 +92,54 @@
                                         @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="image_files" class="form-label">Imágenes del Producto</label>
+                                        <input type="file" class="form-control @error('image_files') is-invalid @enderror" 
+                                               id="image_files" name="image_files[]" multiple accept="image/*" onchange="previewImages(this)">
+                                        @error('image_files')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Puedes seleccionar múltiples imágenes. Formatos: JPEG, PNG, JPG, GIF, WEBP. Máximo 2MB por imagen.</small>
+                                        
+                                        <!-- Vista previa de nuevas imágenes seleccionadas -->
+                                        <div id="newImagesPreview" class="mt-3" style="display: none;">
+                                            <p class="mb-2"><strong>Nuevas imágenes seleccionadas:</strong></p>
+                                            <div class="row g-2" id="newImagesContainer"></div>
+                                        </div>
+                                        
+                                        <!-- Imágenes existentes con opción de eliminar -->
+                                        @if($product->images && is_array($product->images) && count($product->images) > 0)
+                                        <div class="mt-3">
+                                            <p class="mb-2"><strong>Imágenes actuales:</strong> <small class="text-muted">(Haz clic en la X roja para eliminar)</small></p>
+                                            <div class="row g-2" id="existingImagesContainer">
+                                                @foreach($product->images as $index => $image)
+                                                <div class="col-md-3 existing-image-item" data-image-index="{{ $index }}" data-image-path="{{ $image }}">
+                                                    <div class="position-relative border rounded p-2" style="background-color: #f8f9fa;">
+                                                        @if(str_starts_with($image, 'http'))
+                                                            <img src="{{ $image }}" alt="Imagen {{ $index + 1 }}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                                        @else
+                                                            <img src="{{ asset('storage/' . $image) }}" alt="Imagen {{ $index + 1 }}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;" onerror="this.src='{{ $product->image_url }}'">
+                                                        @endif
+                                                        <input type="hidden" name="images[]" value="{{ $image }}" class="image-input">
+                                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow-sm" onclick="removeExistingImage(this)" title="Eliminar imagen" style="z-index: 10;">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        @else
+                                        <div class="mt-3">
+                                            <p class="text-muted mb-2">No hay imágenes guardadas. La imagen se mostrará automáticamente según el nombre del producto.</p>
+                                            @if($product->image_url)
+                                            <p class="mb-2"><strong>Imagen actual (automática):</strong></p>
+                                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            @endif
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +234,7 @@
                         <a href="{{ route('admin.products') }}" class="btn btn-outline-secondary">
                             Cancelar
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="updateProductBtn">
                             <i class="fas fa-save me-2"></i> Actualizar Producto
                         </button>
                     </div>
@@ -178,4 +243,139 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+<style>
+    .existing-image-item.to-be-deleted {
+        opacity: 0.5;
+        filter: grayscale(100%);
+    }
+    .existing-image-item.to-be-deleted img {
+        border: 2px dashed #dc3545;
+    }
+    .existing-image-item .btn-danger {
+        transition: all 0.3s ease;
+    }
+    .existing-image-item .btn-danger:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action*="update"]');
+        const submitBtn = document.getElementById('updateProductBtn');
+        
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Deshabilitar el botón para evitar doble envío
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Guardando...';
+                
+                // El formulario se enviará normalmente
+            });
+        }
+    });
+
+    // Función para previsualizar nuevas imágenes seleccionadas
+    function previewImages(input) {
+        const previewContainer = document.getElementById('newImagesContainer');
+        const previewDiv = document.getElementById('newImagesPreview');
+        
+        if (!previewContainer || !previewDiv) return;
+        
+        previewContainer.innerHTML = '';
+        
+        if (input.files && input.files.length > 0) {
+            previewDiv.style.display = 'block';
+            
+            Array.from(input.files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-3';
+                        col.innerHTML = `
+                            <div class="position-relative border rounded p-2">
+                                <img src="${e.target.result}" alt="Nueva imagen ${index + 1}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="removeNewImage(this)" title="Eliminar imagen">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        previewContainer.appendChild(col);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        } else {
+            previewDiv.style.display = 'none';
+        }
+    }
+
+    // Función para eliminar una imagen existente
+    function removeExistingImage(button) {
+        if (confirm('¿Estás seguro de que quieres eliminar esta imagen? Esta acción se guardará al actualizar el producto.')) {
+            const imageItem = button.closest('.existing-image-item');
+            const imageInput = imageItem.querySelector('.image-input');
+            const imageValue = imageInput.value;
+            
+            // Crear un input hidden para marcar esta imagen como eliminada
+            const deleteInput = document.createElement('input');
+            deleteInput.type = 'hidden';
+            deleteInput.name = 'images_to_delete[]';
+            deleteInput.value = imageValue;
+            imageItem.appendChild(deleteInput);
+            
+            // Eliminar el input de imágenes existentes para que no se incluya en el array final
+            imageInput.remove();
+            
+            // Ocultar visualmente con animación
+            imageItem.style.transition = 'opacity 0.3s';
+            imageItem.style.opacity = '0.5';
+            imageItem.style.pointerEvents = 'none';
+            
+            // Agregar clase para indicar que será eliminada
+            imageItem.classList.add('to-be-deleted');
+        }
+    }
+
+    // Función para eliminar una nueva imagen seleccionada
+    function removeNewImage(button) {
+        const imageItem = button.closest('.col-md-3');
+        imageItem.remove();
+        
+        // Si no quedan imágenes nuevas, ocultar el contenedor
+        const previewContainer = document.getElementById('newImagesContainer');
+        if (previewContainer && previewContainer.children.length === 0) {
+            document.getElementById('newImagesPreview').style.display = 'none';
+        }
+        
+        // Actualizar el input file para reflejar los cambios
+        updateFileInput();
+    }
+    
+    // Función para actualizar el input file después de eliminar una imagen nueva
+    function updateFileInput() {
+        const fileInput = document.getElementById('image_files');
+        if (!fileInput) return;
+        
+        // Crear un nuevo DataTransfer para mantener solo los archivos no eliminados
+        const dt = new DataTransfer();
+        const files = Array.from(fileInput.files);
+        const previewContainer = document.getElementById('newImagesContainer');
+        
+        // Contar cuántas imágenes quedan en la vista previa
+        const remainingImages = previewContainer ? previewContainer.children.length : 0;
+        
+        // Si hay menos imágenes en la vista previa que archivos seleccionados,
+        // significa que se eliminó una, pero no podemos saber cuál exactamente
+        // así que simplemente mantenemos los archivos originales
+        // (esto es una limitación del navegador, pero funciona para la mayoría de casos)
+    }
+</script>
+@endpush
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'DigitalXpress - Tu tienda de tecnología')</title>
+    <title>@yield('title', \App\Models\Setting::get('store_name', 'DigitalXpress') . ' - Tu tienda de tecnología')</title>
     <!-- Script para aplicar tema antes de renderizar (evita flash) -->
     <script>
         (function() {
@@ -13,348 +13,7 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #10b981;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --bg-light: #f9fafb;
-        }
-
-        [data-theme="dark"] {
-            --primary-color: #3b82f6;
-            --secondary-color: #60a5fa;
-            --accent-color: #10b981;
-            --text-dark: #f9fafb;
-            --text-light: #d1d5db;
-            --bg-light: #1f2937;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
-            background-color: white;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        [data-theme="dark"] body {
-            background-color: #111827;
-            color: var(--text-dark);
-        }
-
-        [data-theme="dark"] .navbar {
-            background-color: #1f2937 !important;
-            border-bottom: 1px solid #374151;
-        }
-
-        [data-theme="dark"] .navbar-brand,
-        [data-theme="dark"] .nav-link {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .category-nav {
-            background-color: #1f2937;
-        }
-
-        [data-theme="dark"] .category-nav .nav-link {
-            color: #d1d5db;
-        }
-
-        [data-theme="dark"] .category-nav .nav-link:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--secondary-color);
-        }
-
-        [data-theme="dark"] .category-nav .nav-link.active {
-            color: var(--secondary-color);
-            font-weight: 700;
-            border-bottom: 3px solid var(--secondary-color);
-            background-color: rgba(59, 130, 246, 0.05);
-        }
-
-        [data-theme="dark"] .feature-card {
-            background-color: #1f2937;
-            color: #f9fafb;
-            border: 1px solid #374151;
-        }
-
-        [data-theme="dark"] .product-card {
-            background-color: #1f2937;
-            color: #f9fafb;
-            border: 1px solid #374151;
-        }
-
-        [data-theme="dark"] .modal-content {
-            background-color: #1f2937;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .modal-header {
-            border-bottom: 1px solid #374151;
-        }
-
-        [data-theme="dark"] .form-control {
-            background-color: #374151;
-            border-color: #4b5563;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .form-control:focus {
-            background-color: #374151;
-            border-color: var(--primary-color);
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .footer {
-            background-color: #0f172a;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .alert {
-            background-color: #1f2937;
-            border-color: #374151;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .dropdown-menu {
-            background-color: #1f2937;
-            border-color: #374151;
-        }
-
-        [data-theme="dark"] .dropdown-item {
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .dropdown-item:hover {
-            background-color: #374151;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .nav-tabs .nav-link {
-            background-color: #374151;
-            color: #d1d5db;
-        }
-
-        [data-theme="dark"] .nav-tabs .nav-link.active {
-            background-color: #1f2937;
-            color: #f9fafb;
-            border-bottom-color: var(--primary-color);
-        }
-
-        [data-theme="dark"] .text-muted {
-            color: #9ca3af !important;
-        }
-
-        [data-theme="dark"] .bg-white {
-            background-color: #1f2937 !important;
-        }
-
-        [data-theme="dark"] .bg-light {
-            background-color: #1f2937 !important;
-        }
-
-        [data-theme="dark"] .card {
-            background-color: #1f2937;
-            border-color: #374151;
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .table {
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
-            background-color: #374151;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-dark);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        [data-theme="dark"] .theme-toggle {
-            color: #f9fafb;
-        }
-
-        [data-theme="dark"] .theme-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-toggle .fa-moon {
-            display: none;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-moon {
-            display: inline-block;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-sun {
-            display: none;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .navbar-nav .nav-link {
-            position: relative;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-nav .nav-link.active {
-            border-bottom: 3px solid var(--primary-color);
-        }
-
-        [data-theme="dark"] .navbar-nav .nav-link.active {
-            border-bottom: 3px solid var(--secondary-color);
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 4rem 0;
-        }
-
-        .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .footer {
-            background-color: var(--text-dark);
-            color: white;
-            padding: 3rem 0 1rem;
-        }
-
-        .search-bar {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .category-nav {
-            background-color: var(--bg-light);
-            padding: 2rem 0;
-            width: 100%;
-            margin: 0;
-        }
-
-        .category-nav nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 3rem; /* Espaciado aumentado entre elementos */
-            flex-wrap: wrap;
-            padding: 0 2rem;
-            max-width: 1200px; /* Ancho máximo para limitar el ancho */
-            margin: 0 auto; /* Centrar el contenido */
-        }
-
-        .category-nav .nav-link {
-            color: var(--text-dark);
-            font-weight: 500;
-            padding: 0.75rem 2rem; /* Padding aumentado */
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 1.1rem; /* Tamaño de fuente ligeramente mayor */
-            white-space: nowrap; /* Evita que el texto se divida */
-            position: relative;
-            border-bottom: 3px solid transparent;
-        }
-
-        .category-nav .nav-link:hover {
-            background-color: rgba(30, 58, 138, 0.1);
-            color: var(--primary-color);
-        }
-
-        .category-nav .nav-link.active {
-            color: var(--primary-color);
-            font-weight: 700;
-            border-bottom: 3px solid var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.05);
-        }
-
-        /* Responsive: ajustar espaciado en pantallas pequeñas */
-        @media (max-width: 768px) {
-            .category-nav nav {
-                gap: 1.5rem; /* Menos espaciado en móviles */
-                padding: 0 1rem;
-            }
-
-            .category-nav .nav-link {
-                padding: 0.5rem 1rem;
-                font-size: 1rem;
-            }
-        }
-
-        /* Modal Styles */
-        .modal-content {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            border-radius: 8px 8px 0 0;
-            margin-right: 0.5rem;
-            background-color: #f8f9fa;
-            color: var(--text-light);
-        }
-
-        .nav-tabs .nav-link.active {
-            background-color: white;
-            color: var(--text-dark);
-            border-bottom: 2px solid var(--primary-color);
-        }
-    </style>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
 <body>
@@ -396,22 +55,28 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link position-relative {{ request()->routeIs('cart.*') ? 'active' : '' }}" href="{{ route('cart.index') }}">
-                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                        <a class="nav-link position-relative d-flex align-items-center justify-content-center {{ request()->routeIs('cart.*') ? 'active' : '' }}" href="{{ route('cart.index') }}" title="Carrito">
+                            <i class="fas fa-shopping-cart"></i>
                             @if($cartCount > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
                                     {{ $cartCount }}
                                 </span>
                             @endif
                         </a>
                     </li>
                     @auth
-                        <li class="nav-item d-flex align-items-center me-2">
-                            <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
-                                <i class="fas fa-sun"></i>
-                                <i class="fas fa-moon"></i>
-                            </button>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative d-flex align-items-center justify-content-center {{ request()->routeIs('favorites.*') ? 'active' : '' }}" href="{{ route('favorites.index') }}" title="Favoritos">
+                                <i class="fas fa-heart"></i>
+                                @if($favoritesCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                        {{ $favoritesCount }}
+                                    </span>
+                                @endif
+                            </a>
                         </li>
+                    @endauth
+                    @auth
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 <div class="me-2">
@@ -464,6 +129,15 @@
                                         </div>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('favorites.index') }}">
+                                        <i class="fas fa-heart me-2 text-danger"></i>
+                                        <div>
+                                            <div class="fw-bold">Mis Favoritos</div>
+                                            <small class="text-muted">{{ $favoritesCount }} productos</small>
+                                        </div>
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
@@ -489,14 +163,20 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item d-flex align-items-center ms-2 theme-toggle-wrapper">
+                            <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                                <i class="fas fa-sun"></i>
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
                                 <i class="fas fa-user me-1"></i> Ingresar
                             </a>
                         </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <button class="theme-toggle ms-3" id="themeToggle" aria-label="Cambiar tema">
+                        <li class="nav-item d-flex align-items-center ms-2 theme-toggle-wrapper">
+                            <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
                                 <i class="fas fa-sun"></i>
                                 <i class="fas fa-moon"></i>
                             </button>
@@ -524,23 +204,26 @@
     <!-- Main Content -->
     <main>
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert" data-auto-dismiss="5000">
+                <i class="fas fa-check-circle me-2"></i>
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert" data-auto-dismiss="5000">
+                <i class="fas fa-exclamation-circle me-2"></i>
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @if(session('info'))
+            <div class="alert alert-info alert-dismissible fade show auto-dismiss" role="alert" data-auto-dismiss="5000">
+                <i class="fas fa-info-circle me-2"></i>
+                {{ session('info') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -556,9 +239,9 @@
                         <div class="bg-primary text-white rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                             <i class="fas fa-bolt"></i>
                         </div>
-                        <h5 class="mb-0">DigitalXpress</h5>
+                        <h5 class="mb-0">{{ \App\Models\Setting::get('store_name', 'DigitalXpress') }}</h5>
                     </div>
-                    <p class="text-light">Tu tienda de tecnología de confianza. Los mejores productos, precios competitivos y servicio excepcional.</p>
+                    <p class="text-light">{{ \App\Models\Setting::get('store_description', 'Tu tienda de tecnología de confianza. Los mejores productos, precios competitivos y servicio excepcional.') }}</p>
                 </div>
                 <div class="col-md-2">
                     <h6 class="fw-bold mb-3">Categorías</h6>
@@ -590,10 +273,208 @@
             </div>
             <hr class="my-4">
             <div class="text-center">
-                <p class="mb-0">&copy; 2024 DigitalXpress. Todos los derechos reservados.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} {{ \App\Models\Setting::get('store_name', 'DigitalXpress') }}. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Help Button -->
+    <button class="help-button" title="Ayuda" data-bs-toggle="modal" data-bs-target="#helpModal">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">
+                        <i class="fas fa-question-circle me-2"></i>
+                        Centro de Ayuda - {{ \App\Models\Setting::get('store_name', 'DigitalXpress') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="accordion" id="helpAccordion">
+                        <!-- Compras -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#helpShopping">
+                                    <i class="fas fa-shopping-cart me-2"></i> Realizar Compras
+                                </button>
+                            </h2>
+                            <div id="helpShopping" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Guía para comprar en nuestra tienda:</p>
+                                    <ul>
+                                        <li><strong>Navegar Productos:</strong> Explora nuestras categorías o usa la búsqueda para encontrar lo que necesitas</li>
+                                        <li><strong>Agregar al Carrito:</strong> Haz clic en "Agregar al Carrito" en cualquier producto</li>
+                                        <li><strong>Ver Carrito:</strong> Accede al carrito desde el icono en la barra de navegación</li>
+                                        <li><strong>Checkout:</strong> Completa tus datos y selecciona método de pago</li>
+                                        <li><strong>Seguimiento:</strong> Recibirás confirmación por email con el número de pedido</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favoritos -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpFavorites">
+                                    <i class="fas fa-heart me-2"></i> Lista de Favoritos
+                                </button>
+                            </h2>
+                            <div id="helpFavorites" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Guarda tus productos favoritos:</p>
+                                    <ul>
+                                        <li><strong>Agregar:</strong> Haz clic en el corazón de cualquier producto</li>
+                                        <li><strong>Ver Favoritos:</strong> Accede desde el icono de corazón en la barra de navegación</li>
+                                        <li><strong>Eliminar:</strong> Haz clic nuevamente en el corazón o usa el botón de eliminar</li>
+                                        <li><strong>Eliminar Múltiples:</strong> Selecciona varios productos y elimínalos en lote</li>
+                                    </ul>
+                                    <p class="mt-2"><strong>Nota:</strong> Debes iniciar sesión para usar la lista de favoritos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reparaciones -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpRepairs">
+                                    <i class="fas fa-wrench me-2"></i> Servicio de Reparaciones
+                                </button>
+                            </h2>
+                            <div id="helpRepairs" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Servicio técnico profesional:</p>
+                                    <ul>
+                                        <li><strong>Solicitar Reparación:</strong> Completa el formulario con los datos de tu dispositivo</li>
+                                        <li><strong>Subir Imagen:</strong> Adjunta una foto del problema si es posible</li>
+                                        <li><strong>Seguimiento:</strong> Consulta el estado de tu reparación en tu panel</li>
+                                        <li><strong>Contacto:</strong> Te contactaremos para coordinar la reparación</li>
+                                    </ul>
+                                    <p class="mt-2"><strong>Contacto:</strong> {{ \App\Models\Setting::get('store_phone', '+51 936068781') }} | {{ \App\Models\Setting::get('store_email', 'soporte@digitalxpress.com') }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Métodos de Pago -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpPayment">
+                                    <i class="fas fa-credit-card me-2"></i> Métodos de Pago
+                                </button>
+                            </h2>
+                            <div id="helpPayment" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Formas de pago disponibles:</p>
+                                    <ul>
+                                        @if(\App\Models\Setting::get('payment_credit_card', '1') == '1')
+                                        <li><strong>Tarjeta de Crédito:</strong> Aceptamos todas las tarjetas principales</li>
+                                        @endif
+                                        @if(\App\Models\Setting::get('payment_debit_card', '1') == '1')
+                                        <li><strong>Tarjeta de Débito:</strong> Pago seguro con tarjeta de débito</li>
+                                        @endif
+                                        @if(\App\Models\Setting::get('payment_yape', '1') == '1')
+                                        <li><strong>Yape:</strong> Pago rápido y seguro con Yape</li>
+                                        @endif
+                                        @if(\App\Models\Setting::get('payment_cash', '1') == '1')
+                                        <li><strong>Efectivo:</strong> Pago en efectivo al recibir el producto</li>
+                                        @endif
+                                    </ul>
+                                    <p class="mt-2"><strong>Seguridad:</strong> Todos los pagos son procesados de forma segura.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Envíos -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpShipping">
+                                    <i class="fas fa-shipping-fast me-2"></i> Envíos y Entrega
+                                </button>
+                            </h2>
+                            <div id="helpShipping" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Información sobre envíos:</p>
+                                    <ul>
+                                        @if(\App\Models\Setting::get('shipping_enabled', '1') == '1')
+                                        <li><strong>Costo de Envío:</strong> S/ {{ number_format(\App\Models\Setting::get('shipping_cost', 10), 2) }}</li>
+                                        @if(\App\Models\Setting::get('free_shipping_threshold', 100) > 0)
+                                        <li><strong>Envío Gratis:</strong> En compras mayores a S/ {{ number_format(\App\Models\Setting::get('free_shipping_threshold', 100), 2) }}</li>
+                                        @endif
+                                        <li><strong>Tiempo de Entrega:</strong> 3-5 días hábiles</li>
+                                        <li><strong>Seguimiento:</strong> Recibirás el código de seguimiento por email</li>
+                                        @else
+                                        <li><strong>Estado:</strong> Los envíos están temporalmente deshabilitados</li>
+                                        <li><strong>Alternativa:</strong> Puedes recoger tu pedido en nuestra tienda</li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Garantías y Devoluciones -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpWarranty">
+                                    <i class="fas fa-shield-alt me-2"></i> Garantías y Devoluciones
+                                </button>
+                            </h2>
+                            <div id="helpWarranty" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>Políticas de garantía y devolución:</p>
+                                    <ul>
+                                        <li><strong>Garantía:</strong> Todos nuestros productos tienen garantía del fabricante</li>
+                                        <li><strong>Devoluciones:</strong> 30 días para devoluciones sin uso</li>
+                                        <li><strong>Reembolsos:</strong> Procesados en 5-7 días hábiles</li>
+                                        <li><strong>Contacto:</strong> Para consultas sobre garantías, contáctanos</li>
+                                    </ul>
+                                    <p class="mt-2">
+                                        <a href="{{ route('pages.warranties') }}" class="btn btn-sm btn-outline-primary me-2">Ver Garantías</a>
+                                        <a href="{{ route('pages.returns') }}" class="btn btn-sm btn-outline-primary">Ver Devoluciones</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contacto -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpContact">
+                                    <i class="fas fa-envelope me-2"></i> Contacto y Soporte
+                                </button>
+                            </h2>
+                            <div id="helpContact" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <p>¿Necesitas ayuda? Contáctanos:</p>
+                                    <ul>
+                                        <li><strong>Email:</strong> <a href="mailto:{{ \App\Models\Setting::get('store_email', 'soporte@digitalxpress.com') }}">{{ \App\Models\Setting::get('store_email', 'soporte@digitalxpress.com') }}</a></li>
+                                        <li><strong>Teléfono:</strong> <a href="tel:{{ \App\Models\Setting::get('store_phone', '+51 936068781') }}">{{ \App\Models\Setting::get('store_phone', '+51 936068781') }}</a></li>
+                                        @if(\App\Models\Setting::get('store_address'))
+                                        <li><strong>Dirección:</strong> {{ \App\Models\Setting::get('store_address') }}</li>
+                                        @endif
+                                        <li><strong>Horario:</strong> Lunes a Viernes 9:00 AM - 6:00 PM</li>
+                                    </ul>
+                                    <p class="mt-2">
+                                        <a href="{{ route('pages.contact') }}" class="btn btn-sm btn-primary">Formulario de Contacto</a>
+                                        <a href="{{ route('pages.help-center') }}" class="btn btn-sm btn-outline-primary ms-2">Centro de Ayuda</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="{{ route('pages.help-center') }}" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt me-2"></i> Ver Centro de Ayuda Completo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Login Modal -->
     @include('auth.login-modal')
@@ -678,23 +559,122 @@
     </script>
     
     <!-- Script para mantener el modal abierto si hay errores de validación -->
-    @if($errors->has('email') || $errors->has('password') || $errors->has('name') || session('error'))
+    @if($errors->has('email') || $errors->has('password') || $errors->has('name') || session('error') || session('register_error'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Abrir el modal automáticamente si hay errores
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            const loginModalElement = document.getElementById('loginModal');
+            if (loginModalElement) {
+                const loginModal = new bootstrap.Modal(loginModalElement, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
             loginModal.show();
             
-            // Si hay errores de registro, cambiar al tab de registro
-            @if($errors->has('name') || ($errors->has('email') && !$errors->has('password')))
+                // Determinar qué tab mostrar basado en los errores
+                @if($errors->has('name') || session('register_error'))
+                // Si hay errores de registro
+                setTimeout(function() {
             const registerTab = document.getElementById('register-tab');
             if (registerTab) {
                 registerTab.click();
             }
+                }, 150);
+                @elseif($errors->has('email') || $errors->has('password'))
+                // Si hay errores de login
+                setTimeout(function() {
+                    const loginTab = document.getElementById('login-tab');
+                    if (loginTab) {
+                        loginTab.click();
+                    }
+                }, 150);
             @endif
+            }
         });
     </script>
     @endif
+    
+    <!-- Script para auto-cerrar alertas después de 5 segundos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener todas las alertas con la clase auto-dismiss
+            const alerts = document.querySelectorAll('.auto-dismiss');
+            
+            alerts.forEach(function(alert) {
+                // Obtener el tiempo de auto-cierre (por defecto 5000ms = 5 segundos)
+                const dismissTime = parseInt(alert.getAttribute('data-auto-dismiss')) || 5000;
+                
+                // Crear un timeout para cerrar la alerta automáticamente
+                setTimeout(function() {
+                    // Usar Bootstrap para cerrar la alerta con animación
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, dismissTime);
+            });
+        });
+    </script>
+
+    <!-- Función para mostrar notificaciones toast -->
+    <script>
+        function showNotification(message, type = 'success') {
+            // Crear el contenedor de notificaciones si no existe
+            let notificationContainer = document.getElementById('notification-container');
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notification-container';
+                notificationContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+                document.body.appendChild(notificationContainer);
+            }
+
+            // Crear la notificación
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show shadow-lg`;
+            notification.style.cssText = 'margin-bottom: 10px; animation: slideInRight 0.3s ease-out;';
+            
+            // Iconos según el tipo
+            const icons = {
+                'success': '<i class="fas fa-check-circle me-2"></i>',
+                'danger': '<i class="fas fa-times-circle me-2"></i>',
+                'info': '<i class="fas fa-info-circle me-2"></i>',
+                'warning': '<i class="fas fa-exclamation-circle me-2"></i>'
+            };
+
+            notification.innerHTML = `
+                ${icons[type] || icons.success}
+                <strong>${message}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+
+            notificationContainer.appendChild(notification);
+
+            // Auto-cerrar después de 3 segundos
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Agregar animación CSS si no existe
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
     
     @stack('scripts')
 </body>

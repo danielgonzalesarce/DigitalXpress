@@ -139,4 +139,76 @@
         </div>
     </div>
     @endif
+
+    <!-- Distribución de Stock - Gráfica de Pastel -->
+    @if(array_sum($stockDistribution) > 0)
+    <div class="orders-section mt-4">
+        <h3 class="mb-4">Distribución de Stock</h3>
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <canvas id="stockDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    @endif
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gráfica de Distribución de Stock (Pastel)
+    @if(array_sum($stockDistribution) > 0)
+    const stockDistributionCtx = document.getElementById('stockDistributionChart');
+    if (stockDistributionCtx) {
+        const stockDistributionData = {
+            labels: ['En Stock', 'Stock Bajo', 'Sin Stock'],
+            datasets: [{
+                data: [
+                    {{ $stockDistribution['in_stock'] }},
+                    {{ $stockDistribution['low_stock'] }},
+                    {{ $stockDistribution['out_of_stock'] }}
+                ],
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(239, 68, 68, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 2
+            }]
+        };
+
+        new Chart(stockDistributionCtx, {
+            type: 'pie',
+            data: stockDistributionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return label + ': ' + value + ' productos (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    @endif
+});
+</script>
+@endpush

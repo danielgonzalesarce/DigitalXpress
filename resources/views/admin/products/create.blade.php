@@ -22,7 +22,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('admin.products.store') }}" method="POST">
+                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-4">
@@ -74,6 +74,22 @@
                                         @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="image_files" class="form-label">Imágenes del Producto</label>
+                                        <input type="file" class="form-control @error('image_files') is-invalid @enderror" 
+                                               id="image_files" name="image_files[]" multiple accept="image/*" onchange="previewImages(this)">
+                                        @error('image_files')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Puedes seleccionar múltiples imágenes. Formatos: JPEG, PNG, JPG, GIF, WEBP. Máximo 2MB por imagen.</small>
+                                        
+                                        <!-- Vista previa de nuevas imágenes seleccionadas -->
+                                        <div id="newImagesPreview" class="mt-3" style="display: none;">
+                                            <p class="mb-2"><strong>Imágenes seleccionadas:</strong></p>
+                                            <div class="row g-2" id="newImagesContainer"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -179,4 +195,98 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+<style>
+    .new-image-item .btn-danger {
+        transition: all 0.3s ease;
+    }
+    .new-image-item .btn-danger:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action*="store"]');
+        const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+        
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Deshabilitar el botón para evitar doble envío
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creando...';
+                
+                // El formulario se enviará normalmente
+            });
+        }
+    });
+
+    // Función para previsualizar nuevas imágenes seleccionadas
+    function previewImages(input) {
+        const previewContainer = document.getElementById('newImagesContainer');
+        const previewDiv = document.getElementById('newImagesPreview');
+        
+        if (!previewContainer || !previewDiv) return;
+        
+        previewContainer.innerHTML = '';
+        
+        if (input.files && input.files.length > 0) {
+            previewDiv.style.display = 'block';
+            
+            Array.from(input.files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-3 new-image-item';
+                        col.innerHTML = `
+                            <div class="position-relative border rounded p-2" style="background-color: #f8f9fa;">
+                                <img src="${e.target.result}" alt="Nueva imagen ${index + 1}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow-sm" onclick="removeNewImage(this)" title="Eliminar imagen" style="z-index: 10;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        previewContainer.appendChild(col);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        } else {
+            previewDiv.style.display = 'none';
+        }
+    }
+
+    // Función para eliminar una nueva imagen seleccionada
+    function removeNewImage(button) {
+        const imageItem = button.closest('.new-image-item');
+        const imageIndex = Array.from(imageItem.parentNode.children).indexOf(imageItem);
+        
+        // Eliminar el archivo del input file
+        const fileInput = document.getElementById('image_files');
+        if (fileInput && fileInput.files.length > imageIndex) {
+            const dt = new DataTransfer();
+            Array.from(fileInput.files).forEach((file, index) => {
+                if (index !== imageIndex) {
+                    dt.items.add(file);
+                }
+            });
+            fileInput.files = dt.files;
+        }
+        
+        // Eliminar el elemento visual
+        imageItem.remove();
+        
+        // Si no quedan imágenes nuevas, ocultar el contenedor
+        const previewContainer = document.getElementById('newImagesContainer');
+        if (previewContainer && previewContainer.children.length === 0) {
+            document.getElementById('newImagesPreview').style.display = 'none';
+        }
+    }
+</script>
+@endpush
 

@@ -19,9 +19,38 @@
     </div>
 
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #10b981;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+            <div class="flex-grow-1">
+                <strong>¡Éxito!</strong>
+                <p class="mb-2">{{ session('success') }}</p>
+                @if(session('changes') && count(session('changes')) > 0)
+                <div class="mt-2">
+                    <small class="text-muted"><strong>Cambios realizados:</strong></small>
+                    <ul class="mb-0 mt-1" style="font-size: 0.9rem;">
+                        @foreach(session('changes') as $change)
+                        <li>{{ $change }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #ef4444;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-circle fa-2x me-3 text-danger"></i>
+            <div class="flex-grow-1">
+                <strong>Error</strong>
+                <p class="mb-0">{{ session('error') }}</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     </div>
     @endif
 
@@ -74,73 +103,32 @@
             <div class="row g-4">
                 @forelse($products as $product)
                 <div class="col-lg-3 col-md-6">
-                    <div class="card product-card h-100" style="cursor: pointer;" onclick="window.location.href='{{ route('products.show', $product) }}'">
+                    <div class="card product-card h-100 @if(session('updated_product_id') == $product->id) border-success border-2 shadow-sm @endif" 
+                         @if(session('updated_product_id') == $product->id) style="animation: highlightProduct 2s ease-in-out;" @endif>
                         <div class="position-relative product-image-container">
-                            <a href="{{ route('products.show', $product) }}" class="product-image-link">
-                                <img src="{{ $product->image_url }}" 
-                                     class="card-img-top product-image" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
-                            </a>
-                            <div class="product-overlay">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-primary btn-view-details">
-                                    <i class="fas fa-eye me-2"></i> Ver más detalles
-                                </a>
-                            </div>
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" onclick="event.stopPropagation();">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                            <img src="{{ $product->image_url }}" 
+                                 class="card-img-top product-image" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
                             @if($product->is_featured)
                             <div class="position-absolute top-0 start-0 m-2">
                                 <span class="badge bg-success">Destacado</span>
                             </div>
                             @endif
                             @if($product->stock_quantity < 10)
-                            <div class="position-absolute bottom-0 start-0 m-2">
+                            <div class="position-absolute top-0 end-0 m-2">
                                 <span class="badge bg-warning">Stock bajo</span>
                             </div>
                             @endif
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <div class="mb-2">
-                                <span class="badge bg-secondary">{{ $product->category->name }}</span>
-                            </div>
-                            <h6 class="card-title fw-bold">{{ $product->name }}</h6>
-                            <p class="card-text text-muted small">{{ Str::limit($product->short_description ?? $product->description, 80) }}</p>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="text-warning me-2">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star{{ $i <= $product->rating ? '' : '-o' }}"></i>
-                                    @endfor
-                                </div>
-                                <small class="text-muted">({{ $product->review_count }})</small>
-                            </div>
-                                <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div>
-                                        @if($product->is_on_sale)
-                                            <span class="h5 text-success fw-bold">${{ number_format($product->sale_price, 2) }}</span>
-                                            <small class="text-decoration-line-through text-muted">${{ number_format($product->price, 2) }}</small>
-                                        @else
-                                            <span class="h5 text-primary fw-bold">${{ number_format($product->price, 2) }}</span>
-                                        @endif
-                                    </div>
-                                    <small class="text-muted">Stock: {{ $product->stock_quantity }}</small>
-                                </div>
+                            <h6 class="card-title fw-bold mb-3">{{ $product->name }}</h6>
+                            <div class="mt-auto">
                                 <div class="btn-group w-100" role="group">
-                                    <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
-                                        <i class="fas fa-eye"></i> Ver
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit me-1"></i> Editar
                                     </a>
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onclick="event.stopPropagation();">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); showConfirmModal('¿Estás seguro de eliminar este producto?', '{{ route('admin.products.destroy', $product) }}', 'DELETE')">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="showConfirmModal('¿Estás seguro de eliminar el producto \"{{ $product->name }}\"? Esta acción no se puede deshacer.', '{{ route('admin.products.destroy', $product) }}', 'DELETE')">
+                                        <i class="fas fa-trash me-1"></i> Eliminar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -161,72 +149,39 @@
         <!-- List View -->
         <div id="listView" class="products-list">
             @forelse($products as $product)
-            <div class="card product-list-item mb-3" style="cursor: pointer;" onclick="window.location.href='{{ route('products.show', $product) }}'">
+            <div class="card product-list-item mb-3 @if(session('updated_product_id') == $product->id) border-success border-2 shadow-sm @endif"
+                 @if(session('updated_product_id') == $product->id) style="animation: highlightProduct 2s ease-in-out;" @endif>
                 <div class="row g-0">
                     <div class="col-md-3">
                         <div class="position-relative h-100 product-image-container">
-                            <a href="{{ route('products.show', $product) }}" class="product-image-link h-100 d-block">
-                                <img src="{{ $product->image_url }}" 
-                                     class="img-fluid rounded-start product-image" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; min-height: 200px;">
-                            </a>
-                            <div class="product-overlay">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-primary btn-view-details">
-                                    <i class="fas fa-eye me-2"></i> Ver más detalles
-                                </a>
-                            </div>
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <button class="btn btn-light btn-sm rounded-circle product-favorite-btn" onclick="event.stopPropagation();">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
+                            <img src="{{ $product->image_url }}" 
+                                 class="img-fluid rounded-start product-image" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; min-height: 200px;">
                             @if($product->is_featured)
                             <div class="position-absolute top-0 start-0 m-2">
                                 <span class="badge bg-success">Destacado</span>
+                            </div>
+                            @endif
+                            @if($product->stock_quantity < 10)
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-warning">Stock bajo</span>
                             </div>
                             @endif
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="card-body h-100 d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge bg-secondary mb-2">{{ $product->category->name }}</span>
-                                    <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
-                                    <p class="card-text text-muted mb-3">{{ $product->short_description ?? Str::limit($product->description, 150) }}</p>
-                                </div>
+                            <div class="mb-3">
+                                <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
+                                <span class="badge bg-secondary">{{ $product->category->name }}</span>
                             </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="text-warning me-2">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star{{ $i <= $product->rating ? '' : '-o' }}"></i>
-                                    @endfor
-                                </div>
-                                <small class="text-muted me-3">({{ $product->review_count }} reseñas)</small>
-                                <small class="text-muted">Stock: {{ $product->stock_quantity }}</small>
-                            </div>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <div>
-                                    @if($product->is_on_sale)
-                                        <span class="h4 text-success fw-bold me-2">${{ number_format($product->sale_price, 2) }}</span>
-                                        <small class="text-decoration-line-through text-muted">${{ number_format($product->price, 2) }}</small>
-                                    @else
-                                        <span class="h4 text-primary fw-bold">${{ number_format($product->price, 2) }}</span>
-                                    @endif
-                                </div>
+                            <div class="mt-auto">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
-                                        <i class="fas fa-eye"></i>
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit me-1"></i> Editar
                                     </a>
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onclick="event.stopPropagation();">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); showConfirmModal('¿Estás seguro de eliminar este producto?', '{{ route('admin.products.destroy', $product) }}', 'DELETE')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="showConfirmModal('¿Estás seguro de eliminar el producto \"{{ $product->name }}\"? Esta acción no se puede deshacer.', '{{ route('admin.products.destroy', $product) }}', 'DELETE')">
+                                        <i class="fas fa-trash me-1"></i> Eliminar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -328,18 +283,39 @@
         transform: translateX(5px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
+
+    /* Animación para resaltar producto actualizado */
+    @keyframes highlightProduct {
+        0% {
+            background-color: rgba(16, 185, 129, 0.2);
+            transform: scale(1);
+        }
+        50% {
+            background-color: rgba(16, 185, 129, 0.4);
+            transform: scale(1.02);
+        }
+        100% {
+            background-color: transparent;
+            transform: scale(1);
+        }
+    }
+    
+    .product-card.border-success,
+    .product-list-item.border-success {
+        transition: all 0.3s ease;
+    }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    // View Toggle
+    // Alternar vista
     const gridViewBtn = document.getElementById('gridViewBtn');
     const listViewBtn = document.getElementById('listViewBtn');
     const gridView = document.getElementById('gridView');
     const listView = document.getElementById('listView');
 
-    // Load saved view preference
+    // Cargar preferencia de vista guardada
     const savedView = localStorage.getItem('adminProductsView') || 'grid';
     if (savedView === 'list') {
         gridView.classList.remove('view-active');
@@ -364,7 +340,7 @@
         localStorage.setItem('adminProductsView', 'list');
     });
 
-    // Auto-filter on change
+    // Filtrar automáticamente al cambiar
     document.getElementById('priceFilter')?.addEventListener('change', function() {
         const url = new URL(window.location);
         if (this.value) {

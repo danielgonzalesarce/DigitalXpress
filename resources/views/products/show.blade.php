@@ -4,6 +4,41 @@
 
 @section('content')
 <div class="container py-5">
+    @if(session('product_updated') && session('changes'))
+    <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert" style="border-left: 4px solid #10b981;">
+        <div class="d-flex align-items-start">
+            <div class="me-3">
+                <i class="fas fa-check-circle fa-2x text-success"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="alert-heading mb-2">
+                    <i class="fas fa-save me-2"></i>
+                    Producto actualizado exitosamente
+                </h5>
+                <p class="mb-2"><strong>Los siguientes cambios se han guardado en la base de datos:</strong></p>
+                <ul class="mb-0">
+                    @foreach(session('changes') as $change)
+                    <li>{{ $change }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="mt-3 pt-3 border-top">
+            <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                El producto se ha actualizado correctamente y los cambios son visibles ahora.
+            </small>
+        </div>
+    </div>
+    @elseif(session('success'))
+    <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+    
     <div class="row">
         <div class="col-lg-6">
             <div class="position-relative">
@@ -22,8 +57,20 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-between align-items-center">
                 <span class="badge bg-secondary fs-6">{{ $product->category->name }}</span>
+                @auth
+                    @if(Auth::user()->email && str_contains(Auth::user()->email, '@digitalxpress.com'))
+                    <div>
+                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit me-1"></i> Editar como Admin
+                        </a>
+                        <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Volver a Productos
+                        </a>
+                    </div>
+                    @endif
+                @endauth
             </div>
             <h1 class="fw-bold mb-3">{{ $product->name }}</h1>
             
@@ -120,9 +167,17 @@
             </form>
 
             <div class="d-flex gap-2">
-                <button class="btn btn-outline-secondary">
+                @auth
+                <button class="btn btn-outline-secondary product-favorite-btn-detail {{ Auth::user()->favorites()->where('product_id', $product->id)->exists() ? 'favorite-active' : '' }}" 
+                        data-product-id="{{ $product->id }}"
+                        onclick="toggleFavorite({{ $product->id }})">
                     <i class="fas fa-heart me-1"></i> Favoritos
                 </button>
+                @else
+                <button class="btn btn-outline-secondary" onclick="alert('Debes iniciar sesión para agregar favoritos')">
+                    <i class="fas fa-heart me-1"></i> Favoritos
+                </button>
+                @endauth
                 <button class="btn btn-outline-secondary">
                     <i class="fas fa-share me-1"></i> Compartir
                 </button>
@@ -247,5 +302,91 @@
             margin-bottom: 0.5rem;
         }
     }
+
+    .product-favorite-btn-detail.favorite-active {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-color: #dc3545 !important;
+    }
+
+    .product-favorite-btn-detail.favorite-active i {
+        color: white !important;
+    }
 </style>
+
+<script>
+@auth
+// Funcionalidad de favoritos en página de detalle
+async function toggleFavorite(productId) {
+    const btn = event.target.closest('.product-favorite-btn-detail');
+    const isFavorite = btn.classList.contains('favorite-active');
+    
+    try {
+        const method = isFavorite ? 'DELETE' : 'POST';
+        const response = await fetch(`/favoritos/${productId}`, {
+            method: method,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        // Verificar si la respuesta es JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Si no es JSON, probablemente es una redirección de autenticación
+            if (response.status === 401 || response.status === 403) {
+                showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+                return;
+            }
+            // Si es HTML (redirección), mostrar mensaje
+            if (contentType && contentType.includes('text/html')) {
+                showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+                return;
+            }
+            throw new Error('Respuesta inesperada del servidor');
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            if (isFavorite) {
+                btn.classList.remove('favorite-active');
+            } else {
+                btn.classList.add('favorite-active');
+            }
+            if (data.message) {
+                showNotification(data.message, isFavorite ? 'info' : 'success');
+            }
+        } else if (data.message) {
+            showNotification(data.message, 'warning');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        // Solo mostrar error si no es un error de autenticación
+        if (!error.message.includes('JSON')) {
+            showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+        }
+    }
+}
+
+// Verificar estado inicial del favorito
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtn = document.querySelector('.product-favorite-btn-detail[data-product-id]');
+    if (favoriteBtn) {
+        const productId = favoriteBtn.getAttribute('data-product-id');
+        fetch(`/favoritos/verificar/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_favorite) {
+                    favoriteBtn.classList.add('favorite-active');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+});
+@endauth
+</script>
 @endsection

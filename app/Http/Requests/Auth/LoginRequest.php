@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Las credenciales proporcionadas no son correctas.',
             ])->redirectTo(route('home'));
         }
 
@@ -67,12 +67,10 @@ class LoginRequest extends FormRequest
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
+        $minutes = ceil($seconds / 60);
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+            'email' => "Demasiados intentos de inicio de sesión. Por favor, intenta de nuevo en {$minutes} minuto" . ($minutes > 1 ? 's' : '') . ".",
+        ])->redirectTo(route('home'));
     }
 
     /**

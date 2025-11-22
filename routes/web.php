@@ -1,8 +1,24 @@
 <?php
 
+/**
+ * Archivo de Rutas Web - DigitalXpress
+ * 
+ * Define todas las rutas públicas y protegidas de la aplicación.
+ * 
+ * Estructura:
+ * - Rutas públicas (sin autenticación)
+ * - Rutas de autenticación (login, registro, etc.)
+ * - Rutas protegidas (requieren autenticación)
+ * - Rutas de administración (requieren autenticación + rol admin)
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
@@ -10,14 +26,43 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RepairController;
 use Illuminate\Support\Facades\Route;
 
-// Página principal - Accesible sin autenticación (sin login/registro)
+/* ============================================
+   RUTAS PÚBLICAS (Sin autenticación requerida)
+   ============================================ */
+
+/**
+ * Página principal - Home
+ * Muestra el carrusel de productos destacados y últimas novedades
+ * Accesible sin autenticación
+ */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Productos
+/**
+ * ============================================
+ * PRODUCTOS
+ * ============================================
+ * 
+ * Rutas para visualización de productos:
+ * - Listado de productos con filtros y búsqueda
+ * - Detalle de producto individual
+ */
 Route::get('/productos', [ProductController::class, 'index'])->name('products.index');
 Route::get('/productos/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Reparaciones
+/**
+ * ============================================
+ * REPARACIONES
+ * ============================================
+ * 
+ * Rutas para el servicio de reparaciones:
+ * - Ver información del servicio
+ * - Dashboard de reparaciones del usuario (requiere auth)
+ * - Crear nueva solicitud de reparación
+ * - Ver detalles de una reparación
+ * - Agendar cita
+ * - Contactar soporte
+ * - Descargar reporte de reparación
+ */
 Route::get('/reparaciones', [RepairController::class, 'index'])->name('repairs.index');
 Route::get('/reparaciones/dashboard', [RepairController::class, 'dashboard'])->name('repairs.dashboard');
 Route::get('/reparaciones/nueva', [RepairController::class, 'create'])->name('repairs.create');
@@ -27,7 +72,20 @@ Route::get('/reparaciones/agendar/cita', [RepairController::class, 'schedule'])-
 Route::get('/reparaciones/contactar/soporte', [RepairController::class, 'contact'])->name('repairs.contact');
 Route::get('/reparaciones/descargar/reporte', [RepairController::class, 'downloadReport'])->name('repairs.download-report');
 
-// Carrito (funciona para usuarios autenticados e invitados)
+/**
+ * ============================================
+ * CARRITO DE COMPRAS
+ * ============================================
+ * 
+ * Rutas para gestión del carrito:
+ * Funciona tanto para usuarios autenticados como invitados (usando session_id)
+ * - Ver carrito
+ * - Agregar producto al carrito
+ * - Actualizar cantidad de un item
+ * - Eliminar item del carrito
+ * - Vaciar carrito completo
+ * - Limpiar productos no disponibles
+ */
 Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
 Route::post('/carrito/agregar/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::put('/carrito/actualizar/{cartItem}', [CartController::class, 'update'])->name('cart.update');
@@ -35,16 +93,48 @@ Route::delete('/carrito/eliminar/{cartItem}', [CartController::class, 'remove'])
 Route::delete('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/carrito/limpiar', [CartController::class, 'cleanup'])->name('cart.cleanup');
 
-// Checkout
+/**
+ * ============================================
+ * CHECKOUT - Proceso de Compra
+ * ============================================
+ * 
+ * Rutas para el proceso de finalización de compra:
+ * - Mostrar formulario de checkout
+ * - Procesar el pedido y crear la orden
+ * - Página de éxito después de la compra
+ */
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 
-// Panel de Administración (solo usuarios con @digitalxpress.com)
+/**
+ * ============================================
+ * PANEL DE ADMINISTRACIÓN
+ * ============================================
+ * 
+ * Rutas protegidas para administradores:
+ * Requieren autenticación + middleware 'admin' (usuarios con @digitalxpress.com)
+ * Todas las rutas tienen el prefijo '/admin' y el nombre 'admin.*'
+ * 
+ * Secciones del panel:
+ * - Dashboard: Estadísticas y resumen general
+ * - Productos: CRUD completo de productos
+ * - Inventario: Gestión de stock y movimientos
+ * - Pedidos: Gestión de órdenes de compra
+ * - Reparaciones: Gestión de servicios técnicos
+ * - Análisis: Reportes de ingresos y estadísticas
+ * - Usuarios: Gestión de usuarios del sistema
+ * - Categorías: CRUD de categorías de productos
+ * - Configuración: Ajustes de la tienda (envíos, pagos, información)
+ */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard principal del administrador
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
-    // Productos
+    /**
+     * PRODUCTOS - CRUD completo
+     * Permite crear, leer, actualizar y eliminar productos del catálogo
+     */
     Route::get('/products', [AdminController::class, 'products'])->name('products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
@@ -52,7 +142,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/products/{product}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{product}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
     
-    // Inventario
+    /**
+     * INVENTARIO - Gestión de Stock
+     * Permite gestionar el inventario y movimientos de stock de productos
+     */
     Route::get('/inventory', [AdminController::class, 'inventoryIndex'])->name('inventory');
     Route::get('/inventory/create', [AdminController::class, 'createInventoryMovement'])->name('inventory.create');
     Route::post('/inventory', [AdminController::class, 'storeInventoryMovement'])->name('inventory.store');
@@ -60,7 +153,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/inventory/{product}', [AdminController::class, 'updateInventoryMovement'])->name('inventory.update');
     Route::delete('/inventory/{product}', [AdminController::class, 'destroyInventoryMovement'])->name('inventory.destroy');
     
-    // Pedidos
+    /**
+     * PEDIDOS - Gestión de Órdenes
+     * Permite ver, editar y gestionar los pedidos de los clientes
+     */
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
     Route::get('/orders/create', [AdminController::class, 'createOrder'])->name('orders.create');
     Route::post('/orders', [AdminController::class, 'storeOrder'])->name('orders.store');
@@ -70,7 +166,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('order.update-status');
     Route::delete('/orders/{order}', [AdminController::class, 'destroyOrder'])->name('orders.destroy');
     
-    // Reparaciones
+    /**
+     * REPARACIONES - Gestión de Servicios Técnicos
+     * Permite gestionar las solicitudes de reparación de los clientes
+     */
     Route::get('/repairs', [AdminController::class, 'repairs'])->name('repairs');
     Route::get('/repairs/create', [AdminController::class, 'createRepair'])->name('repairs.create');
     Route::post('/repairs', [AdminController::class, 'storeRepair'])->name('repairs.store');
@@ -78,10 +177,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/repairs/{repair}', [AdminController::class, 'updateRepair'])->name('repairs.update');
     Route::delete('/repairs/{repair}', [AdminController::class, 'destroyRepair'])->name('repairs.destroy');
     
-    // Análisis
+    /**
+     * ANÁLISIS - Reportes e Ingresos
+     * Muestra estadísticas de ingresos, métodos de pago y distribución de stock
+     */
     Route::get('/revenue', [AdminController::class, 'revenue'])->name('revenue');
     
-    // Usuarios
+    /**
+     * USUARIOS - Gestión de Usuarios
+     * Permite crear, editar y eliminar usuarios del sistema
+     */
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
     Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
@@ -89,7 +194,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     
-    // Categorías
+    /**
+     * CATEGORÍAS - Gestión de Categorías de Productos
+     * Permite crear, editar y eliminar categorías para organizar productos
+     */
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories');
     Route::get('/categories/create', [AdminController::class, 'createCategory'])->name('categories.create');
     Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
@@ -97,18 +205,71 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/categories/{category}', [AdminController::class, 'updateCategory'])->name('categories.update');
     Route::delete('/categories/{category}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
     
-    // Configuración
+    /**
+     * CONFIGURACIÓN - Ajustes de la Tienda
+     * Permite configurar información de la tienda, envíos y métodos de pago
+     */
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::get('/settings/store', [AdminController::class, 'editStoreSettings'])->name('settings.store');
+    Route::put('/settings/store', [AdminController::class, 'updateStoreSettings'])->name('settings.store.update');
+    Route::get('/settings/shipping', [AdminController::class, 'editShippingSettings'])->name('settings.shipping');
+    Route::put('/settings/shipping', [AdminController::class, 'updateShippingSettings'])->name('settings.shipping.update');
+    Route::get('/settings/payment', [AdminController::class, 'editPaymentSettings'])->name('settings.payment');
+    Route::put('/settings/payment', [AdminController::class, 'updatePaymentSettings'])->name('settings.payment.update');
 });
 
-// Perfil de usuario
+/**
+ * ============================================
+ * PERFIL DE USUARIO
+ * ============================================
+ * 
+ * Rutas protegidas para gestión del perfil:
+ * Requieren autenticación
+ * - Ver y editar perfil
+ * - Actualizar información personal
+ * - Eliminar cuenta
+ */
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Páginas estáticas
+/**
+ * ============================================
+ * FAVORITOS
+ * ============================================
+ * 
+ * Rutas protegidas para gestión de favoritos:
+ * Requieren autenticación
+ * - Ver lista de favoritos
+ * - Agregar producto a favoritos
+ * - Eliminar producto de favoritos
+ * - Verificar si un producto está en favoritos (para AJAX)
+ */
+Route::middleware('auth')->group(function () {
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favoritos/{product}', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favoritos/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+    Route::get('/favoritos/verificar/{product}', [FavoriteController::class, 'check'])->name('favorites.check');
+});
+
+/**
+ * ============================================
+ * PÁGINAS ESTÁTICAS
+ * ============================================
+ * 
+ * Rutas públicas para páginas informativas:
+ * - Centro de ayuda
+ * - Garantías
+ * - Devoluciones
+ * - Contacto
+ * - Sobre nosotros
+ * - Términos y condiciones
+ * - Política de privacidad
+ * - Blog
+ * - Página de desarrollo (en construcción)
+ */
 Route::get('/centro-ayuda', [PageController::class, 'helpCenter'])->name('pages.help-center');
 Route::get('/garantias', [PageController::class, 'warranties'])->name('pages.warranties');
 Route::get('/devoluciones', [PageController::class, 'returns'])->name('pages.returns');
@@ -119,5 +280,18 @@ Route::get('/privacidad', [PageController::class, 'privacy'])->name('pages.priva
 Route::get('/blog', [PageController::class, 'blog'])->name('pages.blog');
 Route::get('/en-desarrollo', [PageController::class, 'development'])->name('pages.development');
 
-// Rutas de autenticación
+/**
+ * ============================================
+ * RUTAS DE AUTENTICACIÓN
+ * ============================================
+ * 
+ * Incluye todas las rutas relacionadas con autenticación:
+ * - Login
+ * - Registro
+ * - Recuperación de contraseña
+ * - Verificación de email
+ * - etc.
+ * 
+ * Definidas en routes/auth.php
+ */
 require __DIR__.'/auth.php';

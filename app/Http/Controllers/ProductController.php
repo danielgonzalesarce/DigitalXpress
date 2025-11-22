@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * ProductController
+ * 
+ * Controlador para la gestión de productos en el área pública (no admin).
+ * Maneja la visualización de productos para los usuarios finales:
+ * - Listado de productos con filtros y búsqueda
+ * - Detalle de producto individual
+ * - Productos relacionados
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Category;
@@ -8,6 +21,21 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    /**
+     * Mostrar listado de productos disponibles
+     * 
+     * Permite filtrar productos por:
+     * - Categoría (slug)
+     * - Búsqueda por texto (nombre o descripción)
+     * - Rango de precios (menos de $100, $100-$500, $500-$1000, más de $1000)
+     * - Ordenamiento (nombre, precio, rating, más recientes)
+     * 
+     * Solo muestra productos activos y en stock.
+     * Muestra 12 productos por página.
+     * 
+     * @param Request $request Parámetros de filtrado y búsqueda
+     * @return \Illuminate\View\View Vista con productos paginados y categorías
+     */
     public function index(Request $request)
     {
         $query = Product::where('is_active', true)
@@ -85,24 +113,41 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'categories'));
     }
 
+    /**
+     * Mostrar detalle de un producto específico
+     * 
+     * Muestra toda la información del producto:
+     * - Imágenes
+     * - Descripción completa
+     * - Precio y precio de oferta (si aplica)
+     * - Stock disponible
+     * - Categoría
+     * - Rating y reseñas
+     * 
+     * También muestra productos relacionados de la misma categoría,
+     * priorizando productos destacados y con mejor rating.
+     * 
+     * @param Product $product Modelo del producto (inyectado automáticamente por Laravel)
+     * @return \Illuminate\View\View Vista con detalle del producto y productos relacionados
+     */
     public function show(Product $product)
     {
         // Obtener productos relacionados de la misma categoría
         // Priorizar productos destacados y con mejor rating
         $relatedProducts = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->where('is_active', true)
-            ->where('in_stock', true)
+            ->where('id', '!=', $product->id) // Excluir el producto actual
+            ->where('is_active', true) // Solo productos activos
+            ->where('in_stock', true) // Solo productos en stock
             ->orderBy('is_featured', 'desc') // Productos destacados primero
             ->orderBy('rating', 'desc') // Mejor rating después
             ->orderBy('review_count', 'desc') // Más reseñas después
-            ->limit(4)
+            ->limit(4) // Máximo 4 productos relacionados
             ->get();
 
         // Solo pasar productos relacionados si hay al menos 1
         // Si no hay productos de la misma categoría, no mostrar la sección
         if ($relatedProducts->count() == 0) {
-            $relatedProducts = collect(); // Colección vacía
+            $relatedProducts = collect(); // Colección vacía para evitar errores en la vista
         }
 
         return view('products.show', compact('product', 'relatedProducts'));

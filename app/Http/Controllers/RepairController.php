@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * RepairController
+ * 
+ * Controlador para la gestión del servicio de reparaciones.
+ * Permite a los usuarios autenticados:
+ * - Ver información del servicio
+ * - Acceder a su dashboard de reparaciones
+ * - Crear nuevas solicitudes de reparación
+ * - Ver detalles de sus reparaciones
+ * - Agendar citas
+ * - Contactar soporte
+ * - Descargar reportes
+ * 
+ * Todas las operaciones requieren autenticación excepto index().
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Repair;
@@ -9,6 +28,14 @@ use Illuminate\Support\Facades\Storage;
 
 class RepairController extends Controller
 {
+    /**
+     * Mostrar página de información del servicio de reparaciones
+     * 
+     * Si el usuario está autenticado, redirige automáticamente al dashboard.
+     * Si no está autenticado, muestra la página informativa.
+     * 
+     * @return \Illuminate\View\View Vista de información o redirección al dashboard
+     */
     public function index()
     {
         // Si el usuario está autenticado, redirigir automáticamente al dashboard
@@ -16,9 +43,19 @@ class RepairController extends Controller
             return redirect()->route('repairs.dashboard');
         }
         
+        // Si no está autenticado, mostrar página informativa
         return view('repairs.index');
     }
 
+    /**
+     * Mostrar dashboard de reparaciones del usuario
+     * 
+     * Muestra todas las reparaciones del usuario autenticado,
+     * ordenadas por fecha de creación (más recientes primero).
+     * 
+     * @return \Illuminate\View\View Vista del dashboard con lista de reparaciones
+     * @return \Illuminate\Http\RedirectResponse Redirige al login si no está autenticado
+     */
     public function dashboard()
     {
         // Solo usuarios autenticados pueden acceder
@@ -27,11 +64,21 @@ class RepairController extends Controller
                 ->with('error', 'Necesitas iniciar sesión para acceder al servicio técnico');
         }
 
+        // Obtener todas las reparaciones del usuario ordenadas por fecha
         $repairs = Auth::user()->repairs()->orderBy('created_at', 'desc')->get();
         
         return view('repairs.dashboard', compact('repairs'));
     }
 
+    /**
+     * Mostrar formulario para crear nueva reparación
+     * 
+     * Muestra el formulario y también las últimas 5 reparaciones del usuario
+     * para referencia.
+     * 
+     * @return \Illuminate\View\View Vista del formulario de creación
+     * @return \Illuminate\Http\RedirectResponse Redirige al login si no está autenticado
+     */
     public function create()
     {
         // Solo usuarios autenticados pueden crear reparaciones
@@ -40,10 +87,20 @@ class RepairController extends Controller
                 ->with('error', 'Necesitas iniciar sesión para crear una reparación');
         }
 
+        // Obtener últimas 5 reparaciones del usuario para mostrar como referencia
         $repairs = Auth::user()->repairs()->orderBy('created_at', 'desc')->limit(5)->get();
         return view('repairs.create', compact('repairs'));
     }
 
+    /**
+     * Guardar nueva solicitud de reparación
+     * 
+     * Valida los datos del formulario, procesa la imagen del dispositivo,
+     * genera un número único de reparación y crea el registro en la base de datos.
+     * 
+     * @param Request $request Datos del formulario de reparación
+     * @return \Illuminate\Http\RedirectResponse Redirige al dashboard con mensaje de éxito/error
+     */
     public function store(Request $request)
     {
         // Solo usuarios autenticados pueden crear reparaciones
@@ -52,15 +109,16 @@ class RepairController extends Controller
                 ->with('error', 'Necesitas iniciar sesión para crear una reparación');
         }
 
+        // Validar datos del formulario
         $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'device_type' => 'required|string|max:100',
-            'brand' => 'required|string|max:100',
-            'model' => 'required|string|max:100',
-            'problem_description' => 'required|string|min:20',
-            'device_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'full_name' => 'required|string|max:255', // Nombre completo obligatorio
+            'email' => 'required|email|max:255', // Email válido obligatorio
+            'phone' => 'required|string|max:20', // Teléfono obligatorio
+            'device_type' => 'required|string|max:100', // Tipo de dispositivo obligatorio
+            'brand' => 'required|string|max:100', // Marca obligatoria
+            'model' => 'required|string|max:100', // Modelo obligatorio
+            'problem_description' => 'required|string|min:20', // Descripción mínima 20 caracteres
+            'device_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Imagen opcional, máximo 2MB
         ], [
             'problem_description.min' => 'La descripción del problema debe tener al menos 20 caracteres.',
             'device_image.image' => 'El archivo debe ser una imagen válida.',
@@ -68,9 +126,10 @@ class RepairController extends Controller
             'device_image.max' => 'La imagen no debe ser mayor a 2MB.'
         ]);
 
+        // Preparar datos para crear la reparación
         $repairData = [
-            'repair_number' => Repair::generateRepairNumber(),
-            'user_id' => Auth::id(),
+            'repair_number' => Repair::generateRepairNumber(), // Generar número único automáticamente
+            'user_id' => Auth::id(), // Asignar al usuario autenticado
             'full_name' => $request->full_name,
             'email' => $request->email,
             'phone' => $request->phone,

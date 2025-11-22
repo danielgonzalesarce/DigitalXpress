@@ -1,11 +1,45 @@
 <?php
 
+/**
+ * PaymentService
+ * 
+ * Servicio para validación y procesamiento de pagos.
+ * 
+ * Funcionalidades:
+ * - Validar formato de tarjetas de crédito/débito
+ * - Validar pagos con Yape
+ * - Simular procesamiento de pagos (modo DEMO)
+ * - Generar IDs de transacción
+ * 
+ * Nota: Este servicio está en modo DEMO y simula los pagos.
+ * En producción, debería integrarse con un procesador de pagos real
+ * como Stripe, PayPal, o un procesador local.
+ * 
+ * @author DigitalXpress Team
+ * @version 1.0.0
+ */
+
 namespace App\Services;
 
 class PaymentService
 {
     /**
-     * Valida formato de tarjeta y simula pago exitoso (DEMO)
+     * Validar formato de tarjeta de crédito/débito y simular pago (DEMO)
+     * 
+     * Valida el formato de los datos de la tarjeta:
+     * - Número de tarjeta (13-19 dígitos)
+     * - Mes y año de vencimiento
+     * - CVV (3-4 dígitos)
+     * - Nombre del titular
+     * 
+     * En modo DEMO, siempre retorna éxito si el formato es válido.
+     * 
+     * @param string $cardNumber Número de tarjeta (puede tener espacios o guiones)
+     * @param int $expiryMonth Mes de vencimiento (1-12)
+     * @param int $expiryYear Año de vencimiento (>= año actual)
+     * @param string $cvv Código de seguridad (3-4 dígitos)
+     * @param string $cardholderName Nombre del titular de la tarjeta
+     * @return array Array con 'valid' (bool), 'message' (string), 'transaction_id' (string), 'card_type' (string)
      */
     public function validateCreditCard($cardNumber, $expiryMonth, $expiryYear, $cvv, $cardholderName)
     {
@@ -69,11 +103,19 @@ class PaymentService
     }
     
     /**
-     * Simula la validación de Yape (DEMO)
+     * Validar pago con Yape y simular procesamiento (DEMO)
+     * 
+     * Yape es un método de pago móvil peruano.
+     * En modo DEMO, siempre retorna éxito.
+     * 
+     * @param string $phoneNumber Número de teléfono Yape (formato: 9XXXXXXXX)
+     * @param float $amount Monto a pagar
+     * @return array Array con 'valid' (bool), 'message' (string), 'transaction_id' (string)
      */
     public function validateYape($phoneNumber, $amount)
     {
         // DEMO: Siempre procesar exitosamente
+        // En producción, aquí se integraría con la API de Yape
         return [
             'valid' => true,
             'message' => 'Pago con Yape procesado exitosamente (DEMO)',
@@ -82,7 +124,16 @@ class PaymentService
     }
     
     /**
-     * Determinar el tipo de tarjeta (solo para mostrar)
+     * Determinar el tipo de tarjeta según el número
+     * 
+     * Identifica el tipo de tarjeta basándose en los primeros dígitos:
+     * - Visa: empieza con 4
+     * - Mastercard: empieza con 51-55
+     * - American Express: empieza con 34 o 37
+     * - Discover: empieza con 60 o 65
+     * 
+     * @param string $cardNumber Número de tarjeta limpio (solo dígitos)
+     * @return string Tipo de tarjeta detectado
      */
     private function getCardType($cardNumber)
     {

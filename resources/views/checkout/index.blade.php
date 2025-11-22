@@ -484,7 +484,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Formatear número de tarjeta
+    // Formatear número de tarjeta de crédito
     const cardNumber = document.getElementById('card_number');
     if (cardNumber) {
         cardNumber.addEventListener('input', function(e) {
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Actualizar método de pago según el tab activo
+    // Actualizar método de pago según la pestaña activa
     const paymentTabs = document.querySelectorAll('#paymentTabs button');
     const paymentMethodInput = document.createElement('input');
     paymentMethodInput.type = 'hidden';
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Validación en tiempo real
+    // Validación en tiempo real del formulario
     const form = document.getElementById('checkoutForm');
     form.addEventListener('submit', function(e) {
         const activeTab = document.querySelector('#paymentTabs button.active');
