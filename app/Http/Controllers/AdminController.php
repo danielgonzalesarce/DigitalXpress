@@ -1189,6 +1189,17 @@ class AdminController extends Controller
         return view('admin.inventory.edit', compact('product'));
     }
 
+    /**
+     * Actualizar stock de un producto
+     * 
+     * Permite actualizar la cantidad en stock de un producto.
+     * Soporta tanto peticiones AJAX como peticiones normales.
+     * 
+     * @param Request $request Datos del formulario (stock_quantity)
+     * @param Product $product Modelo del producto a actualizar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON si es AJAX
+     * @return \Illuminate\Http\RedirectResponse Redirige si es petición normal
+     */
     public function updateInventoryMovement(Request $request, Product $product)
     {
         $request->validate([
@@ -1199,19 +1210,72 @@ class AdminController extends Controller
         try {
             DB::beginTransaction();
 
+            $oldStock = $product->stock_quantity;
+            $newStock = (int) $request->stock_quantity;
+
             $product->update([
-                'stock_quantity' => (int) $request->stock_quantity,
-                'in_stock' => $request->has('in_stock') ? true : ($request->stock_quantity > 0),
+                'stock_quantity' => $newStock,
+                'in_stock' => $request->has('in_stock') ? true : ($newStock > 0),
             ]);
 
             $product->save();
             DB::commit();
             $product->refresh();
 
+            // Limpiar caché relacionado
+            Cache::forget('products_list');
+            Cache::forget('products_featured');
+            Cache::forget('products_category_' . $product->category_id);
+
+            Log::info('Stock actualizado exitosamente', [
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'old_stock' => $oldStock,
+                'new_stock' => $newStock
+            ]);
+
+            // Si es petición AJAX, retornar JSON
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Stock actualizado exitosamente',
+                    'stock_quantity' => $product->stock_quantity,
+                    'in_stock' => $product->in_stock
+                ]);
+            }
+
+            // Si es petición normal, redirigir
             return redirect()->route('admin.inventory')
                 ->with('success', 'Stock del producto "' . $product->name . '" actualizado exitosamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación: ' . implode(', ', Arr::flatten($e->errors()))
+                ], 422);
+            }
+            
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($e->errors())
+                ->with('error', 'Por favor, corrige los errores en el formulario.');
         } catch (Exception $e) {
             DB::rollBack();
+            
+            Log::error('Error al actualizar stock', [
+                'product_id' => $product->id,
+                'error' => $e->getMessage()
+            ]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar el stock: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Error al actualizar el stock: ' . $e->getMessage());

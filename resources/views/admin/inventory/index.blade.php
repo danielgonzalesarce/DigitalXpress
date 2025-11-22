@@ -112,38 +112,61 @@
                             <code class="text-muted">{{ $product->sku }}</code>
                         </td>
                         <td>
-                            @if($product->stock_quantity > 0 && $product->stock_quantity < 10)
-                                <span class="badge bg-warning">{{ $product->stock_quantity }} unidades</span>
-                            @elseif($product->stock_quantity > 0)
-                                <span class="badge bg-success">{{ $product->stock_quantity }} unidades</span>
-                            @else
-                                <span class="badge bg-danger">Sin Stock</span>
-                            @endif
+                            <form action="{{ route('admin.inventory.update', $product) }}" 
+                                  method="POST" 
+                                  method="POST" 
+                                  class="stock-form"
+                                  data-product-id="{{ $product->id }}"
+                                  data-product-name="{{ $product->name }}">
+                                @csrf
+                                @method('PUT')
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="number" 
+                                               name="stock_quantity" 
+                                               value="{{ $product->stock_quantity }}" 
+                                               min="0"
+                                               class="form-control form-control-sm stock-input" 
+                                               style="width: 120px;"
+                                               data-original-value="{{ $product->stock_quantity }}"
+                                               id="stock-input-{{ $product->id }}">
+                                        <span class="text-muted small">unidades</span>
+                                    </div>
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-primary update-stock-btn" 
+                                            title="Actualizar Inventario"
+                                            style="width: 120px;">
+                                        <i class="fas fa-sync-alt me-1"></i> Actualizar Inventario
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="stock-badge mt-2">
+                                @if($product->stock_quantity > 0 && $product->stock_quantity < 10)
+                                    <span class="badge bg-warning">{{ $product->stock_quantity }} unidades</span>
+                                @elseif($product->stock_quantity > 0)
+                                    <span class="badge bg-success">{{ $product->stock_quantity }} unidades</span>
+                                @else
+                                    <span class="badge bg-danger">Sin Stock</span>
+                                @endif
+                            </div>
                         </td>
                         <td>${{ number_format($product->price, 2) }}</td>
                         <td>
                             <strong>${{ number_format($product->price * $product->stock_quantity, 2) }}</strong>
                         </td>
                         <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('admin.inventory.edit', $product) }}" 
-                                   class="btn btn-sm btn-outline-primary" 
-                                   title="Editar Stock">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.inventory.destroy', $product) }}" 
-                                      method="POST" 
-                                      class="d-inline"
-                                      onsubmit="return confirm('¿Estás seguro de resetear el stock a 0?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="btn btn-sm btn-outline-danger" 
-                                            title="Resetear Stock">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <form action="{{ route('admin.inventory.destroy', $product) }}" 
+                                  method="POST" 
+                                  class="d-inline"
+                                  onsubmit="return confirm('¿Estás seguro de resetear el stock de \"{{ $product->name }}\" a 0?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="btn btn-sm btn-outline-danger" 
+                                        title="Resetear Stock a 0">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty
@@ -165,4 +188,127 @@
         </div>
         @endif
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enviar formulario con AJAX cuando se hace clic en "Actualizar Inventario"
+            document.querySelectorAll('.stock-form').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const productName = this.dataset.productName;
+                    const stockInput = this.querySelector('.stock-input');
+                    const updateBtn = this.querySelector('.update-stock-btn');
+                    const originalValue = parseInt(stockInput.dataset.originalValue);
+                    const newValue = parseInt(stockInput.value) || 0;
+                    
+                    // Validar que el valor sea válido
+                    if (newValue < 0) {
+                        showNotification('La cantidad en stock no puede ser negativa', 'error');
+                        stockInput.value = originalValue;
+                        return;
+                    }
+                    
+                    // Validar que haya cambios
+                    if (newValue === originalValue) {
+                        showNotification('No hay cambios para guardar', 'info');
+                        return;
+                    }
+                    
+                    // Deshabilitar botón y mostrar estado de carga
+                    updateBtn.disabled = true;
+                    const originalBtnText = updateBtn.innerHTML;
+                    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Actualizando...';
+                    stockInput.disabled = true;
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw new Error(data.message || 'Error al actualizar el stock');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar valor original
+                            stockInput.dataset.originalValue = data.stock_quantity;
+                            stockInput.value = data.stock_quantity;
+                            
+                            // Actualizar badge
+                            const badgeContainer = this.closest('td').querySelector('.stock-badge');
+                            let badgeClass = 'bg-danger';
+                            let badgeText = 'Sin Stock';
+                            
+                            if (data.stock_quantity > 0 && data.stock_quantity < 10) {
+                                badgeClass = 'bg-warning';
+                                badgeText = data.stock_quantity + ' unidades';
+                            } else if (data.stock_quantity > 0) {
+                                badgeClass = 'bg-success';
+                                badgeText = data.stock_quantity + ' unidades';
+                            }
+                            
+                            badgeContainer.innerHTML = '<span class="badge ' + badgeClass + '">' + badgeText + '</span>';
+                            
+                            // Mostrar mensaje de éxito
+                            showNotification('✓ Stock de "' + productName + '" actualizado exitosamente a ' + data.stock_quantity + ' unidades', 'success');
+                            
+                            // Resaltar el input con éxito
+                            stockInput.classList.add('border-success');
+                            setTimeout(() => {
+                                stockInput.classList.remove('border-success');
+                            }, 2000);
+                            
+                            // Recargar página después de un momento para actualizar estadísticas
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            showNotification(data.message || 'Error al actualizar el stock', 'error');
+                            stockInput.value = originalValue;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Error al actualizar el stock: ' + error.message, 'error');
+                        stockInput.value = originalValue;
+                    })
+                    .finally(() => {
+                        updateBtn.disabled = false;
+                        updateBtn.innerHTML = originalBtnText;
+                        stockInput.disabled = false;
+                    });
+                });
+            });
+        });
+
+        function showNotification(message, type) {
+            // Remover notificaciones anteriores
+            document.querySelectorAll('.stock-notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-' + (type === 'success' ? 'success' : type === 'info' ? 'info' : 'danger') + ' alert-dismissible fade show position-fixed stock-notification';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
+            notification.innerHTML = `
+                <strong>${type === 'success' ? '✓' : type === 'info' ? 'ℹ' : '✗'}</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+    </script>
+    @endpush
 @endsection
