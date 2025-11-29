@@ -95,9 +95,9 @@ if [ ! -f .env ]; then
         sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
     fi
     
-    echo ""
+echo ""
     echo "Configuración guardada en .env"
-else
+    else
     echo "Archivo .env ya existe, usando configuración existente..."
 fi
 echo ""
@@ -136,12 +136,12 @@ else
     DB_NAME=$(grep "^DB_DATABASE=" .env | cut -d '=' -f2)
     echo "CREATE DATABASE $DB_NAME;"
 fi
-echo ""
-
+    echo ""
+    
 # Ejecutar migraciones
 echo "[6/8] Ejecutando migraciones..."
 php artisan migrate --force
-if [ $? -ne 0 ]; then
+    if [ $? -ne 0 ]; then
     echo -e "${RED}[ERROR] Error al ejecutar migraciones${NC}"
     echo "Verifica que la base de datos exista y las credenciales sean correctas"
     exit 1

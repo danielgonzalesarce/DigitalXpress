@@ -44,29 +44,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Repair extends Model
 {
+    // Trait para registro automático de actividades (auditoría)
     use LogsActivity;
+    
     /**
-     * Campos que pueden ser asignados masivamente
+     * Campos que pueden ser asignados masivamente (Mass Assignment)
+     * 
+     * Estos campos pueden ser llenados usando create() o update().
      */
     protected $fillable = [
-        'repair_number',        // Número único de reparación
-        'user_id',              // ID del usuario
+        'repair_number',        // Número único de reparación (REPYYYYMM####)
+        'user_id',              // ID del usuario que solicita la reparación
         'full_name',            // Nombre completo del cliente
-        'email',                // Email del cliente
-        'phone',                // Teléfono del cliente
-        'device_type',          // Tipo de dispositivo
+        'email',                // Email de contacto del cliente
+        'phone',                // Teléfono de contacto del cliente
+        'device_type',          // Tipo de dispositivo (celular, laptop, etc.)
         'brand',                // Marca del dispositivo
-        'model',                // Modelo del dispositivo
-        'problem_description',  // Descripción del problema
-        'device_image',         // Imagen del dispositivo
-        'status',               // Estado de la reparación
-        'notes',                // Notas del técnico
-        'estimated_cost',      // Costo estimado
-        'final_cost'            // Costo final
+        'model',                // Modelo específico del dispositivo
+        'problem_description',  // Descripción detallada del problema
+        'device_image',         // Ruta de la imagen del dispositivo
+        'status',               // Estado: pending, in_progress, completed, cancelled
+        'notes',                // Notas adicionales del técnico
+        'estimated_cost',      // Costo estimado de la reparación
+        'final_cost'            // Costo final de la reparación
     ];
 
     /**
      * Conversiones automáticas de tipos de datos
+     * 
+     * Los campos se convierten automáticamente al tipo especificado.
      */
     protected $casts = [
         'estimated_cost' => 'decimal:2', // Convertir a decimal con 2 decimales
@@ -106,28 +112,39 @@ class Repair extends Model
      * 
      * @return string Número único de reparación
      */
+    /**
+     * Generar número único de reparación con formato REPYYYYMM####
+     * 
+     * El número se reinicia cada mes. Ejemplo: REP2024110001, REP2024110002...
+     * 
+     * @return string Número único de reparación
+     */
     public static function generateRepairNumber(): string
     {
-        $prefix = 'REP'; // Prefijo fijo
-        $year = date('Y'); // Año actual (4 dígitos)
-        $month = date('m'); // Mes actual (2 dígitos)
+        // Prefijo fijo para todas las reparaciones
+        $prefix = 'REP';
         
-        // Buscar el último número de reparación del mes actual
+        // Obtener año y mes actuales
+        $year = date('Y');  // Año en 4 dígitos (ej: 2024)
+        $month = date('m'); // Mes en 2 dígitos (ej: 11)
+        
+        // Buscar la última reparación del mes actual para obtener el siguiente número
         $lastRepair = self::where('repair_number', 'like', $prefix . $year . $month . '%')
             ->orderBy('repair_number', 'desc')
             ->first();
         
-        // Si existe un número previo, incrementar el último número
+        // Si existe una reparación previa este mes, incrementar el número
         if ($lastRepair) {
-            // Extraer los últimos 4 dígitos del número anterior
+            // Extraer los últimos 4 dígitos del número anterior (ej: "0001")
             $lastNumber = (int) substr($lastRepair->repair_number, -4);
+            // Incrementar en 1
             $newNumber = $lastNumber + 1;
         } else {
-            // Si no existe, empezar en 1
+            // Si es la primera reparación del mes, empezar en 1
             $newNumber = 1;
         }
         
-        // Formatear el número con ceros a la izquierda (4 dígitos)
+        // Formatear el número con ceros a la izquierda para tener siempre 4 dígitos
         return $prefix . $year . $month . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
 
@@ -144,6 +161,14 @@ class Repair extends Model
      * 
      * @return string Clase CSS de Bootstrap para el badge
      */
+    /**
+     * Accessor: Obtener clase CSS del badge según el estado
+     * 
+     * Retorna la clase de Bootstrap para mostrar el badge con el color apropiado.
+     * Uso: $repair->status_badge
+     * 
+     * @return string Clase CSS de Bootstrap (warning, info, success, danger, secondary)
+     */
     public function getStatusBadgeAttribute(): string
     {
         return match($this->status) {
@@ -156,8 +181,9 @@ class Repair extends Model
     }
 
     /**
-     * Obtener el texto en español del estado
+     * Accessor: Obtener texto en español del estado
      * 
+     * Convierte el estado en inglés a texto en español para mostrar en la interfaz.
      * Uso: $repair->status_text
      * 
      * @return string Texto del estado traducido al español
@@ -165,11 +191,11 @@ class Repair extends Model
     public function getStatusTextAttribute(): string
     {
         return match($this->status) {
-            'pending' => 'Pendiente',
-            'in_progress' => 'En Progreso',
-            'completed' => 'Completado',
-            'cancelled' => 'Cancelado',
-            default => 'Desconocido'
+            'pending' => 'Pendiente',        // Estado pendiente
+            'in_progress' => 'En Progreso',  // Estado en progreso
+            'completed' => 'Completado',     // Estado completado
+            'cancelled' => 'Cancelado',      // Estado cancelado
+            default => 'Desconocido'         // Estado no reconocido
         };
     }
 }

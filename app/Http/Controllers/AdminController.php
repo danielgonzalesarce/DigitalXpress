@@ -723,14 +723,24 @@ class AdminController extends Controller
      * @param Request $request Parámetros de búsqueda y filtrado
      * @return \Illuminate\View\View Vista con lista de reparaciones y estadísticas
      */
+    /**
+     * Listar todas las reparaciones con filtros y búsqueda
+     * 
+     * Permite buscar y filtrar reparaciones por estado.
+     * Muestra estadísticas de reparaciones por estado.
+     * 
+     * @param Request $request Solicitud HTTP con parámetros de búsqueda y filtro
+     * @return \Illuminate\View\View Vista con lista de reparaciones y estadísticas
+     */
     public function repairs(Request $request)
     {
-        // Consulta base con relación de usuario cargada (evita N+1 queries)
+        // Cargar relación de usuario para evitar consultas N+1
         $query = Repair::with('user');
 
-        // Búsqueda por múltiples campos
+        // Búsqueda por múltiples campos si se proporciona término de búsqueda
         if ($request->has('search') && $request->search) {
             $searchTerm = '%' . $request->search . '%';
+            // Buscar en múltiples campos usando OR
             $query->where(function($q) use ($searchTerm) {
                 $q->where('repair_number', 'like', $searchTerm)      // Buscar por número de reparación
                   ->orWhere('full_name', 'like', $searchTerm)          // Buscar por nombre del cliente
@@ -742,21 +752,22 @@ class AdminController extends Controller
             });
         }
 
-        // Filtro por estado de la reparación
+        // Filtrar por estado si se proporciona
         if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
-        // Obtener reparaciones ordenadas por fecha más reciente y paginar (20 por página)
+        // Obtener reparaciones ordenadas por fecha (más recientes primero) y paginar
         $repairs = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        // Calcular estadísticas reales de la base de datos
-        $totalRepairs = Repair::count();                                    // Total de reparaciones
+        // Calcular estadísticas totales de reparaciones por estado
+        $totalRepairs = Repair::count();                                    // Total de todas las reparaciones
         $pendingRepairs = Repair::where('status', 'pending')->count();      // Reparaciones pendientes
         $inProgressRepairs = Repair::where('status', 'in_progress')->count(); // Reparaciones en progreso
         $completedRepairs = Repair::where('status', 'completed')->count();  // Reparaciones completadas
-        $cancelledRepairs = Repair::where('status', 'cancelled')->count();
+        $cancelledRepairs = Repair::where('status', 'cancelled')->count();  // Reparaciones canceladas
 
+        // Retornar vista con datos
         return view('admin.repairs.index', compact(
             'repairs', 
             'totalRepairs', 
@@ -767,50 +778,72 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * Mostrar formulario para crear nueva reparación (Admin)
+     * 
+     * Obtiene lista de usuarios clientes (no administradores) para asignar la reparación.
+     * 
+     * @return \Illuminate\View\View Vista del formulario de creación
+     */
     public function createRepair()
     {
+        // Obtener solo usuarios clientes (excluir administradores con @digitalxpress.com)
         $users = User::where('email', 'not like', '%@digitalxpress.com')->orderBy('name')->get();
         return view('admin.repairs.create', compact('users'));
     }
 
+    /**
+     * Guardar nueva reparación creada por administrador
+     * 
+     * Valida los datos, genera número único y crea el registro en la base de datos.
+     * 
+     * @param Request $request Datos del formulario
+     * @return \Illuminate\Http\RedirectResponse Redirección con mensaje de éxito/error
+     */
     public function storeRepair(Request $request)
     {
+        // Validar datos del formulario
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'device_type' => 'required|string|max:100',
-            'brand' => 'required|string|max:100',
-            'model' => 'required|string|max:100',
-            'problem_description' => 'required|string|min:20',
-            'status' => 'required|in:pending,in_progress,completed,cancelled',
+            'user_id' => 'required|exists:users,id',              // Usuario debe existir
+            'full_name' => 'required|string|max:255',             // Nombre obligatorio
+            'email' => 'required|email|max:255',                  // Email válido obligatorio
+            'phone' => 'required|string|max:20',                  // Teléfono obligatorio
+            'device_type' => 'required|string|max:100',           // Tipo de dispositivo obligatorio
+            'brand' => 'required|string|max:100',                 // Marca obligatoria
+            'model' => 'required|string|max:100',                 // Modelo obligatorio
+            'problem_description' => 'required|string|min:20',    // Descripción mínima 20 caracteres
+            'status' => 'required|in:pending,in_progress,completed,cancelled', // Estado válido
         ]);
 
         try {
+            // Iniciar transacción de base de datos
             DB::beginTransaction();
 
+            // Crear nueva reparación con datos validados
             Repair::create([
-                'repair_number' => Repair::generateRepairNumber(),
-                'user_id' => $request->user_id,
-                'full_name' => trim($request->full_name),
-                'email' => trim($request->email),
-                'phone' => trim($request->phone),
-                'device_type' => trim($request->device_type),
-                'brand' => trim($request->brand),
-                'model' => trim($request->model),
-                'problem_description' => trim($request->problem_description),
-                'status' => $request->status,
-                'estimated_cost' => $request->estimated_cost ? (float) $request->estimated_cost : null,
-                'final_cost' => $request->final_cost ? (float) $request->final_cost : null,
-                'notes' => $request->notes ? trim($request->notes) : null,
+                'repair_number' => Repair::generateRepairNumber(), // Generar número único
+                'user_id' => $request->user_id,                    // ID del usuario cliente
+                'full_name' => trim($request->full_name),           // Limpiar espacios
+                'email' => trim($request->email),                  // Limpiar espacios
+                'phone' => trim($request->phone),                  // Limpiar espacios
+                'device_type' => trim($request->device_type),      // Limpiar espacios
+                'brand' => trim($request->brand),                  // Limpiar espacios
+                'model' => trim($request->model),                  // Limpiar espacios
+                'problem_description' => trim($request->problem_description), // Limpiar espacios
+                'status' => $request->status,                      // Estado de la reparación
+                'estimated_cost' => $request->estimated_cost ? (float) $request->estimated_cost : null, // Convertir a float si existe
+                'final_cost' => $request->final_cost ? (float) $request->final_cost : null,              // Convertir a float si existe
+                'notes' => $request->notes ? trim($request->notes) : null, // Notas opcionales
             ]);
 
+            // Confirmar transacción
             DB::commit();
 
+            // Redirigir con mensaje de éxito
             return redirect()->route('admin.repairs')
                 ->with('success', 'Reparación creada exitosamente.');
         } catch (Exception $e) {
+            // Revertir transacción en caso de error
             DB::rollBack();
             return redirect()->back()
                 ->withInput()
@@ -818,62 +851,90 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * Mostrar formulario para editar reparación existente
+     * 
+     * @param Repair $repair Reparación a editar
+     * @return \Illuminate\View\View Vista del formulario de edición
+     */
     public function editRepair(Repair $repair)
     {
+        // Obtener lista de usuarios clientes para el selector
         $users = User::where('email', 'not like', '%@digitalxpress.com')->orderBy('name')->get();
         return view('admin.repairs.edit', compact('repair', 'users'));
     }
 
+    /**
+     * Actualizar reparación existente
+     * 
+     * Valida y actualiza los datos de la reparación en la base de datos.
+     * 
+     * @param Request $request Datos del formulario
+     * @param Repair $repair Reparación a actualizar
+     * @return \Illuminate\Http\RedirectResponse Redirección con mensaje de éxito/error
+     */
     public function updateRepair(Request $request, Repair $repair)
     {
+        // Validar datos del formulario
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'device_type' => 'required|string|max:100',
-            'brand' => 'required|string|max:100',
-            'model' => 'required|string|max:100',
-            'problem_description' => 'required|string|min:20',
-            'status' => 'required|in:pending,in_progress,completed,cancelled',
+            'user_id' => 'required|exists:users,id',              // Usuario debe existir
+            'full_name' => 'required|string|max:255',             // Nombre obligatorio
+            'email' => 'required|email|max:255',                  // Email válido obligatorio
+            'phone' => 'required|string|max:20',                  // Teléfono obligatorio
+            'device_type' => 'required|string|max:100',           // Tipo de dispositivo obligatorio
+            'brand' => 'required|string|max:100',                 // Marca obligatoria
+            'model' => 'required|string|max:100',                 // Modelo obligatorio
+            'problem_description' => 'required|string|min:20',    // Descripción mínima 20 caracteres
+            'status' => 'required|in:pending,in_progress,completed,cancelled', // Estado válido
         ]);
 
         try {
+            // Iniciar transacción de base de datos
             DB::beginTransaction();
 
+            // Actualizar campos de la reparación
             $repair->update([
-                'user_id' => (int) $request->user_id,
-                'full_name' => trim($request->full_name),
-                'email' => trim($request->email),
-                'phone' => trim($request->phone),
-                'device_type' => trim($request->device_type),
-                'brand' => trim($request->brand),
-                'model' => trim($request->model),
-                'problem_description' => trim($request->problem_description),
-                'status' => $request->status,
-                'estimated_cost' => $request->estimated_cost ? (float) $request->estimated_cost : null,
-                'final_cost' => $request->final_cost ? (float) $request->final_cost : null,
-                'notes' => $request->notes ? trim($request->notes) : null,
+                'user_id' => (int) $request->user_id,            // Convertir a entero
+                'full_name' => trim($request->full_name),        // Limpiar espacios
+                'email' => trim($request->email),                // Limpiar espacios
+                'phone' => trim($request->phone),                // Limpiar espacios
+                'device_type' => trim($request->device_type),     // Limpiar espacios
+                'brand' => trim($request->brand),                // Limpiar espacios
+                'model' => trim($request->model),                // Limpiar espacios
+                'problem_description' => trim($request->problem_description), // Limpiar espacios
+                'status' => $request->status,                     // Estado actualizado
+                'estimated_cost' => $request->estimated_cost ? (float) $request->estimated_cost : null, // Convertir a float si existe
+                'final_cost' => $request->final_cost ? (float) $request->final_cost : null,              // Convertir a float si existe
+                'notes' => $request->notes ? trim($request->notes) : null, // Notas opcionales
             ]);
 
+            // Guardar cambios explícitamente
             $repair->save();
+            
+            // Confirmar transacción
             DB::commit();
+            
+            // Refrescar modelo para obtener datos actualizados
             $repair->refresh();
 
+            // Registrar en log la actualización exitosa
             Log::info('Reparación actualizada exitosamente', [
                 'repair_id' => $repair->id,
                 'repair_number' => $repair->repair_number
             ]);
 
+            // Redirigir con mensaje de éxito
             return redirect()->route('admin.repairs')
                 ->with('success', 'Reparación "' . $repair->repair_number . '" actualizada exitosamente y guardada en la base de datos.');
         } catch (\Illuminate\Validation\ValidationException $e) {
+            // Revertir transacción si hay errores de validación
             DB::rollBack();
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors())
                 ->with('error', 'Por favor, corrige los errores en el formulario.');
         } catch (Exception $e) {
+            // Revertir transacción si hay error general
             DB::rollBack();
             return redirect()->back()
                 ->withInput()
@@ -881,26 +942,43 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * Eliminar reparación permanentemente
+     * 
+     * Elimina la reparación y su imagen asociada si existe.
+     * 
+     * @param Repair $repair Reparación a eliminar
+     * @return \Illuminate\Http\RedirectResponse Redirección con mensaje de éxito/error
+     */
     public function destroyRepair(Repair $repair)
     {
         try {
+            // Iniciar transacción de base de datos
             DB::beginTransaction();
 
+            // Guardar número de reparación para el mensaje (se perderá después del delete)
             $repairNumber = $repair->repair_number;
 
+            // Eliminar imagen del dispositivo si existe
             if ($repair->device_image) {
                 $imagePath = storage_path('app/public/' . $repair->device_image);
+                // Verificar que el archivo exista antes de eliminarlo
                 if (file_exists($imagePath)) {
-                    @unlink($imagePath);
+                    @unlink($imagePath); // Eliminar archivo físico
                 }
             }
 
+            // Eliminar registro de la base de datos
             $repair->delete();
+            
+            // Confirmar transacción
             DB::commit();
 
+            // Redirigir con mensaje de éxito
             return redirect()->route('admin.repairs')
                 ->with('success', 'Reparación "' . $repairNumber . '" eliminada exitosamente de la base de datos.');
         } catch (Exception $e) {
+            // Revertir transacción en caso de error
             DB::rollBack();
             return redirect()->route('admin.repairs')
                 ->with('error', 'Error al eliminar la reparación: ' . $e->getMessage());

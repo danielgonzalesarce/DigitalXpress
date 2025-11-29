@@ -52,26 +52,26 @@ Route::get('/productos/{product}', [ProductController::class, 'show'])->name('pr
 
 /**
  * ============================================
- * REPARACIONES
+ * REPARACIONES - Rutas Públicas y de Usuario
  * ============================================
  * 
  * Rutas para el servicio de reparaciones:
- * - Ver información del servicio
+ * - Ver información del servicio (público)
  * - Dashboard de reparaciones del usuario (requiere auth)
- * - Crear nueva solicitud de reparación
- * - Ver detalles de una reparación
- * - Agendar cita
- * - Contactar soporte
- * - Descargar reporte de reparación
+ * - Crear nueva solicitud de reparación (requiere auth)
+ * - Ver detalles de una reparación (requiere auth)
+ * - Agendar cita (requiere auth)
+ * - Contactar soporte (requiere auth)
+ * - Descargar reporte de reparación (requiere auth)
  */
-Route::get('/reparaciones', [RepairController::class, 'index'])->name('repairs.index');
-Route::get('/reparaciones/dashboard', [RepairController::class, 'dashboard'])->name('repairs.dashboard');
-Route::get('/reparaciones/nueva', [RepairController::class, 'create'])->name('repairs.create');
-Route::post('/reparaciones', [RepairController::class, 'store'])->name('repairs.store');
-Route::get('/reparaciones/{repair}', [RepairController::class, 'show'])->name('repairs.show');
-Route::get('/reparaciones/agendar/cita', [RepairController::class, 'schedule'])->name('repairs.schedule');
-Route::get('/reparaciones/contactar/soporte', [RepairController::class, 'contact'])->name('repairs.contact');
-Route::get('/reparaciones/descargar/reporte', [RepairController::class, 'downloadReport'])->name('repairs.download-report');
+Route::get('/reparaciones', [RepairController::class, 'index'])->name('repairs.index'); // Página informativa (público)
+Route::get('/reparaciones/dashboard', [RepairController::class, 'dashboard'])->name('repairs.dashboard'); // Dashboard del usuario
+Route::get('/reparaciones/nueva', [RepairController::class, 'create'])->name('repairs.create'); // Formulario de creación
+Route::post('/reparaciones', [RepairController::class, 'store'])->name('repairs.store'); // Guardar nueva reparación
+Route::get('/reparaciones/{repair}', [RepairController::class, 'show'])->name('repairs.show'); // Ver detalles de reparación
+Route::get('/reparaciones/agendar/cita', [RepairController::class, 'schedule'])->name('repairs.schedule'); // Agendar cita
+Route::get('/reparaciones/contactar/soporte', [RepairController::class, 'contact'])->name('repairs.contact'); // Contactar soporte
+Route::get('/reparaciones/descargar/reporte', [RepairController::class, 'downloadReport'])->name('repairs.download-report'); // Descargar PDF
 
 /**
  * ============================================
@@ -168,15 +168,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/orders/{order}', [AdminController::class, 'destroyOrder'])->name('orders.destroy');
     
     /**
-     * REPARACIONES - Gestión de Servicios Técnicos
+     * REPARACIONES - Gestión de Servicios Técnicos (Admin)
      * Permite gestionar las solicitudes de reparación de los clientes
+     * Todas las rutas requieren autenticación y rol de administrador
      */
-    Route::get('/repairs', [AdminController::class, 'repairs'])->name('repairs');
-    Route::get('/repairs/create', [AdminController::class, 'createRepair'])->name('repairs.create');
-    Route::post('/repairs', [AdminController::class, 'storeRepair'])->name('repairs.store');
-    Route::get('/repairs/{repair}/edit', [AdminController::class, 'editRepair'])->name('repairs.edit');
-    Route::put('/repairs/{repair}', [AdminController::class, 'updateRepair'])->name('repairs.update');
-    Route::delete('/repairs/{repair}', [AdminController::class, 'destroyRepair'])->name('repairs.destroy');
+    Route::get('/repairs', [AdminController::class, 'repairs'])->name('repairs'); // Listar todas las reparaciones
+    Route::get('/repairs/create', [AdminController::class, 'createRepair'])->name('repairs.create'); // Formulario crear (admin)
+    Route::post('/repairs', [AdminController::class, 'storeRepair'])->name('repairs.store'); // Guardar reparación (admin)
+    Route::get('/repairs/{repair}/edit', [AdminController::class, 'editRepair'])->name('repairs.edit'); // Formulario editar
+    Route::put('/repairs/{repair}', [AdminController::class, 'updateRepair'])->name('repairs.update'); // Actualizar reparación
+    Route::delete('/repairs/{repair}', [AdminController::class, 'destroyRepair'])->name('repairs.destroy'); // Eliminar reparación
     
     /**
      * ANÁLISIS - Reportes e Ingresos

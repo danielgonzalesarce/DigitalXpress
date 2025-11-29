@@ -108,10 +108,13 @@ class User extends Authenticatable
     /**
      * Relación: Un usuario puede tener múltiples solicitudes de reparación
      * 
+     * Relación uno a muchos: Un usuario puede tener muchas reparaciones.
+     * 
      * @return HasMany Relación con el modelo Repair
      */
     public function repairs(): HasMany
     {
+        // Retornar relación hasMany con Repair (un usuario tiene muchas reparaciones)
         return $this->hasMany(Repair::class);
     }
 

@@ -193,53 +193,87 @@ class RepairController extends Controller
             ->with('email_sent', $emailSent);
     }
 
+    /**
+     * Mostrar detalles de una reparación específica
+     * 
+     * Solo el propietario de la reparación puede ver sus detalles.
+     * 
+     * @param Repair $repair Reparación a mostrar
+     * @return \Illuminate\View\View Vista con detalles de la reparación
+     */
     public function show(Repair $repair)
     {
-        // Solo el propietario puede ver su reparación
+        // Verificar que el usuario sea el propietario de la reparación
         if ($repair->user_id !== Auth::id()) {
             abort(403, 'No tienes permisos para ver esta reparación');
         }
 
+        // Mostrar vista con los detalles de la reparación
         return view('repairs.show', compact('repair'));
     }
 
+    /**
+     * Mostrar página para agendar una cita de reparación
+     * 
+     * @return \Illuminate\View\View Vista de agendamiento de citas
+     * @return \Illuminate\Http\RedirectResponse Redirige al login si no está autenticado
+     */
     public function schedule()
     {
-        // Solo usuarios autenticados pueden agendar citas
+        // Verificar autenticación del usuario
         if (!Auth::check()) {
             return redirect()->route('repairs.index')
                 ->with('error', 'Necesitas iniciar sesión para agendar una cita');
         }
 
+        // Mostrar vista de agendamiento
         return view('repairs.schedule');
     }
 
+    /**
+     * Mostrar página de contacto con soporte técnico
+     * 
+     * @return \Illuminate\View\View Vista de contacto
+     * @return \Illuminate\Http\RedirectResponse Redirige al login si no está autenticado
+     */
     public function contact()
     {
-        // Solo usuarios autenticados pueden contactar soporte
+        // Verificar autenticación del usuario
         if (!Auth::check()) {
             return redirect()->route('repairs.index')
                 ->with('error', 'Necesitas iniciar sesión para contactar soporte');
         }
 
+        // Mostrar vista de contacto
         return view('repairs.contact');
     }
 
+    /**
+     * Generar y descargar reporte PDF de todas las reparaciones del usuario
+     * 
+     * Genera un PDF con el historial completo de reparaciones del usuario autenticado.
+     * 
+     * @return \Illuminate\Http\Response Descarga del archivo PDF
+     * @return \Illuminate\Http\RedirectResponse Redirige al login si no está autenticado
+     */
     public function downloadReport()
     {
-        // Solo usuarios autenticados pueden descargar reportes
+        // Verificar autenticación del usuario
         if (!Auth::check()) {
             return redirect()->route('repairs.index')
                 ->with('error', 'Necesitas iniciar sesión para descargar reportes');
         }
 
+        // Obtener todas las reparaciones del usuario ordenadas por fecha
         $repairs = Auth::user()->repairs()->orderBy('created_at', 'desc')->get();
         
-        // Generar reporte en PDF
+        // Generar PDF usando la vista repairs.report
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('repairs.report', compact('repairs'));
         
+        // Crear nombre de archivo con nombre de usuario y fecha
         $filename = 'reporte_reparaciones_' . Auth::user()->name . '_' . date('Y-m-d') . '.pdf';
         
+        // Descargar el PDF
         return $pdf->download($filename);
     }
 
