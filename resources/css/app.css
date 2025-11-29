@@ -75,7 +75,9 @@
 /* Aplicar animación al contenido principal cuando se carga - DESHABILITADA */
 main {
     /* animation: fadeInUp 0.6s ease-out; */
-    opacity: 1;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
 }
 
 /* Animación para mensajes de alerta - DESHABILITADA */

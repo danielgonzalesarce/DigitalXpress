@@ -79,9 +79,9 @@
     </div>
 
     <!-- Products Container -->
-    <div id="productsContainer" class="products-container">
+    <div id="productsContainer" class="products-container" style="opacity: 1 !important; visibility: visible !important;">
         <!-- Grid View -->
-        <div id="gridView" class="products-grid view-active">
+        <div id="gridView" class="products-grid view-active" style="opacity: 1 !important; visibility: visible !important; display: block !important;">
             <div class="row g-4">
                 @forelse($products as $product)
                 <div class="col-lg-3 col-md-6">
@@ -170,7 +170,7 @@
         </div>
 
         <!-- List View -->
-        <div id="listView" class="products-list">
+        <div id="listView" class="products-list" style="opacity: 1 !important; visibility: visible !important;">
             @forelse($products as $product)
             <div class="card product-list-item mb-3">
                 <div class="row g-0">
