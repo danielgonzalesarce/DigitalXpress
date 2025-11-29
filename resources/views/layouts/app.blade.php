@@ -223,7 +223,18 @@
     <!-- Main Content -->
     <main>
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert" data-auto-dismiss="5000">
+            @php
+                $isAuthMessage = str_contains(session('success'), 'Bienvenido') || 
+                                 str_contains(session('success'), 'bienvenido') ||
+                                 str_contains(session('success'), 'Cuenta creada') ||
+                                 str_contains(session('success'), 'cuenta creada') ||
+                                 str_contains(session('success'), 'Sesión iniciada') ||
+                                 str_contains(session('success'), 'sesión iniciada');
+            @endphp
+            <div class="alert alert-success alert-dismissible fade show auto-dismiss" 
+                 role="alert" 
+                 data-auto-dismiss="5000"
+                 data-auth-message="{{ $isAuthMessage ? 'true' : 'false' }}">
                 <i class="fas fa-check-circle me-2"></i>
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -696,5 +707,101 @@
     </script>
     
     @stack('scripts')
+    
+    <script>
+        // ============================================
+        // ANIMACIONES AL REFRESCAR LA PÁGINA
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación para elementos principales cuando se carga la página
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.style.opacity = '0';
+                mainContent.style.animation = 'fadeInUp 0.6s ease-out forwards';
+            }
+
+            // Animación para cards y elementos del contenido
+            const animatedElements = document.querySelectorAll('.card, .feature-card, .product-card, section');
+            animatedElements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.animation = `fadeInUp 0.8s ease-out forwards`;
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Animación especial para mensajes de autenticación
+            const authMessages = document.querySelectorAll('.alert[data-auth-message="true"]');
+            authMessages.forEach(alert => {
+                // Agregar efecto de confeti o celebración visual
+                alert.addEventListener('animationend', function() {
+                    // Crear efecto de partículas de celebración
+                    createCelebrationEffect(alert);
+                });
+            });
+
+            // Función para crear efecto de celebración
+            function createCelebrationEffect(element) {
+                const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+                const rect = element.getBoundingClientRect();
+                
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.left = rect.left + rect.width / 2 + 'px';
+                    particle.style.top = rect.top + rect.height / 2 + 'px';
+                    particle.style.width = '8px';
+                    particle.style.height = '8px';
+                    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.borderRadius = '50%';
+                    particle.style.pointerEvents = 'none';
+                    particle.style.zIndex = '9999';
+                    particle.style.animation = `particleFloat ${1 + Math.random()}s ease-out forwards`;
+                    
+                    const angle = (Math.PI * 2 * i) / 20;
+                    const distance = 50 + Math.random() * 50;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    
+                    particle.style.setProperty('--x', x + 'px');
+                    particle.style.setProperty('--y', y + 'px');
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 1000);
+                }
+            }
+
+            // Agregar keyframes para partículas si no existen
+            if (!document.getElementById('particle-animations')) {
+                const style = document.createElement('style');
+                style.id = 'particle-animations';
+                style.textContent = `
+                    @keyframes particleFloat {
+                        to {
+                            transform: translate(var(--x), var(--y)) scale(0);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+
+        // Animación cuando la página se carga completamente
+        window.addEventListener('load', function() {
+            // Agregar clase de "cargado" al body
+            document.body.classList.add('page-loaded');
+            
+            // Animar elementos que aparecen después de la carga
+            const lazyElements = document.querySelectorAll('.lazy-animate');
+            lazyElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '0';
+                    element.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>
