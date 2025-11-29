@@ -20,6 +20,31 @@
 <body>
     <!-- Overlay de carga/descarga de batería -->
     <div id="batteryOverlay" class="battery-overlay" style="display: none;">
+        <!-- Elementos tecnológicos de fondo -->
+        <div class="tech-background">
+            <div class="tech-grid"></div>
+            <div class="tech-particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <div class="tech-lines">
+                <div class="tech-line"></div>
+                <div class="tech-line"></div>
+                <div class="tech-line"></div>
+            </div>
+            <div class="tech-circles">
+                <div class="tech-circle"></div>
+                <div class="tech-circle"></div>
+                <div class="tech-circle"></div>
+            </div>
+        </div>
+        
         <div class="battery-container">
             <div class="battery-message" id="batteryMessage">Cargando...</div>
             <div class="battery-wrapper">
