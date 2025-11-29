@@ -302,13 +302,11 @@
 
     /* Vista de cuadrícula */
     .products-grid {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+        display: block;
     }
 
     .products-grid.view-hidden {
-        display: none !important;
+        display: none;
     }
 
     /* Vista de lista */
@@ -317,23 +315,7 @@
     }
 
     .products-list.view-active {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-    
-    /* Asegurar que los productos siempre sean visibles */
-    .products-container,
-    #productsContainer {
-        opacity: 1 !important;
-        visibility: visible !important;
-        display: block !important;
-    }
-    
-    #gridView {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+        display: block;
     }
 
     /* Estilos para items de lista */
@@ -526,13 +508,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Aplicar vista guardada al cargar
     switchView(savedView);
-    
-    // Asegurar que el contenido se muestre inmediatamente
-    if (gridView) {
-        gridView.style.display = 'block';
-        gridView.style.opacity = '1';
-        gridView.style.visibility = 'visible';
-    }
 
     // Funcionalidad de filtros automáticos
     const priceFilter = document.getElementById('priceFilter');

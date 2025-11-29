@@ -729,25 +729,21 @@
 
     /* Estilos mejorados para el hero section */
     .hero-title {
-        animation: fadeInUp 0.8s ease-out;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         line-height: 1.2;
     }
 
     .hero-category {
-        animation: fadeInUp 1s ease-out;
         opacity: 0.95;
         font-weight: 500;
     }
 
     .hero-description {
-        animation: fadeInUp 1.2s ease-out;
         opacity: 0.9;
         line-height: 1.6;
     }
 
     .hero-price-container {
-        animation: fadeInUp 1.4s ease-out;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
@@ -759,8 +755,7 @@
         box-shadow: 
             0 8px 25px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(0, 0, 0, 0.05) inset;
-        transition: all 0.3s ease;
-        width: fit-content; /* Ajustar al contenido */
+        width: fit-content;
         max-width: 100%;
     }
 
@@ -772,9 +767,8 @@
     }
 
     .hero-price {
-        color: #000000 !important; /* Negro sólido */
+        color: #000000 !important;
         text-shadow: none;
-        animation: pulsePrice 2s ease-in-out infinite;
         font-weight: 900 !important;
         letter-spacing: 1px;
         font-size: 2.5rem !important;
@@ -801,9 +795,8 @@
     }
 
     .hero-price-sale {
-        color: #000000 !important; /* Negro sólido */
+        color: #000000 !important;
         text-shadow: none;
-        animation: pulsePrice 2s ease-in-out infinite;
         font-weight: 900 !important;
         letter-spacing: 1px;
         font-size: 2.5rem !important;
@@ -837,17 +830,7 @@
         font-weight: 600;
     }
 
-    @keyframes pulsePrice {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.05);
-        }
-    }
-
     .hero-badge-container {
-        animation: fadeInDown 0.6s ease-out;
     }
 
     .badge-hero {
@@ -859,7 +842,6 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        animation: badgePulse 2s ease-in-out infinite;
         backdrop-filter: blur(10px);
     }
 
@@ -875,19 +857,7 @@
         border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
-    @keyframes badgePulse {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        50% {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-    }
-
     .hero-btn {
-        animation: fadeInUp 1.6s ease-out;
         position: relative;
         overflow: hidden;
     }
@@ -911,7 +881,6 @@
     }
 
     .welcome-badge {
-        animation: fadeInUp 1.8s ease-out;
     }
 
     .welcome-card {
@@ -922,35 +891,11 @@
             0 0 0 2px rgba(255, 255, 255, 0.2) inset,
             0 0 30px rgba(59, 130, 246, 0.4);
         backdrop-filter: blur(15px);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border: 2px solid rgba(255, 255, 255, 0.3);
         position: relative;
         overflow: hidden;
-        z-index: 5; /* Asegurar que esté detrás de los indicadores */
-        margin-bottom: 50px; /* Espacio para los indicadores del carrusel */
-    }
-
-    .welcome-card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        animation: welcomeShimmer 3s ease-in-out infinite;
-        pointer-events: none;
-    }
-
-    @keyframes welcomeShimmer {
-        0%, 100% {
-            transform: translate(-50%, -50%) rotate(0deg);
-            opacity: 0.3;
-        }
-        50% {
-            transform: translate(-50%, -50%) rotate(180deg);
-            opacity: 0.6;
-        }
+        z-index: 5;
+        margin-bottom: 50px;
     }
 
     .welcome-card:hover {
@@ -987,81 +932,9 @@
         box-shadow: 
             0 6px 20px rgba(0, 0, 0, 0.3),
             0 0 0 3px rgba(255, 255, 255, 0.5) inset;
-        animation: avatarPulse 2s ease-in-out infinite;
         border: 3px solid rgba(255, 255, 255, 0.6);
         position: relative;
         z-index: 1;
-    }
-
-    @keyframes avatarPulse {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-        }
-        50% {
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Efectos de entrada para cada slide */
-    .carousel-item {
-        animation: slideIn 0.8s ease-out;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* Efecto de brillo en el fondo del hero */
-    .hero-section::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-        pointer-events: none;
-        animation: shimmer 3s ease-in-out infinite;
-    }
-
-    @keyframes shimmer {
-        0%, 100% {
-            opacity: 0.5;
-        }
-        50% {
-            opacity: 0.8;
-        }
     }
 
     /* Mejorar contraste de texto en el hero */
@@ -1074,613 +947,6 @@
     .hero-section .col-lg-6:first-child p,
     .hero-section .col-lg-6:first-child .lead {
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-</style>
-
-    /* Animaciones de entrada básicas */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes fadeInRight {
-        from {
-            opacity: 0;
-            transform: translateX(40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes scaleIn {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    @keyframes rotateIn {
-        from {
-            opacity: 0;
-            transform: rotate(-10deg) scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: rotate(0deg) scale(1);
-        }
-    }
-
-    @keyframes bounceIn {
-        0% {
-            opacity: 0;
-            transform: scale(0.3);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-        70% {
-            transform: scale(0.9);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(100px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Clases de animación - Los elementos son visibles por defecto */
-    .fade-in-up {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .fade-in-up:not(.animated) {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-
-    .fade-in-down {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .fade-in-down:not(.animated) {
-        opacity: 0;
-        transform: translateY(-40px);
-    }
-
-    .fade-in-left {
-        opacity: 1;
-        transform: translateX(0);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .fade-in-left:not(.animated) {
-        opacity: 0;
-        transform: translateX(-40px);
-    }
-
-    .fade-in-right {
-        opacity: 1;
-        transform: translateX(0);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .fade-in-right:not(.animated) {
-        opacity: 0;
-        transform: translateX(40px);
-    }
-
-    .scale-in {
-        opacity: 1;
-        transform: scale(1);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .scale-in:not(.animated) {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-
-    .rotate-in {
-        opacity: 1;
-        transform: rotate(0deg) scale(1);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .rotate-in:not(.animated) {
-        opacity: 0;
-        transform: rotate(-10deg) scale(0.9);
-    }
-
-    .bounce-in {
-        opacity: 1;
-        transform: scale(1);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .bounce-in:not(.animated) {
-        opacity: 0;
-        transform: scale(0.3);
-    }
-
-    .slide-in-up {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .slide-in-up:not(.animated) {
-        opacity: 0;
-        transform: translateY(100px);
-    }
-
-    /* Animación on scroll - Visible por defecto */
-    .animate-on-scroll {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .animate-on-scroll:not(.animated) {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    .animate-on-scroll.animated {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* Estilos mejorados para Feature Cards */
-    .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        text-align: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .feature-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .feature-card:hover::before {
-        left: 100%;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    .feature-card .text-primary {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .feature-card:hover .text-primary {
-        transform: scale(1.2) rotate(5deg);
-        color: #2563eb !important;
-    }
-
-    .feature-card:hover .text-primary i {
-        animation: iconBounce 0.6s ease-in-out;
-    }
-
-    @keyframes iconBounce {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-
-    .feature-card h5 {
-        transition: color 0.3s ease;
-    }
-
-    .feature-card:hover h5 {
-        color: #2563eb;
-    }
-
-    /* Animaciones mejoradas para Product Cards */
-    .product-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        position: relative;
-    }
-
-    .product-card::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-    }
-
-    .product-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    .product-card:hover::after {
-        opacity: 1;
-    }
-
-    .product-card .card-body {
-        transition: all 0.4s ease;
-    }
-
-    .product-card:hover .card-body {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 1));
-    }
-
-    .product-card .card-title {
-        transition: color 0.3s ease;
-    }
-
-    .product-card:hover .card-title {
-        color: #2563eb;
-    }
-
-    .product-card .btn-primary {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .product-card .btn-primary::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
-    }
-
-    .product-card .btn-primary:hover::before {
-        width: 300px;
-        height: 300px;
-    }
-
-    .product-card .btn-primary:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    }
-
-    /* Animaciones para imágenes de productos */
-    .product-image {
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .product-card:hover .product-image {
-        transform: scale(1.15) rotate(2deg);
-    }
-
-    /* Animaciones para badges */
-    .badge {
-        transition: all 0.3s ease;
-        animation: badgeFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes badgeFloat {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-3px);
-        }
-    }
-
-    .product-card:hover .badge {
-        transform: scale(1.1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Animaciones para precios */
-    .product-card .h5 {
-        transition: all 0.3s ease;
-    }
-
-    .product-card:hover .h5 {
-        transform: scale(1.1);
-        color: #2563eb !important;
-    }
-
-    /* Animaciones para títulos de sección */
-    section h2 {
-        position: relative;
-        display: inline-block;
-        transition: all 0.3s ease;
-    }
-
-    section h2::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #3b82f6, #2563eb);
-        transition: width 0.5s ease;
-        border-radius: 2px;
-    }
-
-    .fade-in-down.animated section h2::after,
-    section:hover h2::after {
-        width: 80px;
-    }
-
-    /* Animaciones para textos */
-    section p.text-muted {
-        transition: all 0.3s ease;
-    }
-
-    section:hover p.text-muted {
-        color: #6b7280 !important;
-    }
-
-    /* Efecto de parallax suave en scroll */
-    @media (prefers-reduced-motion: no-preference) {
-        .hero-section-wrapper {
-            transition: transform 0.3s ease-out;
-        }
-    }
-
-    /* Animaciones para botones del carrusel mejoradas */
-    .hero-btn {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .hero-btn::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
-    }
-
-    .hero-btn:hover::after {
-        width: 400px;
-        height: 400px;
-    }
-
-    .hero-btn:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Animación para el welcome card */
-    .welcome-card {
-        animation: welcomeSlideIn 0.8s ease-out 1.5s forwards;
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-
-    @keyframes welcomeSlideIn {
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    .welcome-avatar {
-        animation: avatarSpin 3s ease-in-out infinite;
-    }
-
-    @keyframes avatarSpin {
-        0%, 100% {
-            transform: rotate(0deg);
-        }
-        25% {
-            transform: rotate(-5deg);
-        }
-        75% {
-            transform: rotate(5deg);
-        }
-    }
-
-    /* Animaciones para las estrellas de rating */
-    .text-warning i {
-        transition: all 0.3s ease;
-        display: inline-block;
-    }
-
-    .product-card:hover .text-warning i {
-        animation: starTwinkle 0.6s ease-in-out;
-        transform: scale(1.2);
-    }
-
-    @keyframes starTwinkle {
-        0%, 100% {
-            transform: scale(1) rotate(0deg);
-        }
-        50% {
-            transform: scale(1.3) rotate(180deg);
-        }
-    }
-
-    /* Efecto de brillo en hover para cards */
-    .product-card,
-    .feature-card {
-        position: relative;
-    }
-
-    .product-card::before,
-    .feature-card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        opacity: 0;
-        transition: opacity 0.5s ease;
-        pointer-events: none;
-    }
-
-    .product-card:hover::before,
-    .feature-card:hover::before {
-        opacity: 1;
-        animation: shine 1.5s ease-in-out;
-    }
-
-    @keyframes shine {
-        0% {
-            transform: translate(-50%, -50%) rotate(0deg);
-        }
-        100% {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
-    /* Animación de carga para imágenes */
-    .product-image,
-    .carousel-image {
-        animation: imageLoad 0.6s ease-out;
-    }
-
-    @keyframes imageLoad {
-        from {
-            opacity: 0;
-            filter: blur(10px);
-        }
-        to {
-            opacity: 1;
-            filter: blur(0);
-        }
-    }
-
-    /* Efecto de ondas en hover para botones */
-    .btn-enhanced::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.4);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
-        opacity: 0;
-    }
-
-    .btn-enhanced:hover::after {
-        width: 300px;
-        height: 300px;
-        opacity: 1;
-    }
-
-    /* Animación de pulso para elementos importantes */
-    @keyframes pulse {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-    }
-
-    .product-card .badge.bg-danger {
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    /* Smooth scroll behavior */
-    html {
-        scroll-behavior: smooth;
-    }
-
-    /* Reducir animaciones para usuarios que prefieren menos movimiento */
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
     }
 </style>
 

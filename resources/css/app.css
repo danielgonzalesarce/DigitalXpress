@@ -7,88 +7,22 @@
  */
 
 /* ============================================
-   ANIMACIONES DE CARGA Y REFRESCO
+   ESTILOS BÁSICOS SIN ANIMACIONES
    ============================================ */
 
-/* Animación de entrada para el contenido principal */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes bounceIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.3) translateY(-50px);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-    70% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Aplicar animación al contenido principal cuando se carga - DESHABILITADA */
 main {
-    /* animation: fadeInUp 0.6s ease-out; */
     opacity: 1 !important;
     visibility: visible !important;
     display: block !important;
 }
 
-/* Animación para mensajes de alerta - DESHABILITADA */
 .alert {
-    /* animation: slideInDown 0.5s cubic-bezier(0.4, 0, 0.2, 1); */
     position: relative;
     overflow: hidden;
 }
 
 .alert::before {
-    display: none; /* Deshabilitar shimmer */
+    display: none;
 }
 
 .alert-success {
@@ -106,73 +40,12 @@ main {
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
-.page-load-animate:nth-child(1),
-.page-load-animate:nth-child(2),
-.page-load-animate:nth-child(3),
-.page-load-animate:nth-child(4),
-.page-load-animate:nth-child(5) {
-    /* Animaciones deshabilitadas para mejor rendimiento */
-}
-
-/* Animación para el navbar - DESHABILITADA */
 .navbar {
-    /* animation: slideInDown 0.5s ease-out; */
     opacity: 1;
 }
 
-/* Animación para elementos del contenido cuando se carga - DESHABILITADA */
 .page-load-animate {
-    /* animation: fadeInUp 0.8s ease-out forwards; */
     opacity: 1;
-}
-
-.page-load-animate:nth-child(1) { /* animation-delay: 0.1s; */ }
-.page-load-animate:nth-child(2) { /* animation-delay: 0.2s; */ }
-.page-load-animate:nth-child(3) { /* animation-delay: 0.3s; */ }
-.page-load-animate:nth-child(4) { /* animation-delay: 0.4s; */ }
-.page-load-animate:nth-child(5) { /* animation-delay: 0.5s; */ }
-
-/* Animación especial para mensajes de éxito de login/registro */
-.alert-success[data-auth-message="true"] {
-    animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    border: none;
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-}
-
-.alert-success[data-auth-message="true"] i {
-    animation: rotateIn 0.6s ease-out 0.3s both;
-}
-
-@keyframes rotateIn {
-    from {
-        transform: rotate(-180deg) scale(0);
-        opacity: 0;
-    }
-    to {
-        transform: rotate(0deg) scale(1);
-        opacity: 1;
-    }
-}
-
-/* Animación para el icono de éxito */
-.alert-success i.fa-check-circle {
-    animation: scaleIn 0.5s ease-out 0.2s both;
-}
-
-/* Efecto de pulso para mensajes importantes */
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
-    }
-    50% {
-        box-shadow: 0 4px 25px rgba(16, 185, 129, 0.5);
-    }
-}
-
-.alert-success[data-auth-message="true"] {
-    animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), pulse 2s ease-in-out infinite 1s;
 }
 
 /* ============================================
