@@ -106,7 +106,10 @@ class ProductController extends Controller
             ->whereIn('slug', $allowedCategorySlugs)
             ->whereHas('products', function ($query) {
                 $query->where('is_active', true)
-                      ->where('in_stock', true);
+                      ->where(function($q) {
+                          $q->where('in_stock', true)
+                            ->orWhere('stock_quantity', '>', 0);
+                      });
             })
             ->get()
             ->sortBy(function ($category) use ($allowedCategorySlugs) {

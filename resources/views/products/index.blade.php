@@ -75,7 +75,13 @@
 
     <!-- Results Count -->
     <div class="mb-4">
-        <p class="text-muted">{{ $products->total() }} productos encontrados</p>
+        <p class="text-muted">
+            @if($products->total() > 0)
+                {{ $products->total() }} producto{{ $products->total() > 1 ? 's' : '' }} encontrado{{ $products->total() > 1 ? 's' : '' }}
+            @else
+                No se encontraron productos con los filtros seleccionados
+            @endif
+        </p>
     </div>
 
     <!-- Products Container -->
@@ -296,13 +302,13 @@
 
     /* Vista de cuadrícula */
     .products-grid {
-        display: block;
-        opacity: 1;
-        transition: opacity 0.3s ease;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     .products-grid.view-hidden {
-        display: none;
+        display: none !important;
     }
 
     /* Vista de lista */
@@ -311,7 +317,23 @@
     }
 
     .products-list.view-active {
-        display: block;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Asegurar que los productos siempre sean visibles */
+    .products-container,
+    #productsContainer {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    #gridView {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     /* Estilos para items de lista */
