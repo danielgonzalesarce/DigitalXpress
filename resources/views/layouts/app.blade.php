@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', \App\Models\Setting::get('store_name', 'DigitalXpress') . ' - Tu tienda de tecnología')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Script para aplicar tema antes de renderizar (evita flash) -->
     <script>
         (function() {
