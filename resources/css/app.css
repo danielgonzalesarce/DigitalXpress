@@ -104,6 +104,14 @@ main {
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
+.page-load-animate:nth-child(1),
+.page-load-animate:nth-child(2),
+.page-load-animate:nth-child(3),
+.page-load-animate:nth-child(4),
+.page-load-animate:nth-child(5) {
+    /* Animaciones deshabilitadas para mejor rendimiento */
+}
+
 /* Animación para el navbar - DESHABILITADA */
 .navbar {
     /* animation: slideInDown 0.5s ease-out; */
