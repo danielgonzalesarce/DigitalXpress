@@ -767,36 +767,80 @@
     }
 
     .welcome-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(37, 99, 235, 0.95) 100%);
         border-radius: 15px;
         box-shadow: 
-            0 4px 15px rgba(0, 0, 0, 0.1),
-            0 0 0 1px rgba(59, 130, 246, 0.2) inset;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        border: 2px solid rgba(59, 130, 246, 0.2);
+            0 8px 25px rgba(0, 0, 0, 0.3),
+            0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+            0 0 30px rgba(59, 130, 246, 0.4);
+        backdrop-filter: blur(15px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: welcomeShimmer 3s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes welcomeShimmer {
+        0%, 100% {
+            transform: translate(-50%, -50%) rotate(0deg);
+            opacity: 0.3;
+        }
+        50% {
+            transform: translate(-50%, -50%) rotate(180deg);
+            opacity: 0.6;
+        }
     }
 
     .welcome-card:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px) scale(1.02);
         box-shadow: 
-            0 6px 20px rgba(0, 0, 0, 0.15),
-            0 0 0 1px rgba(59, 130, 246, 0.3) inset;
-        border-color: rgba(59, 130, 246, 0.4);
+            0 12px 35px rgba(0, 0, 0, 0.4),
+            0 0 0 2px rgba(255, 255, 255, 0.3) inset,
+            0 0 40px rgba(59, 130, 246, 0.6);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .welcome-card strong {
+        color: #ffffff;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .welcome-card .small {
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
     .welcome-avatar {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 20px;
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+        font-size: 24px;
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.3),
+            0 0 0 3px rgba(255, 255, 255, 0.5) inset;
         animation: avatarPulse 2s ease-in-out infinite;
+        border: 3px solid rgba(255, 255, 255, 0.6);
+        position: relative;
+        z-index: 1;
     }
 
     @keyframes avatarPulse {
