@@ -750,56 +750,138 @@
         animation: fadeInUp 1.4s ease-out;
         display: inline-flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0.75rem 1.5rem;
-        background: rgba(0, 0, 0, 0.4);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+        border-radius: 15px;
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(74, 222, 128, 0.4);
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(74, 222, 128, 0.3),
+            inset 0 0 20px rgba(74, 222, 128, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-price-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(74, 222, 128, 0.2), transparent);
+        animation: priceShimmer 3s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes priceShimmer {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    .hero-price-container:hover {
+        transform: scale(1.05);
+        border-color: rgba(74, 222, 128, 0.8);
+        box-shadow: 
+            0 6px 30px rgba(0, 0, 0, 0.6),
+            0 0 30px rgba(74, 222, 128, 0.5),
+            inset 0 0 30px rgba(74, 222, 128, 0.2);
     }
 
     .hero-price {
         color: #4ade80 !important; /* Verde brillante */
         text-shadow: 
-            0 0 10px rgba(74, 222, 128, 0.8),
-            0 2px 8px rgba(0, 0, 0, 0.8),
-            0 4px 12px rgba(0, 0, 0, 0.6);
-        animation: pulsePrice 2s ease-in-out infinite;
-        font-weight: 800 !important;
-        letter-spacing: 0.5px;
-        filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
+            0 0 15px rgba(74, 222, 128, 1),
+            0 0 30px rgba(74, 222, 128, 0.8),
+            0 2px 10px rgba(0, 0, 0, 0.9),
+            0 4px 15px rgba(0, 0, 0, 0.7);
+        animation: priceGlow 2s ease-in-out infinite;
+        font-weight: 900 !important;
+        letter-spacing: 1px;
+        filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+
+    @keyframes priceGlow {
+        0%, 100% {
+            text-shadow: 
+                0 0 15px rgba(74, 222, 128, 1),
+                0 0 30px rgba(74, 222, 128, 0.8),
+                0 2px 10px rgba(0, 0, 0, 0.9),
+                0 4px 15px rgba(0, 0, 0, 0.7);
+            filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
+        }
+        50% {
+            text-shadow: 
+                0 0 20px rgba(74, 222, 128, 1),
+                0 0 40px rgba(74, 222, 128, 1),
+                0 2px 10px rgba(0, 0, 0, 0.9),
+                0 4px 15px rgba(0, 0, 0, 0.7);
+            filter: drop-shadow(0 0 15px rgba(74, 222, 128, 1));
+        }
+    }
+
+    .hero-price-container:hover .hero-price {
+        transform: scale(1.05);
+        animation: pricePulse 0.6s ease-in-out;
+    }
+
+    @keyframes pricePulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
     }
 
     .hero-price-sale {
         color: #4ade80 !important; /* Verde brillante */
         text-shadow: 
-            0 0 10px rgba(74, 222, 128, 0.8),
-            0 2px 8px rgba(0, 0, 0, 0.8),
-            0 4px 12px rgba(0, 0, 0, 0.6);
-        animation: pulsePrice 2s ease-in-out infinite;
-        font-weight: 800 !important;
-        letter-spacing: 0.5px;
-        filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
+            0 0 15px rgba(74, 222, 128, 1),
+            0 0 30px rgba(74, 222, 128, 0.8),
+            0 2px 10px rgba(0, 0, 0, 0.9),
+            0 4px 15px rgba(0, 0, 0, 0.7);
+        animation: priceGlow 2s ease-in-out infinite;
+        font-weight: 900 !important;
+        letter-spacing: 1px;
+        filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+
+    .hero-price-container:hover .hero-price-sale {
+        transform: scale(1.05);
+        animation: pricePulse 0.6s ease-in-out;
     }
 
     .hero-price-original {
-        color: rgba(255, 255, 255, 0.6) !important;
+        color: rgba(255, 255, 255, 0.7) !important;
         text-shadow: 
-            0 2px 4px rgba(0, 0, 0, 0.8),
-            0 0 4px rgba(0, 0, 0, 0.5);
-        font-size: 1.1rem;
-        opacity: 0.8;
+            0 2px 6px rgba(0, 0, 0, 0.9),
+            0 0 8px rgba(0, 0, 0, 0.6);
+        font-size: 1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
     }
 
-    @keyframes pulsePrice {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.05);
-        }
+    .hero-price-container:hover .hero-price-original {
+        opacity: 1;
+        transform: scale(1.05);
     }
+
 
     .hero-badge-container {
         animation: fadeInDown 0.6s ease-out;
