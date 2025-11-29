@@ -748,16 +748,48 @@
 
     .hero-price-container {
         animation: fadeInUp 1.4s ease-out;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     .hero-price {
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        color: #4ade80 !important; /* Verde brillante */
+        text-shadow: 
+            0 0 10px rgba(74, 222, 128, 0.8),
+            0 2px 8px rgba(0, 0, 0, 0.8),
+            0 4px 12px rgba(0, 0, 0, 0.6);
         animation: pulsePrice 2s ease-in-out infinite;
+        font-weight: 800 !important;
+        letter-spacing: 0.5px;
+        filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
     }
 
     .hero-price-sale {
-        text-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        color: #4ade80 !important; /* Verde brillante */
+        text-shadow: 
+            0 0 10px rgba(74, 222, 128, 0.8),
+            0 2px 8px rgba(0, 0, 0, 0.8),
+            0 4px 12px rgba(0, 0, 0, 0.6);
         animation: pulsePrice 2s ease-in-out infinite;
+        font-weight: 800 !important;
+        letter-spacing: 0.5px;
+        filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
+    }
+
+    .hero-price-original {
+        color: rgba(255, 255, 255, 0.6) !important;
+        text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.8),
+            0 0 4px rgba(0, 0, 0, 0.5);
+        font-size: 1.1rem;
+        opacity: 0.8;
     }
 
     @keyframes pulsePrice {
