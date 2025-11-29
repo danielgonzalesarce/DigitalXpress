@@ -166,16 +166,18 @@
                             <small class="text-muted">{{ $repair->created_at->format('H:i') }}</small>
                         </td>
                         <td>
+                            @if($repair->status === 'completed')
+                            <!-- Solo mostrar botón de Reparación Completa cuando esté completada -->
+                            <button type="button" 
+                                    class="btn btn-sm btn-secondary" 
+                                    title="Reparación Completa"
+                                    disabled>
+                                <i class="fas fa-check-circle me-1"></i>
+                                Reparación Completa
+                            </button>
+                            @else
+                            <!-- Mostrar botones de editar y eliminar cuando NO esté completada -->
                             <div class="btn-group" role="group">
-                                @if($repair->status === 'completed')
-                                <button type="button" 
-                                        class="btn btn-sm btn-secondary" 
-                                        title="Reparación Completa"
-                                        disabled>
-                                    <i class="fas fa-check-circle me-1"></i>
-                                    Reparación Completa
-                                </button>
-                                @else
                                 <a href="{{ route('admin.repairs.edit', $repair) }}" 
                                    class="btn btn-sm btn-outline-primary" 
                                    title="Editar">
@@ -193,8 +195,8 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-                                @endif
                             </div>
+                            @endif
                         </td>
                     </tr>
                     @empty
