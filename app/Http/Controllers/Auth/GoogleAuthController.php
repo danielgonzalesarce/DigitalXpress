@@ -90,8 +90,17 @@ class GoogleAuthController extends Controller
             // Autenticar al usuario
             Auth::login($user, true);
 
-            // Redirigir a la página de "en desarrollo"
-            return redirect()->route('pages.development');
+            // Verificar si el usuario es administrador (email @digitalxpress.com)
+            $emailParts = explode('@', $user->email);
+            $emailDomain = isset($emailParts[1]) ? strtolower(trim($emailParts[1])) : '';
+            
+            // Si es admin, redirigir al panel de administración
+            if ($emailDomain === 'digitalxpress.com') {
+                return redirect()->intended(route('admin.dashboard', absolute: false));
+            }
+
+            // Si no es admin, redirigir al home normal
+            return redirect()->intended(route('home', absolute: false));
 
         } catch (\Exception $e) {
             // En caso de error, redirigir al login con mensaje de error

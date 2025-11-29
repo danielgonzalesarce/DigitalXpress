@@ -49,6 +49,20 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages*') ? 'active' : '' }}">
+                    <i class="fas fa-comments"></i>
+                    <span>Mensajería</span>
+                    @php
+                        $unreadCount = \App\Models\Message::where('receiver_id', Auth::id())
+                            ->where('is_read', false)
+                            ->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                    <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
+                    @endif
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="{{ route('admin.inventory') }}" class="nav-link {{ request()->routeIs('admin.inventory') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
                     <span>Inventario</span>
@@ -69,6 +83,14 @@
                     <span>Análisis</span>
                 </a>
             </div>
+            @if(Auth::check() && Auth::user()->email === 'admin@digitalxpress.com')
+            <div class="nav-item">
+                <a href="{{ route('admin.activity-logs') }}" class="nav-link {{ request()->routeIs('admin.activity-logs') ? 'active' : '' }}">
+                    <i class="fas fa-history"></i>
+                    <span>Auditoría</span>
+                </a>
+            </div>
+            @endif
             <div class="nav-item">
                 <a href="{{ route('admin.users') }}" class="nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                     <i class="fas fa-users"></i>
@@ -84,15 +106,20 @@
         </nav>
 
         <div class="user-profile">
-            <div class="user-avatar">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            <div class="user-profile-header">
+                <div class="user-avatar">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </div>
+                <div class="user-profile-info">
+                    <small class="text-uppercase" style="font-size: 0.65rem; opacity: 0.7; letter-spacing: 0.5px;">Configuración</small>
+                    <h6>{{ Auth::user()->name }}</h6>
+                    <p>{{ Auth::user()->email }}</p>
+                </div>
             </div>
-            <div class="user-info">
-                <h6>{{ Auth::user()->name }}</h6>
-                <p>{{ Auth::user()->email }}</p>
+            <div style="width: 100%;">
                 <span class="user-badge">Administrador</span>
             </div>
-            <form action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST" style="width: 100%; margin-top: 1rem;">
                 @csrf
                 <button type="submit" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
@@ -120,12 +147,82 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Buscar...">
                 </div>
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    @if(isset($adminNotifications) && $adminNotifications > 0)
-                    <span class="notification-badge">{{ $adminNotifications }}</span>
-                    @endif
-                </button>
+                <div class="notification-dropdown">
+                    <button class="notification-btn" id="notificationBtn" type="button">
+                        <i class="fas fa-bell"></i>
+                        @if(isset($adminNotifications) && $adminNotifications > 0)
+                        <span class="notification-badge">{{ $adminNotifications }}</span>
+                        @endif
+                    </button>
+                    <div class="notification-panel" id="notificationPanel">
+                        <div class="notification-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-bell me-2"></i>Notificaciones
+                            </h6>
+                            @if(isset($adminNotifications) && $adminNotifications > 0)
+                            <span class="badge bg-danger">{{ $adminNotifications }}</span>
+                            @endif
+                        </div>
+                        <div class="notification-body">
+                            @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+                            <a href="{{ route('admin.messages.index') }}" class="notification-item unread">
+                                <div class="notification-icon bg-info">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Nuevos Mensajes</div>
+                                    <div class="notification-text">Tienes {{ $unreadMessagesCount }} mensaje{{ $unreadMessagesCount > 1 ? 's' : '' }} no leído{{ $unreadMessagesCount > 1 ? 's' : '' }}</div>
+                                    <div class="notification-time">Hace unos momentos</div>
+                                </div>
+                            </a>
+                            @endif
+                            @if(isset($pendingOrders) && $pendingOrders > 0)
+                            <a href="{{ route('admin.orders') }}" class="notification-item">
+                                <div class="notification-icon bg-warning">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Pedidos Pendientes</div>
+                                    <div class="notification-text">{{ $pendingOrders }} pedido{{ $pendingOrders > 1 ? 's' : '' }} pendiente{{ $pendingOrders > 1 ? 's' : '' }}</div>
+                                </div>
+                            </a>
+                            @endif
+                            @if(isset($lowStockCount) && $lowStockCount > 0)
+                            <a href="{{ route('admin.inventory') }}" class="notification-item">
+                                <div class="notification-icon bg-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Stock Bajo</div>
+                                    <div class="notification-text">{{ $lowStockCount }} producto{{ $lowStockCount > 1 ? 's' : '' }} con stock bajo</div>
+                                </div>
+                            </a>
+                            @endif
+                            @if(isset($pendingRepairs) && $pendingRepairs > 0)
+                            <a href="{{ route('admin.repairs') }}" class="notification-item">
+                                <div class="notification-icon bg-primary">
+                                    <i class="fas fa-wrench"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Reparaciones Pendientes</div>
+                                    <div class="notification-text">{{ $pendingRepairs }} reparación{{ $pendingRepairs > 1 ? 'es' : '' }} pendiente{{ $pendingRepairs > 1 ? 's' : '' }}</div>
+                                </div>
+                            </a>
+                            @endif
+                            @if((!isset($unreadMessagesCount) || $unreadMessagesCount == 0) && (!isset($pendingOrders) || $pendingOrders == 0) && (!isset($lowStockCount) || $lowStockCount == 0) && (!isset($pendingRepairs) || $pendingRepairs == 0))
+                            <div class="notification-empty">
+                                <i class="fas fa-check-circle fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">No hay notificaciones</p>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="notification-footer">
+                            <a href="{{ route('admin.messages.index') }}" class="notification-link">
+                                Ver todas las notificaciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -401,6 +498,30 @@
                         sidebarOverlay.classList.remove('show');
                     }
                 }
+            });
+        }
+
+        // Funcionalidad del dropdown de notificaciones
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationPanel = document.getElementById('notificationPanel');
+
+        if (notificationBtn && notificationPanel) {
+            // Toggle del panel al hacer clic en el botón
+            notificationBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationPanel.classList.toggle('show');
+            });
+
+            // Cerrar el panel al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!notificationPanel.contains(e.target) && !notificationBtn.contains(e.target)) {
+                    notificationPanel.classList.remove('show');
+                }
+            });
+
+            // Prevenir que el clic en el panel lo cierre
+            notificationPanel.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
         }
     </script>

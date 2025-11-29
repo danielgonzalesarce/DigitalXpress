@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Support Email Address
+    |--------------------------------------------------------------------------
+    |
+    | Dirección de correo donde se recibirán todas las notificaciones
+    | de usuarios (reparaciones, pedidos, contacto, etc.)
+    |
+    */
+
+    'support_email' => env('MAIL_SUPPORT_EMAIL', 'soportedigitalxpress@gmail.com'),
+
 ];

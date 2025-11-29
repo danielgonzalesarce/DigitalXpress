@@ -1,0 +1,155 @@
+═══════════════════════════════════════════════════════════════
+  CONFIGURACIÓN DE CORREO GMAIL - INSTRUCCIONES PASO A PASO
+═══════════════════════════════════════════════════════════════
+
+PROBLEMA DETECTADO:
+Tu sistema está configurado en modo "log", por eso los correos 
+se guardan en archivos pero NO se envían realmente.
+
+SOLUCIÓN:
+Sigue estos pasos para configurar Gmail correctamente:
+
+═══════════════════════════════════════════════════════════════
+PASO 1: ABRIR EL ARCHIVO .env
+═══════════════════════════════════════════════════════════════
+
+Abre el archivo .env que está en la raíz del proyecto:
+C:\Users\DANIEL ALEXANDER\Desktop\DigitalXpress\.env
+
+═══════════════════════════════════════════════════════════════
+PASO 2: BUSCAR Y MODIFICAR LAS LÍNEAS DE CORREO
+═══════════════════════════════════════════════════════════════
+
+Busca estas líneas en tu archivo .env:
+
+MAIL_MAILER=log
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+
+Y CÁMBIALAS por estas:
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=soportedigitalxpress@gmail.com
+MAIL_PASSWORD=AQUI_VA_TU_CONTRASEÑA_DE_APLICACION
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=soportedigitalxpress@gmail.com
+MAIL_FROM_NAME="DigitalXpress"
+MAIL_SUPPORT_EMAIL=soportedigitalxpress@gmail.com
+
+═══════════════════════════════════════════════════════════════
+PASO 3: GENERAR CONTRASEÑA DE APLICACIÓN EN GOOGLE
+═══════════════════════════════════════════════════════════════
+
+IMPORTANTE: NO uses tu contraseña normal de Gmail.
+Necesitas generar una "Contraseña de aplicación":
+
+1. Ve a: https://myaccount.google.com/security
+
+2. Asegúrate de tener "Verificación en 2 pasos" ACTIVADA
+   (Si no está activada, actívala primero)
+
+3. Busca la sección "Contraseñas de aplicaciones" 
+   (App passwords)
+
+4. Si no la ves:
+   - Primero activa "Verificación en 2 pasos"
+   - Espera unos minutos
+   - Recarga la página
+   - Debería aparecer "Contraseñas de aplicaciones"
+
+5. Haz clic en "Contraseñas de aplicaciones"
+
+6. Selecciona:
+   - Aplicación: "Correo"
+   - Dispositivo: "Otro (nombre personalizado)"
+   - Nombre: "DigitalXpress"
+
+7. Haz clic en "Generar"
+
+8. Te dará una contraseña de 16 caracteres como:
+   abcd efgh ijkl mnop
+
+9. COPIA esa contraseña (sin espacios)
+
+10. PÉGALA en tu archivo .env en la línea MAIL_PASSWORD:
+    MAIL_PASSWORD=abcdefghijklmnop
+
+═══════════════════════════════════════════════════════════════
+PASO 4: GUARDAR Y LIMPIAR CACHÉ
+═══════════════════════════════════════════════════════════════
+
+1. Guarda el archivo .env
+
+2. Abre PowerShell en la carpeta del proyecto
+
+3. Ejecuta estos comandos:
+
+   php artisan config:clear
+   php artisan cache:clear
+
+═══════════════════════════════════════════════════════════════
+PASO 5: PROBAR EL ENVÍO
+═══════════════════════════════════════════════════════════════
+
+Ejecuta este comando para probar:
+
+   php artisan email:test contact
+
+Si funciona, deberías ver:
+   ✅ Correo enviado exitosamente!
+   📬 Revisa tu bandeja de entrada en: soportedigitalxpress@gmail.com
+
+═══════════════════════════════════════════════════════════════
+PASO 6: VERIFICAR EN GMAIL
+═══════════════════════════════════════════════════════════════
+
+1. Ve a: https://mail.google.com
+2. Inicia sesión con: soportedigitalxpress@gmail.com
+3. Revisa la bandeja de entrada
+4. Si no lo ves, revisa la carpeta de SPAM
+
+═══════════════════════════════════════════════════════════════
+VERIFICAR CONFIGURACIÓN
+═══════════════════════════════════════════════════════════════
+
+Para verificar que todo está bien configurado, ejecuta:
+
+   php artisan config:show mail
+
+Debe mostrar:
+   - default: smtp (NO log)
+   - host: smtp.gmail.com (NO 127.0.0.1)
+   - port: 587 (NO 2525)
+   - username: soportedigitalxpress@gmail.com
+   - password: [tu contraseña] (NO null)
+
+═══════════════════════════════════════════════════════════════
+PROBLEMAS COMUNES
+═══════════════════════════════════════════════════════════════
+
+❌ Error: "Could not authenticate"
+   → Verifica que MAIL_PASSWORD sea una contraseña de aplicación
+   → NO uses tu contraseña normal de Gmail
+   → Asegúrate de que la verificación en 2 pasos esté activada
+
+❌ Error: "Connection timeout"
+   → Verifica que MAIL_HOST sea exactamente: smtp.gmail.com
+   → Verifica que MAIL_PORT sea: 587
+   → Verifica que MAIL_ENCRYPTION sea: tls
+
+❌ Los correos van a Spam
+   → Esto es normal al principio
+   → Marca los correos como "No es spam"
+   → Con el tiempo Gmail aprenderá que son legítimos
+
+❌ No encuentro "Contraseñas de aplicaciones"
+   → Primero debes activar "Verificación en 2 pasos"
+   → Espera unos minutos después de activarla
+   → Recarga la página de seguridad de Google
+
+═══════════════════════════════════════════════════════════════
+

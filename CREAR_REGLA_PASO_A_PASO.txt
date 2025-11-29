@@ -1,0 +1,131 @@
+═══════════════════════════════════════════════════════════════
+  CREAR REGLA DE FIREWALL PARA PUERTO 587 - PASO A PASO
+═══════════════════════════════════════════════════════════════
+
+Si no encuentras el puerto 587, significa que NO existe la regla.
+Necesitas CREARLA desde cero. Sigue estos pasos:
+
+═══════════════════════════════════════════════════════════════
+PASO 1: HACER CLIC EN "NUEVA REGLA..."
+═══════════════════════════════════════════════════════════════
+
+En el panel DERECHO de la ventana del Firewall (donde dice "Acciones"):
+→ Haz clic en "Nueva regla..." (New rule...)
+
+Se abrirá una ventana nueva con un asistente.
+
+═══════════════════════════════════════════════════════════════
+PASO 2: SELECCIONAR TIPO DE REGLA
+═══════════════════════════════════════════════════════════════
+
+En la primera pantalla del asistente verás 4 opciones:
+□ Programa
+■ Puerto          ← SELECCIONA ESTA OPCIÓN
+□ Predefinida
+□ Personalizada
+
+→ Haz clic en "Siguiente"
+
+═══════════════════════════════════════════════════════════════
+PASO 3: CONFIGURAR PROTOCOLO Y PUERTO
+═══════════════════════════════════════════════════════════════
+
+Protocolo y puertos:
+→ Selecciona: "TCP"
+
+Puertos:
+□ Todos los puertos remotos
+■ Puertos remotos específicos    ← SELECCIONA ESTA OPCIÓN
+
+En el cuadro de texto que aparece abajo:
+→ Escribe: 587
+
+→ Haz clic en "Siguiente"
+
+═══════════════════════════════════════════════════════════════
+PASO 4: SELECCIONAR ACCIÓN
+═══════════════════════════════════════════════════════════════
+
+Acción:
+■ Permitir la conexión    ← SELECCIONA ESTA OPCIÓN
+□ Permitir la conexión si es segura
+□ Bloquear la conexión
+
+→ Haz clic en "Siguiente"
+
+═══════════════════════════════════════════════════════════════
+PASO 5: SELECCIONAR PERFILES
+═══════════════════════════════════════════════════════════════
+
+Perfil:
+☑ Dominio      ← MARCA ESTA CASILLA
+☑ Privado      ← MARCA ESTA CASILLA
+☑ Público      ← MARCA ESTA CASILLA
+
+(Marca las TRES casillas)
+
+→ Haz clic en "Siguiente"
+
+═══════════════════════════════════════════════════════════════
+PASO 6: DAR NOMBRE A LA REGLA
+═══════════════════════════════════════════════════════════════
+
+Nombre:
+→ Escribe: Gmail SMTP Puerto 587
+
+Descripción (opcional):
+→ Escribe: Permite conexiones salientes al puerto 587 de Gmail SMTP
+
+→ Haz clic en "Finalizar"
+
+═══════════════════════════════════════════════════════════════
+PASO 7: VERIFICAR QUE LA REGLA SE CREÓ
+═══════════════════════════════════════════════════════════════
+
+1. En la lista de "Reglas de salida", busca la regla:
+   "Gmail SMTP Puerto 587"
+
+2. Verifica que:
+   ✓ En la columna "Habilitado" diga "Sí"
+   ✓ En la columna "Acción" diga "Permitir"
+   ✓ En la columna "Protocolo" diga "TCP"
+
+3. Si en "Habilitado" dice "No":
+   → Haz clic DERECHO en la regla
+   → Selecciona "Habilitar regla"
+
+═══════════════════════════════════════════════════════════════
+PASO 8: PROBAR LA CONEXIÓN
+═══════════════════════════════════════════════════════════════
+
+Después de crear la regla, cierra el Firewall y ejecuta en PowerShell:
+
+Test-NetConnection smtp.gmail.com -Port 587
+
+Si muestra: TcpTestSucceeded: True
+Entonces la regla funciona correctamente.
+
+Luego prueba el envío de correo:
+php artisan config:clear
+php artisan email:test contact
+
+═══════════════════════════════════════════════════════════════
+RESUMEN VISUAL DEL PROCESO
+═══════════════════════════════════════════════════════════════
+
+Firewall → Reglas de salida → Nueva regla...
+    ↓
+Tipo: Puerto
+    ↓
+TCP → Puertos remotos específicos: 587
+    ↓
+Permitir la conexión
+    ↓
+Todos los perfiles (Dominio, Privado, Público)
+    ↓
+Nombre: "Gmail SMTP Puerto 587"
+    ↓
+Finalizar ✅
+
+═══════════════════════════════════════════════════════════════
+

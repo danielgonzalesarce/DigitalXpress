@@ -24,10 +24,13 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Mail\OrderNotification;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Artisan;
 
 class CheckoutController extends Controller
 {
@@ -244,6 +247,22 @@ class CheckoutController extends Controller
 
             DB::commit();
 
+            // Cargar relaciones necesarias para el correo
+            $order->load('orderItems.product', 'user');
+
+            // Enviar correo de notificación a soporte
+            try {
+                $supportEmail = config('mail.support_email', 'soportedigitalxpress@gmail.com');
+                // Enviar correo de forma síncrona (inmediata)
+                Mail::to($supportEmail)->send(new OrderNotification($order));
+                
+                // Ejecutar comandos automáticamente para asegurar que el correo se procese
+                $this->processEmailDelivery();
+            } catch (\Exception $e) {
+                // Log del error pero no interrumpir el flujo
+                \Log::error('Error al enviar correo de notificación de pedido: ' . $e->getMessage());
+            }
+
             return redirect()->route('checkout.success', $order->id)
                 ->with('success', '¡Orden procesada exitosamente!');
 
@@ -269,5 +288,45 @@ class CheckoutController extends Controller
         }
 
         return view('checkout.success', compact('order'));
+    }
+
+    /**
+     * Ejecutar comandos automáticamente para procesar el envío de correo
+     * 
+     * Este método ejecuta comandos de Laravel para asegurar que el correo
+     * se procese y envíe correctamente inmediatamente después del envío.
+     * 
+     * Los comandos ejecutados son:
+     * - config:clear: Limpia la caché de configuración
+     * - queue:work --once: Procesa cualquier cola pendiente de correo
+     * 
+     * @return void
+     */
+    private function processEmailDelivery()
+    {
+        try {
+            // Limpiar caché de configuración para asegurar que los cambios se reflejen
+            Artisan::call('config:clear');
+            
+            // Procesar colas pendientes (si hay alguna)
+            // Esto asegura que cualquier correo en cola se procese inmediatamente
+            try {
+                Artisan::call('queue:work', [
+                    '--once' => true,
+                    '--timeout' => 10,
+                    '--tries' => 1
+                ]);
+            } catch (\Exception $queueException) {
+                // Si no hay colas configuradas o no hay trabajos pendientes, ignorar el error
+                // El correo ya se envió con Mail::send() de forma síncrona
+                \Log::debug('No hay colas pendientes o colas no configuradas: ' . $queueException->getMessage());
+            }
+            
+            \Log::info('Comandos de procesamiento de correo ejecutados exitosamente');
+        } catch (\Exception $e) {
+            // No interrumpir el flujo si hay error en los comandos
+            // El correo ya se envió con Mail::send() de forma síncrona
+            \Log::warning('Error al ejecutar comandos de procesamiento de correo: ' . $e->getMessage());
+        }
     }
 }

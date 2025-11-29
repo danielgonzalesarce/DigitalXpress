@@ -75,6 +75,16 @@
                                 @endif
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative d-flex align-items-center justify-content-center {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.index') }}" title="Bandeja de Entrada">
+                                <i class="fas fa-inbox"></i>
+                                @if($unreadMessagesCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                        {{ $unreadMessagesCount }}
+                                    </span>
+                                @endif
+                            </a>
+                        </li>
                     @endauth
                     @auth
                         <li class="nav-item dropdown">
@@ -108,6 +118,15 @@
                                         <div>
                                             <div class="fw-bold">Mi Perfil</div>
                                             <small class="text-muted">Editar información personal</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('messages.index') }}">
+                                        <i class="fas fa-inbox me-2 text-info"></i>
+                                        <div>
+                                            <div class="fw-bold">Bandeja de Entrada</div>
+                                            <small class="text-muted">Mensajes con administradores</small>
                                         </div>
                                     </a>
                                 </li>
@@ -450,7 +469,7 @@
                                 <div class="accordion-body">
                                     <p>¿Necesitas ayuda? Contáctanos:</p>
                                     <ul>
-                                        <li><strong>Email:</strong> <a href="mailto:{{ \App\Models\Setting::get('store_email', 'soporte@digitalxpress.com') }}">{{ \App\Models\Setting::get('store_email', 'soporte@digitalxpress.com') }}</a></li>
+                                        <li><strong>Email:</strong> <a href="https://mail.google.com/mail/?view=cm&fs=1&to=soportedigitalxpress@gmail.com&su=Consulta%20DigitalXpress" target="_blank">{{ \App\Models\Setting::get('store_email', 'soportedigitalxpress@gmail.com') }}</a></li>
                                         <li><strong>Teléfono:</strong> <a href="tel:{{ \App\Models\Setting::get('store_phone', '+51 936068781') }}">{{ \App\Models\Setting::get('store_phone', '+51 936068781') }}</a></li>
                                         @if(\App\Models\Setting::get('store_address'))
                                         <li><strong>Dirección:</strong> {{ \App\Models\Setting::get('store_address') }}</li>

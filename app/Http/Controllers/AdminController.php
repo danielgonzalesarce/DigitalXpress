@@ -20,6 +20,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -28,6 +29,7 @@ use App\Models\Repair;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -930,6 +932,9 @@ class AdminController extends Controller
             } elseif ($request->type === 'customer') {
                 $query->where('role', '!=', 'admin')
                       ->where('email', 'not like', '%@digitalxpress.com');
+            } elseif ($request->type === 'google') {
+                // Filtrar solo usuarios registrados con Google
+                $query->whereNotNull('google_id');
             }
         }
 
@@ -945,8 +950,9 @@ class AdminController extends Controller
         $customerUsers = User::where('role', '!=', 'admin')
             ->where('email', 'not like', '%@digitalxpress.com')
             ->count();
+        $googleUsers = User::whereNotNull('google_id')->count();
 
-        return view('admin.users.index', compact('users', 'totalUsers', 'adminUsers', 'customerUsers'));
+        return view('admin.users.index', compact('users', 'totalUsers', 'adminUsers', 'customerUsers', 'googleUsers'));
     }
 
     public function createUser()
@@ -1472,5 +1478,92 @@ class AdminController extends Controller
                 ->withInput()
                 ->with('error', 'Error al actualizar la configuración: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * ============================================
+     * AUDITORÍA - Registro de Actividades
+     * ============================================
+     * 
+     * Muestra el registro de todas las actividades realizadas por los administradores
+     * SOLO ACCESIBLE PARA admin@digitalxpress.com
+     */
+    public function activityLogs(Request $request)
+    {
+        // Verificar que solo admin@digitalxpress.com pueda acceder
+        if (Auth::user()->email !== 'admin@digitalxpress.com') {
+            abort(403, 'No tienes permiso para acceder a esta sección.');
+        }
+        $query = ActivityLog::with('user')->latest();
+
+        // Filtro por usuario
+        if ($request->has('user_id') && $request->user_id) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Filtro por acción
+        if ($request->has('action') && $request->action) {
+            $query->where('action', $request->action);
+        }
+
+        // Filtro por categoría
+        if ($request->has('category') && $request->category) {
+            $query->where('category', $request->category);
+        }
+
+        // Filtro por fecha
+        if ($request->has('date_from') && $request->date_from) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->has('date_to') && $request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Búsqueda por descripción o nombre del modelo
+        if ($request->has('search') && $request->search) {
+            $searchTerm = '%' . $request->search . '%';
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('description', 'like', $searchTerm)
+                  ->orWhere('model_name', 'like', $searchTerm)
+                  ->orWhere('user_name', 'like', $searchTerm);
+            });
+        }
+
+        $activities = $query->paginate(50);
+
+        // Estadísticas
+        $totalActivities = ActivityLog::count();
+        $todayActivities = ActivityLog::whereDate('created_at', today())->count();
+        $thisWeekActivities = ActivityLog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        
+        // Actividades por categoría
+        $activitiesByCategory = ActivityLog::select('category', DB::raw('count(*) as total'))
+            ->groupBy('category')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // Usuarios activos (con más actividades)
+        $activeUsers = ActivityLog::select('user_id', 'user_name', DB::raw('count(*) as total'))
+            ->whereNotNull('user_id')
+            ->groupBy('user_id', 'user_name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Obtener lista de usuarios para el filtro
+        $users = User::where('email', 'like', '%@digitalxpress.com')
+            ->orWhere('role', 'admin')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.activity-logs.index', compact(
+            'activities',
+            'totalActivities',
+            'todayActivities',
+            'thisWeekActivities',
+            'activitiesByCategory',
+            'activeUsers',
+            'users'
+        ));
     }
 }

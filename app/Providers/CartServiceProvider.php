@@ -23,6 +23,7 @@ namespace App\Providers;
 
 use App\Models\CartItem;
 use App\Models\Favorite;
+use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -76,9 +77,18 @@ class CartServiceProvider extends ServiceProvider
                 $favoritesCount = Favorite::where('user_id', Auth::id())->count();
             }
             
+            // Calcular cantidad de mensajes no leídos (solo usuarios autenticados)
+            $unreadMessagesCount = 0;
+            if (Auth::check()) {
+                $unreadMessagesCount = Message::where('receiver_id', Auth::id())
+                    ->where('is_read', false)
+                    ->count();
+            }
+            
             // Compartir los contadores con la vista
             $view->with('cartCount', $cartCount);
             $view->with('favoritesCount', $favoritesCount);
+            $view->with('unreadMessagesCount', $unreadMessagesCount);
         });
     }
 }

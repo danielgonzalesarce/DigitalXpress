@@ -31,6 +31,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -39,7 +40,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -122,5 +123,55 @@ class User extends Authenticatable
     public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Relación: Mensajes enviados por el usuario
+     * 
+     * @return HasMany Relación con el modelo Message (como remitente)
+     */
+    public function sentMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Relación: Mensajes recibidos por el usuario
+     * 
+     * @return HasMany Relación con el modelo Message (como receptor)
+     */
+    public function receivedMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    /**
+     * Relación: Conversaciones donde el usuario es el cliente
+     * 
+     * @return HasMany Relación con el modelo Conversation
+     */
+    public function conversationsAsUser(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    /**
+     * Relación: Conversaciones donde el usuario es el administrador
+     * 
+     * @return HasMany Relación con el modelo Conversation
+     */
+    public function conversationsAsAdmin(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'admin_id');
+    }
+
+    /**
+     * Verificar si el usuario es administrador
+     * 
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return str_ends_with($this->email, '@digitalxpress.com');
     }
 }

@@ -22,9 +22,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Repair;
+use App\Mail\RepairNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Artisan;
 
 class RepairController extends Controller
 {
@@ -146,10 +149,48 @@ class RepairController extends Controller
             $repairData['device_image'] = $imagePath;
         }
 
-        Repair::create($repairData);
+        $repair = Repair::create($repairData);
+
+        // Cargar relación de usuario para el correo
+        $repair->load('user');
+
+        // Enviar correo de notificación a soporte
+        $supportEmail = config('mail.support_email', 'soportedigitalxpress@gmail.com');
+        $emailSent = false;
+        $emailError = null;
+        
+        try {
+            // Enviar correo de forma síncrona (inmediata)
+            Mail::to($supportEmail)->send(new RepairNotification($repair));
+            
+            // Ejecutar comandos automáticamente para asegurar que el correo se procese
+            $this->processEmailDelivery();
+            
+            $emailSent = true;
+            \Log::info('Correo de notificación de reparación enviado exitosamente', [
+                'repair_id' => $repair->id,
+                'repair_number' => $repair->repair_number,
+                'to' => $supportEmail
+            ]);
+        } catch (\Exception $e) {
+            $emailError = $e->getMessage();
+            \Log::error('Error al enviar correo de notificación de reparación', [
+                'repair_id' => $repair->id,
+                'repair_number' => $repair->repair_number,
+                'to' => $supportEmail,
+                'error' => $emailError,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+
+        $message = 'Solicitud de reparación enviada exitosamente. Te contactaremos pronto.';
+        if (!$emailSent) {
+            $message .= ' Nota: Hubo un problema al enviar la notificación por correo, pero tu solicitud fue registrada correctamente.';
+        }
 
         return redirect()->route('repairs.dashboard')
-            ->with('success', 'Solicitud de reparación enviada exitosamente. Te contactaremos pronto.');
+            ->with('success', $message)
+            ->with('email_sent', $emailSent);
     }
 
     public function show(Repair $repair)
@@ -200,5 +241,45 @@ class RepairController extends Controller
         $filename = 'reporte_reparaciones_' . Auth::user()->name . '_' . date('Y-m-d') . '.pdf';
         
         return $pdf->download($filename);
+    }
+
+    /**
+     * Ejecutar comandos automáticamente para procesar el envío de correo
+     * 
+     * Este método ejecuta comandos de Laravel para asegurar que el correo
+     * se procese y envíe correctamente inmediatamente después del envío.
+     * 
+     * Los comandos ejecutados son:
+     * - config:clear: Limpia la caché de configuración
+     * - queue:work --once: Procesa cualquier cola pendiente de correo
+     * 
+     * @return void
+     */
+    private function processEmailDelivery()
+    {
+        try {
+            // Limpiar caché de configuración para asegurar que los cambios se reflejen
+            Artisan::call('config:clear');
+            
+            // Procesar colas pendientes (si hay alguna)
+            // Esto asegura que cualquier correo en cola se procese inmediatamente
+            try {
+                Artisan::call('queue:work', [
+                    '--once' => true,
+                    '--timeout' => 10,
+                    '--tries' => 1
+                ]);
+            } catch (\Exception $queueException) {
+                // Si no hay colas configuradas o no hay trabajos pendientes, ignorar el error
+                // El correo ya se envió con Mail::send() de forma síncrona
+                \Log::debug('No hay colas pendientes o colas no configuradas: ' . $queueException->getMessage());
+            }
+            
+            \Log::info('Comandos de procesamiento de correo ejecutados exitosamente');
+        } catch (\Exception $e) {
+            // No interrumpir el flujo si hay error en los comandos
+            // El correo ya se envió con Mail::send() de forma síncrona
+            \Log::warning('Error al ejecutar comandos de procesamiento de correo: ' . $e->getMessage());
+        }
     }
 }

@@ -30,10 +30,12 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+    use LogsActivity;
     /**
      * Campos que pueden ser asignados masivamente
      */

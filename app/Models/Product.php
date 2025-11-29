@@ -31,12 +31,14 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+    use LogsActivity;
     /**
      * Campos que pueden ser asignados masivamente (mass assignment)
      * Estos campos pueden ser llenados usando create() o update()

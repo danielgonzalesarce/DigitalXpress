@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Repair;
+use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -45,8 +47,16 @@ class AdminServiceProvider extends ServiceProvider
             $pendingRepairs = Repair::where('status', 'pending')
                 ->count();
             
+            // Mensajes no leídos para el administrador
+            $unreadMessagesCount = 0;
+            if (Auth::check()) {
+                $unreadMessagesCount = Message::where('receiver_id', Auth::id())
+                    ->where('is_read', false)
+                    ->count();
+            }
+            
             // Total de notificaciones (suma de todas las alertas importantes)
-            $totalNotifications = $pendingOrders + $lowStockCount + $outOfStockCount + $pendingRepairs;
+            $totalNotifications = $pendingOrders + $lowStockCount + $outOfStockCount + $pendingRepairs + $unreadMessagesCount;
             
             // Badge de inventario (stock bajo)
             $inventoryBadgeCount = $lowStockCount;
@@ -58,6 +68,7 @@ class AdminServiceProvider extends ServiceProvider
                 'outOfStockCount' => $outOfStockCount,
                 'pendingRepairs' => $pendingRepairs,
                 'inventoryBadgeCount' => $inventoryBadgeCount,
+                'unreadMessagesCount' => $unreadMessagesCount,
             ]);
         });
     }

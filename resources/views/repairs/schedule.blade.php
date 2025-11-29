@@ -182,7 +182,7 @@
                         <a href="tel:+51936068781" class="btn btn-success">
                             <i class="fas fa-phone me-2"></i> Llamar Ahora
                         </a>
-                        <a href="mailto:soporte@digitalxpress.com" class="btn btn-outline-success">
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=soportedigitalxpress@gmail.com&su=Consulta%20Reparaciones" target="_blank" class="btn btn-outline-success">
                             <i class="fas fa-envelope me-2"></i> Enviar Email
                         </a>
                     </div>

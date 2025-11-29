@@ -7,7 +7,7 @@
 @section('content')
     <!-- Summary Cards -->
     <div class="row g-4 mb-4">
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="metric-card">
                 <div class="metric-icon" style="background: #eff6ff; color: #2563eb;">
                     <i class="fas fa-users"></i>
@@ -16,7 +16,7 @@
                 <p class="metric-label">Total Usuarios</p>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="metric-card">
                 <div class="metric-icon" style="background: #f0fdf4; color: #10b981;">
                     <i class="fas fa-user-shield"></i>
@@ -25,13 +25,22 @@
                 <p class="metric-label">Administradores</p>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="metric-card">
                 <div class="metric-icon" style="background: #fef3c7; color: #f59e0b;">
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="metric-value">{{ $customerUsers }}</div>
                 <p class="metric-label">Clientes</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #fee2e2; color: #dc2626;">
+                    <i class="fab fa-google"></i>
+                </div>
+                <div class="metric-value">{{ $googleUsers }}</div>
+                <p class="metric-label">Con Google</p>
             </div>
         </div>
     </div>
@@ -52,6 +61,7 @@
                     <option value="">Todos los usuarios</option>
                     <option value="admin" {{ request('type') == 'admin' ? 'selected' : '' }}>Solo Administradores</option>
                     <option value="customer" {{ request('type') == 'customer' ? 'selected' : '' }}>Solo Clientes</option>
+                    <option value="google" {{ request('type') == 'google' ? 'selected' : '' }}>Solo con Google</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -77,6 +87,7 @@
                         <th>Usuario</th>
                         <th>Email</th>
                         <th>Tipo</th>
+                        <th>Método de Registro</th>
                         <th>Fecha de Registro</th>
                         <th>Acciones</th>
                     </tr>
@@ -86,9 +97,15 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="user-avatar me-2" style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                                </div>
+                                @if($user->avatar)
+                                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}" 
+                                         class="me-2" 
+                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                @else
+                                    <div class="user-avatar me-2" style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+                                @endif
                                 <div>
                                     <strong>{{ $user->name }}</strong>
                                 </div>
@@ -108,6 +125,17 @@
                             @endphp
                             <span class="badge {{ $roleInfo['class'] }}">{{ $roleInfo['label'] }}</span>
                         </td>
+                        <td>
+                            @if($user->google_id)
+                                <span class="badge bg-danger">
+                                    <i class="fab fa-google me-1"></i> Google
+                                </span>
+                            @else
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-envelope me-1"></i> Email
+                                </span>
+                            @endif
+                        </td>
                         <td>{{ $user->created_at->format('d/m/Y') }}</td>
                         <td>
                             <div class="btn-group" role="group">
@@ -126,7 +154,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <i class="fas fa-search fa-3x text-muted mb-3"></i>
                             <h4 class="text-muted">No se encontraron usuarios</h4>
                             <p class="text-muted">Intenta con otros criterios de búsqueda</p>

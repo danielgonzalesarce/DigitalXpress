@@ -112,7 +112,7 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
-                            <a href="{{ route('pages.development') }}" class="btn btn-outline-danger w-100 text-decoration-none">
+                            <a href="{{ route('google.auth') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google
                             </a>
@@ -180,7 +180,7 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
-                            <a href="{{ route('pages.development') }}" class="btn btn-outline-danger w-100 text-decoration-none">
+                            <a href="{{ route('google.auth') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google
                             </a>

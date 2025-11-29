@@ -191,7 +191,7 @@
                             <i class="fas fa-envelope text-primary me-3"></i>
                             <div>
                                 <h6 class="mb-0">Email</h6>
-                                <a href="mailto:soporte@digitalxpress.com" class="text-decoration-none">soporte@digitalxpress.com</a>
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=soportedigitalxpress@gmail.com&su=Consulta%20Reparaciones" target="_blank" class="text-decoration-none">soportedigitalxpress@gmail.com</a>
                             </div>
                         </div>
                     </div>

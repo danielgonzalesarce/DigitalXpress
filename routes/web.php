@@ -20,6 +20,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -184,6 +185,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/revenue', [AdminController::class, 'revenue'])->name('revenue');
     
     /**
+     * MENSAJERÍA - Sistema de Mensajería
+     * Permite a los administradores comunicarse con los usuarios
+     */
+    Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{conversation}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{conversation}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('messages.reply');
+    Route::post('/messages/{conversation}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('messages.markAsRead');
+    
+    /**
+     * AUDITORÍA - Registro de Actividades
+     * Muestra el registro de todas las actividades realizadas por los administradores
+     */
+    Route::get('/activity-logs', [AdminController::class, 'activityLogs'])->name('activity-logs');
+    
+    /**
      * USUARIOS - Gestión de Usuarios
      * Permite crear, editar y eliminar usuarios del sistema
      */
@@ -233,6 +249,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    /**
+     * ============================================
+     * MENSAJERÍA (Bandeja de Entrada)
+     * ============================================
+     * 
+     * Rutas para el sistema de mensajería entre usuarios y administradores:
+     * - Ver bandeja de entrada
+     * - Crear nuevo mensaje
+     * - Ver conversación específica
+     * - Enviar mensaje en conversación existente
+     */
+    Route::get('/mensajes', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/mensajes/nuevo', [MessageController::class, 'create'])->name('messages.create');
+    Route::post('/mensajes', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/mensajes/{conversation}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/mensajes/{conversation}/enviar', [MessageController::class, 'sendMessage'])->name('messages.send');
 });
 
 /**
@@ -274,6 +307,7 @@ Route::get('/centro-ayuda', [PageController::class, 'helpCenter'])->name('pages.
 Route::get('/garantias', [PageController::class, 'warranties'])->name('pages.warranties');
 Route::get('/devoluciones', [PageController::class, 'returns'])->name('pages.returns');
 Route::get('/contacto', [PageController::class, 'contact'])->name('pages.contact');
+Route::post('/contacto', [PageController::class, 'sendContact'])->name('pages.contact.send');
 Route::get('/sobre-nosotros', [PageController::class, 'about'])->name('pages.about');
 Route::get('/terminos', [PageController::class, 'terms'])->name('pages.terms');
 Route::get('/privacidad', [PageController::class, 'privacy'])->name('pages.privacy');
