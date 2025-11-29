@@ -757,8 +757,11 @@ class AdminController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Obtener reparaciones ordenadas por fecha (más recientes primero) y paginar
-        $repairs = $query->orderBy('created_at', 'desc')->paginate(20);
+        // Ordenar reparaciones: primero por estado (completadas al final), luego por fecha (más recientes primero)
+        // Las reparaciones completadas aparecerán al final de la lista
+        $repairs = $query->orderByRaw("CASE WHEN status = 'completed' THEN 1 ELSE 0 END")
+                         ->orderBy('created_at', 'desc')
+                         ->paginate(20);
 
         // Calcular estadísticas totales de reparaciones por estado
         $totalRepairs = Repair::count();                                    // Total de todas las reparaciones

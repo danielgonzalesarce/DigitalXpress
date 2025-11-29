@@ -174,7 +174,7 @@ class Repair extends Model
         return match($this->status) {
             'pending' => 'warning',      // Amarillo para pendiente
             'in_progress' => 'info',     // Azul para en progreso
-            'completed' => 'success',    // Verde para completado
+            'completed' => 'secondary',   // Gris para completado (terminada)
             'cancelled' => 'danger',     // Rojo para cancelado
             default => 'secondary'       // Gris para estado desconocido
         };

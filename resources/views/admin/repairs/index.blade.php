@@ -143,6 +143,13 @@
                             <span class="badge bg-{{ $repair->status_badge }}">
                                 {{ $repair->status_text }}
                             </span>
+                            @if($repair->status === 'completed')
+                            <br>
+                            <small class="text-muted">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Reparación Terminada
+                            </small>
+                            @endif
                         </td>
                         <td>
                             @if($repair->estimated_cost)
@@ -160,11 +167,21 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
+                                @if($repair->status === 'completed')
+                                <button type="button" 
+                                        class="btn btn-sm btn-secondary" 
+                                        title="Reparación Terminada"
+                                        disabled>
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Reparación Terminada
+                                </button>
+                                @else
                                 <a href="{{ route('admin.repairs.edit', $repair) }}" 
                                    class="btn btn-sm btn-outline-primary" 
                                    title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
+                                @endif
                                 <form action="{{ route('admin.repairs.destroy', $repair) }}" 
                                       method="POST" 
                                       class="d-inline"
