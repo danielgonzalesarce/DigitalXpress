@@ -434,6 +434,7 @@
     #productCarousel .carousel-item {
         height: 600px; /* Altura fija para cada slide */
         padding: 2rem 0;
+        padding-bottom: 4rem; /* Espacio adicional en la parte inferior para los indicadores */
     }
 
     #productCarousel .carousel-inner {
@@ -583,11 +584,9 @@
     }
 
     #productCarousel .carousel-indicators {
-        bottom: 20px;
-    }
-
-    #productCarousel .carousel-indicators {
         bottom: 30px;
+        z-index: 10; /* Asegurar que los indicadores estén por encima del welcome-card */
+        position: relative;
     }
 
     #productCarousel .carousel-indicators button {
