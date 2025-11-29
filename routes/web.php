@@ -186,13 +186,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/revenue', [AdminController::class, 'revenue'])->name('revenue');
     
     /**
-     * MENSAJERÍA - Sistema de Mensajería
-     * Permite a los administradores comunicarse con los usuarios
+     * ============================================
+     * MENSAJERÍA - Sistema de Mensajería (Admin)
+     * ============================================
+     * 
+     * Rutas para que los administradores gestionen conversaciones con usuarios.
+     * Permite ver todas las conversaciones, responder mensajes y marcar como leídos.
+     * 
+     * Funcionalidades:
+     * - Ver todas las conversaciones asignadas al administrador
+     * - Ver detalles de una conversación específica con todos sus mensajes
+     * - Responder a mensajes de usuarios
+     * - Marcar mensajes como leídos manualmente
+     * 
+     * Relacionado con: Sistema de reparaciones (los usuarios pueden contactar por reparaciones)
      */
-    Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index');
-    Route::get('/messages/{conversation}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('messages.show');
-    Route::post('/messages/{conversation}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('messages.reply');
-    Route::post('/messages/{conversation}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('messages.markAsRead');
+    Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index'); // Listar todas las conversaciones
+    Route::get('/messages/{conversation}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('messages.show'); // Ver conversación específica
+    Route::post('/messages/{conversation}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('messages.reply'); // Responder mensaje
+    Route::post('/messages/{conversation}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('messages.markAsRead'); // Marcar como leído
     
     /**
      * AUDITORÍA - Registro de Actividades
@@ -253,20 +265,26 @@ Route::middleware('auth')->group(function () {
 
     /**
      * ============================================
-     * MENSAJERÍA (Bandeja de Entrada)
+     * MENSAJERÍA - Bandeja de Entrada (Usuario)
      * ============================================
      * 
-     * Rutas para el sistema de mensajería entre usuarios y administradores:
-     * - Ver bandeja de entrada
-     * - Crear nuevo mensaje
-     * - Ver conversación específica
-     * - Enviar mensaje en conversación existente
+     * Rutas para que los usuarios se comuniquen con administradores.
+     * Sistema de mensajería usado principalmente para consultas sobre reparaciones.
+     * 
+     * Funcionalidades:
+     * - Ver bandeja de entrada con todas las conversaciones
+     * - Crear nuevo mensaje/conversación con un administrador
+     * - Ver conversación específica con todos sus mensajes
+     * - Enviar mensaje en una conversación existente
+     * - Los mensajes se marcan automáticamente como leídos al abrir la conversación
+     * 
+     * Relacionado con: Sistema de reparaciones (los usuarios pueden contactar por reparaciones)
      */
-    Route::get('/mensajes', [MessageController::class, 'index'])->name('messages.index');
-    Route::get('/mensajes/nuevo', [MessageController::class, 'create'])->name('messages.create');
-    Route::post('/mensajes', [MessageController::class, 'store'])->name('messages.store');
-    Route::get('/mensajes/{conversation}', [MessageController::class, 'show'])->name('messages.show');
-    Route::post('/mensajes/{conversation}/enviar', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/mensajes', [MessageController::class, 'index'])->name('messages.index'); // Ver bandeja de entrada
+    Route::get('/mensajes/nuevo', [MessageController::class, 'create'])->name('messages.create'); // Formulario para crear nuevo mensaje
+    Route::post('/mensajes', [MessageController::class, 'store'])->name('messages.store'); // Crear nueva conversación y primer mensaje
+    Route::get('/mensajes/{conversation}', [MessageController::class, 'show'])->name('messages.show'); // Ver conversación específica
+    Route::post('/mensajes/{conversation}/enviar', [MessageController::class, 'sendMessage'])->name('messages.send'); // Enviar mensaje en conversación existente
 });
 
 /**

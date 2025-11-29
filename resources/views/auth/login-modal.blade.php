@@ -105,6 +105,7 @@
                         </form>
                         
                         <!-- Social Login -->
+                        <!-- Botón de autenticación con Google -->
                         <div class="text-center">
                             <div class="position-relative mb-3">
                                 <hr>
@@ -112,6 +113,7 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
+                            <!-- Enlace que redirige a Google OAuth para iniciar sesión -->
                             <a href="{{ route('google.auth') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google
@@ -173,6 +175,7 @@
                         </form>
                         
                         <!-- Social Register -->
+                        <!-- Botón de autenticación con Google -->
                         <div class="text-center">
                             <div class="position-relative mb-3">
                                 <hr>
@@ -180,6 +183,7 @@
                                     O CONTINÚA CON
                                 </span>
                             </div>
+                            <!-- Enlace que redirige a Google OAuth para iniciar sesión -->
                             <a href="{{ route('google.auth') }}" class="btn btn-outline-danger w-100 text-decoration-none">
                                 <i class="fab fa-google me-2"></i>
                                 Continuar con Google

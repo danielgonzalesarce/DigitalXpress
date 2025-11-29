@@ -23,12 +23,36 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    // Rutas de autenticación con Google
+    /**
+     * ============================================
+     * AUTENTICACIÓN CON GOOGLE OAuth 2.0
+     * ============================================
+     * 
+     * Rutas para autenticación OAuth con Google usando Laravel Socialite.
+     * Permite a los usuarios iniciar sesión y crear cuenta usando su cuenta de Google.
+     * 
+     * Flujo:
+     * 1. Usuario hace clic en "Continuar con Google"
+     * 2. Redirige a Google para autorización (google.auth)
+     * 3. Google redirige de vuelta con código de autorización (google.callback)
+     * 4. Se crea/actualiza usuario y se autentica en la sesión
+     * 
+     * Restricciones:
+     * - Solo se permiten registros con @gmail.com
+     * - Los usuarios @digitalxpress.com no pueden crearse desde Google
+     * 
+     * Requisitos:
+     * - Credenciales configuradas en .env:
+     *   * GOOGLE_CLIENT_ID: ID del cliente OAuth 2.0
+     *   * GOOGLE_CLIENT_SECRET: Secreto del cliente OAuth 2.0
+     *   * GOOGLE_REDIRECT_URI: URI de callback (ej: http://127.0.0.1:8081/auth/google/callback)
+     * - Laravel Socialite instalado y configurado en config/services.php
+     */
     Route::get('auth/google', [GoogleAuthController::class, 'redirect'])
-        ->name('google.auth');
+        ->name('google.auth'); // Ruta: /auth/google - Inicia el flujo OAuth, redirige a Google
     
     Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])
-        ->name('google.callback');
+        ->name('google.callback'); // Ruta: /auth/google/callback - Maneja respuesta de Google, crea/actualiza usuario y autentica
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

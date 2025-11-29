@@ -22,32 +22,36 @@ class Conversation extends Model
     use HasFactory;
 
     /**
-     * Atributos que pueden ser asignados masivamente
+     * Atributos que pueden ser asignados masivamente (Mass Assignment)
+     * 
+     * Estos campos pueden ser llenados usando create() o update().
      * 
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'admin_id',
-        'subject',
-        'last_message_at',
+        'user_id',          // ID del usuario (cliente) que inicia la conversación
+        'admin_id',         // ID del administrador asignado a la conversación
+        'subject',          // Asunto de la conversación
+        'last_message_at',  // Fecha y hora del último mensaje (para ordenar)
     ];
 
     /**
      * Atributos que deben ser convertidos a tipos nativos
      * 
+     * Laravel convierte automáticamente estos campos al tipo especificado.
+     * 
      * @var array<string, string>
      */
     protected $casts = [
-        'last_message_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'last_message_at' => 'datetime',  // Convertir a objeto Carbon DateTime
+        'created_at' => 'datetime',       // Convertir a objeto Carbon DateTime
+        'updated_at' => 'datetime',        // Convertir a objeto Carbon DateTime
     ];
 
     /**
-     * Relación con el usuario (cliente)
+     * Relación: Una conversación pertenece a un usuario (cliente)
      * 
-     * @return BelongsTo
+     * @return BelongsTo Relación con el modelo User (cliente)
      */
     public function user(): BelongsTo
     {
@@ -55,9 +59,9 @@ class Conversation extends Model
     }
 
     /**
-     * Relación con el administrador
+     * Relación: Una conversación pertenece a un administrador
      * 
-     * @return BelongsTo
+     * @return BelongsTo Relación con el modelo User (administrador)
      */
     public function admin(): BelongsTo
     {
@@ -65,19 +69,23 @@ class Conversation extends Model
     }
 
     /**
-     * Relación con los mensajes de la conversación
+     * Relación: Una conversación tiene muchos mensajes
      * 
-     * @return HasMany
+     * @return HasMany Relación con el modelo Message
      */
     public function messages(): HasMany
     {
+        // Retornar mensajes ordenados por fecha de creación (más antiguos primero)
         return $this->hasMany(Message::class)->orderBy('created_at', 'asc');
     }
 
     /**
      * Obtener el último mensaje de la conversación
      * 
-     * @return Message|null
+     * Retorna el mensaje más reciente de la conversación.
+     * Útil para mostrar vista previa en listas de conversaciones.
+     * 
+     * @return Message|null Último mensaje o null si no hay mensajes
      */
     public function lastMessage()
     {
@@ -87,14 +95,17 @@ class Conversation extends Model
     /**
      * Contar mensajes no leídos para un usuario específico
      * 
-     * @param int $userId
-     * @return int
+     * Cuenta cuántos mensajes no leídos tiene un usuario en esta conversación.
+     * Útil para mostrar badges de notificaciones.
+     * 
+     * @param int $userId ID del usuario
+     * @return int Cantidad de mensajes no leídos
      */
     public function unreadCountFor($userId)
     {
         return $this->messages()
-            ->where('receiver_id', $userId)
-            ->where('is_read', false)
+            ->where('receiver_id', $userId)      // Solo mensajes recibidos por el usuario
+            ->where('is_read', false)             // Solo los que no están leídos
             ->count();
     }
 }

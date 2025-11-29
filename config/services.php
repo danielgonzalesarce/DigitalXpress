@@ -35,10 +35,21 @@ return [
         ],
     ],
 
+    /**
+     * Configuración de Google OAuth 2.0
+     * 
+     * Credenciales para autenticación con Google usando Laravel Socialite.
+     * Estas credenciales se obtienen desde Google Cloud Console.
+     * 
+     * Variables de entorno requeridas en .env:
+     * - GOOGLE_CLIENT_ID: ID del cliente OAuth 2.0
+     * - GOOGLE_CLIENT_SECRET: Secreto del cliente OAuth 2.0
+     * - GOOGLE_REDIRECT_URI: URI de redirección autorizado (ej: http://127.0.0.1:8081/auth/google/callback)
+     */
     'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'client_id' => env('GOOGLE_CLIENT_ID'),           // ID del cliente OAuth
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),   // Secreto del cliente OAuth
+        'redirect' => env('GOOGLE_REDIRECT_URI'),         // URI de callback después de autenticación
     ],
 
 ];

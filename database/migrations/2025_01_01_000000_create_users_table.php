@@ -18,15 +18,26 @@ return new class extends Migration
     {
         if (!Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table) {
+                // ID principal autoincremental
                 $table->id();
-                $table->string('name');
-                $table->string('email')->unique();
-                $table->timestamp('email_verified_at')->nullable();
-                $table->string('password');
+                
+                // Información básica del usuario
+                $table->string('name');                              // Nombre completo
+                $table->string('email')->unique();                   // Email único
+                $table->timestamp('email_verified_at')->nullable();   // Fecha de verificación de email
+                $table->string('password');                          // Contraseña hasheada
+                
+                // Rol del usuario (admin, customer, etc.)
                 $table->string('role')->default('customer');
-                $table->string('google_id')->nullable();
-                $table->string('avatar')->nullable();
+                
+                // Campos para autenticación con Google OAuth
+                $table->string('google_id')->nullable();             // ID único de Google (si se registró con Google)
+                $table->string('avatar')->nullable();                // URL del avatar de Google o imagen personalizada
+                
+                // Token para recordar sesión
                 $table->rememberToken();
+                
+                // Timestamps automáticos
                 $table->timestamps();
             });
         } else {
@@ -35,9 +46,11 @@ return new class extends Migration
                 if (!Schema::hasColumn('users', 'role')) {
                     $table->string('role')->default('customer')->after('email');
                 }
+                // Agregar campo google_id si no existe (para autenticación con Google)
                 if (!Schema::hasColumn('users', 'google_id')) {
                     $table->string('google_id')->nullable()->after('email');
                 }
+                // Agregar campo avatar si no existe (URL del avatar de Google)
                 if (!Schema::hasColumn('users', 'avatar')) {
                     $table->string('avatar')->nullable()->after('google_id');
                 }

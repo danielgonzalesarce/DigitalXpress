@@ -20,37 +20,41 @@ class Message extends Model
     use HasFactory;
 
     /**
-     * Atributos que pueden ser asignados masivamente
+     * Atributos que pueden ser asignados masivamente (Mass Assignment)
+     * 
+     * Estos campos pueden ser llenados usando create() o update().
      * 
      * @var array<int, string>
      */
     protected $fillable = [
-        'sender_id',
-        'receiver_id',
-        'message',
-        'subject',
-        'is_read',
-        'read_at',
-        'type',
-        'conversation_id',
+        'sender_id',        // ID del usuario que envía el mensaje
+        'receiver_id',      // ID del usuario que recibe el mensaje
+        'message',          // Contenido del mensaje
+        'subject',          // Asunto del mensaje
+        'is_read',          // Estado de lectura (true/false)
+        'read_at',          // Fecha y hora de lectura
+        'type',             // Tipo: 'user_to_admin' o 'admin_to_user'
+        'conversation_id',  // ID de la conversación a la que pertenece
     ];
 
     /**
      * Atributos que deben ser convertidos a tipos nativos
      * 
+     * Laravel convierte automáticamente estos campos al tipo especificado.
+     * 
      * @var array<string, string>
      */
     protected $casts = [
-        'is_read' => 'boolean',
-        'read_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'is_read' => 'boolean',      // Convertir a booleano
+        'read_at' => 'datetime',     // Convertir a objeto Carbon DateTime
+        'created_at' => 'datetime',  // Convertir a objeto Carbon DateTime
+        'updated_at' => 'datetime',  // Convertir a objeto Carbon DateTime
     ];
 
     /**
-     * Relación con el usuario que envía el mensaje
+     * Relación: Un mensaje pertenece a un usuario que lo envía
      * 
-     * @return BelongsTo
+     * @return BelongsTo Relación con el modelo User (remitente)
      */
     public function sender(): BelongsTo
     {
@@ -58,9 +62,9 @@ class Message extends Model
     }
 
     /**
-     * Relación con el usuario que recibe el mensaje
+     * Relación: Un mensaje pertenece a un usuario que lo recibe
      * 
-     * @return BelongsTo
+     * @return BelongsTo Relación con el modelo User (destinatario)
      */
     public function receiver(): BelongsTo
     {
@@ -68,9 +72,9 @@ class Message extends Model
     }
 
     /**
-     * Relación con la conversación a la que pertenece el mensaje
+     * Relación: Un mensaje pertenece a una conversación
      * 
-     * @return BelongsTo
+     * @return BelongsTo Relación con el modelo Conversation
      */
     public function conversation(): BelongsTo
     {
@@ -80,23 +84,30 @@ class Message extends Model
     /**
      * Marcar el mensaje como leído
      * 
+     * Actualiza el estado del mensaje a leído y guarda la fecha de lectura.
+     * Solo marca como leído si aún no está leído.
+     * 
      * @return void
      */
     public function markAsRead(): void
     {
+        // Solo marcar como leído si aún no está leído
         if (!$this->is_read) {
             $this->update([
-                'is_read' => true,
-                'read_at' => now(),
+                'is_read' => true,   // Marcar como leído
+                'read_at' => now(),  // Guardar fecha y hora de lectura
             ]);
         }
     }
 
     /**
-     * Scope para obtener mensajes no leídos
+     * Scope: Obtener solo mensajes no leídos
      * 
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Permite filtrar mensajes que aún no han sido leídos.
+     * Uso: Message::unread()->get()
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query Query builder
+     * @return \Illuminate\Database\Eloquent\Builder Query filtrado
      */
     public function scopeUnread($query)
     {
@@ -104,17 +115,21 @@ class Message extends Model
     }
 
     /**
-     * Scope para obtener mensajes de un usuario específico
+     * Scope: Obtener mensajes relacionados con un usuario específico
      * 
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Retorna mensajes donde el usuario es remitente o destinatario.
+     * Útil para obtener todos los mensajes de un usuario.
+     * Uso: Message::forUser($userId)->get()
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query Query builder
+     * @param int $userId ID del usuario
+     * @return \Illuminate\Database\Eloquent\Builder Query filtrado
      */
     public function scopeForUser($query, $userId)
     {
         return $query->where(function($q) use ($userId) {
-            $q->where('sender_id', $userId)
-              ->orWhere('receiver_id', $userId);
+            $q->where('sender_id', $userId)      // Mensajes enviados por el usuario
+              ->orWhere('receiver_id', $userId); // Mensajes recibidos por el usuario
         });
     }
 }

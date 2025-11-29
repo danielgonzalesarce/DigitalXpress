@@ -7,18 +7,26 @@
  * Extiende Authenticatable para manejar autenticación de Laravel.
  * 
  * Propiedades principales:
- * - name: Nombre del usuario
+ * - name: Nombre completo del usuario
  * - email: Email único del usuario (usado para login)
- * - password: Contraseña hasheada
+ * - password: Contraseña hasheada (requerida pero no usada si se registró con Google)
  * - role: Rol del usuario (admin, customer)
- * - google_id: ID de Google si se registró con OAuth
- * - avatar: URL del avatar del usuario
+ * - google_id: ID único de Google OAuth (si se registró con Google)
+ * - avatar: URL del avatar del usuario (obtenido de Google o personalizado)
+ * 
+ * Autenticación:
+ * - Puede autenticarse con email/password tradicional
+ * - Puede autenticarse con Google OAuth usando google_id
+ * - Los usuarios con @digitalxpress.com son administradores automáticamente
  * 
  * Relaciones:
  * - hasMany CartItem: el usuario puede tener múltiples items en el carrito
  * - hasMany Order: el usuario puede tener múltiples pedidos
  * - hasMany Repair: el usuario puede tener múltiples solicitudes de reparación
  * - hasMany Favorite: el usuario puede tener múltiples productos favoritos
+ * 
+ * Métodos:
+ * - isAdmin(): Verifica si el usuario es administrador (email @digitalxpress.com)
  * 
  * Seguridad:
  * - password y remember_token están ocultos en serialización
@@ -47,13 +55,16 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    /**
+     * Campos que pueden ser asignados masivamente (Mass Assignment)
+     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'google_id',
-        'avatar',
+        'name',              // Nombre completo del usuario
+        'email',             // Email único del usuario
+        'password',          // Contraseña hasheada
+        'role',              // Rol del usuario (admin, customer, etc.)
+        'google_id',         // ID único de Google OAuth (si se registró con Google)
+        'avatar',            // URL del avatar del usuario (de Google o personalizado)
     ];
 
     /**
