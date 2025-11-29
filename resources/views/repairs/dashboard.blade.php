@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-secondary text-white">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
@@ -147,12 +147,29 @@
                                         <span class="badge bg-{{ $repair->status_badge }}">
                                             {{ $repair->status_text }}
                                         </span>
+                                        @if($repair->status === 'completed')
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Reparación Terminada
+                                        </small>
+                                        @endif
                                     </td>
                                     <td>{{ $repair->created_at->format('d M Y') }}</td>
                                     <td>
+                                        @if($repair->status === 'completed')
+                                        <button type="button" 
+                                                class="btn btn-sm btn-secondary" 
+                                                title="Reparación Terminada"
+                                                disabled>
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Reparación Terminada
+                                        </button>
+                                        @else
                                         <a href="{{ route('repairs.show', $repair) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye"></i> Ver Detalles
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
