@@ -327,6 +327,7 @@
         padding: 0 1.5rem; /* Espacio blanco a los lados */
         margin: 0 auto;
         max-width: 100%;
+        overflow: visible; /* Permitir que las flechas se vean fuera del contenedor */
     }
 
     /* Sección hero con borde y espacio blanco */
@@ -334,7 +335,7 @@
         border-radius: 20px; /* Bordes redondeados */
         margin: 2rem auto; /* Márgenes superior e inferior y centrado */
         max-width: 1400px; /* Ancho máximo del contenido */
-        overflow: hidden;
+        overflow: visible; /* Permitir que las flechas se vean */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra sutil */
         padding: 0 !important; /* Sobrescribir el padding del layout */
     }
@@ -364,7 +365,8 @@
     #productCarousel {
         position: relative;
         height: 600px; /* Altura fija para el carrusel */
-        overflow: hidden;
+        overflow: visible; /* Permitir que las flechas se vean */
+        padding: 0 60px; /* Espacio para las flechas a los lados */
     }
 
     /* Panel con borde para la imagen del producto - Mejorado con más efectos */
@@ -436,6 +438,7 @@
 
     #productCarousel .carousel-inner {
         height: 600px; /* Altura fija para el contenedor interno */
+        overflow: visible; /* Permitir que el contenido se vea completamente */
     }
 
     #productCarousel .carousel-image {
@@ -466,48 +469,117 @@
 
     #productCarousel .carousel-control-prev,
     #productCarousel .carousel-control-next {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
         border-radius: 50%;
         top: 50%;
         transform: translateY(-50%);
-        opacity: 0.9;
+        opacity: 0.85;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        z-index: 15;
     }
 
     #productCarousel .carousel-control-prev:hover,
     #productCarousel .carousel-control-next:hover {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.4) 100%);
         opacity: 1;
-        transform: translateY(-50%) scale(1.1);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-50%) scale(1.15);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        border-color: rgba(255, 255, 255, 0.6);
     }
 
     #productCarousel .carousel-control-prev-icon,
     #productCarousel .carousel-control-next-icon {
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
         transition: transform 0.3s ease;
+        width: 20px;
+        height: 20px;
     }
 
     #productCarousel .carousel-control-prev:hover .carousel-control-prev-icon {
-        transform: translateX(-3px);
+        transform: translateX(-2px);
     }
 
     #productCarousel .carousel-control-next:hover .carousel-control-next-icon {
-        transform: translateX(3px);
+        transform: translateX(2px);
     }
 
+    /* Posicionar flechas en los bordes del contenedor del carrusel */
     #productCarousel .carousel-control-prev {
-        left: 20px;
+        left: 0;
     }
 
     #productCarousel .carousel-control-next {
-        right: 20px;
+        right: 0;
+    }
+
+    /* En pantallas medianas, ajustar padding y posición */
+    @media (max-width: 1200px) {
+        #productCarousel {
+            padding: 0 50px;
+        }
+
+        #productCarousel .carousel-control-prev {
+            left: 0;
+        }
+
+        #productCarousel .carousel-control-next {
+            right: 0;
+        }
+    }
+
+    /* Asegurar que el contenido tenga suficiente espacio y no se solape con las flechas */
+    #productCarousel .carousel-item .col-lg-6:first-child {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    #productCarousel .carousel-item .col-lg-6:last-child {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* En pantallas pequeñas, ajustar más el padding y tamaño de flechas */
+    @media (max-width: 768px) {
+        #productCarousel {
+            padding: 0 45px;
+        }
+
+        #productCarousel .carousel-control-prev {
+            left: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #productCarousel .carousel-control-next {
+            right: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #productCarousel .carousel-control-prev-icon,
+        #productCarousel .carousel-control-next-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        #productCarousel .carousel-item .col-lg-6:first-child {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        #productCarousel .carousel-item .col-lg-6:last-child {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
     }
 
     #productCarousel .carousel-indicators {
