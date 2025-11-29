@@ -177,6 +177,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/repairs', [AdminController::class, 'storeRepair'])->name('repairs.store'); // Guardar reparación (admin)
     Route::get('/repairs/{repair}/edit', [AdminController::class, 'editRepair'])->name('repairs.edit'); // Formulario editar
     Route::put('/repairs/{repair}', [AdminController::class, 'updateRepair'])->name('repairs.update'); // Actualizar reparación
+    Route::post('/repairs/{repair}/toggle-status', [AdminController::class, 'toggleRepairStatus'])->name('repairs.toggle-status'); // Deshabilitar/habilitar reparación
     Route::delete('/repairs/{repair}', [AdminController::class, 'destroyRepair'])->name('repairs.destroy'); // Eliminar reparación
     
     /**

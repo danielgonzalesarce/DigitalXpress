@@ -167,14 +167,19 @@
                         </td>
                         <td>
                             @if($repair->status === 'completed')
-                            <!-- Solo mostrar botón de Reparación Completa cuando esté completada -->
-                            <button type="button" 
-                                    class="btn btn-sm btn-secondary" 
-                                    title="Reparación Completa"
-                                    disabled>
-                                <i class="fas fa-check-circle me-1"></i>
-                                Reparación Completa
-                            </button>
+                            <!-- Botón para deshabilitar reparación completada (no eliminar) -->
+                            <form action="{{ route('admin.repairs.toggle-status', $repair) }}" 
+                                  method="POST" 
+                                  class="d-inline"
+                                  onsubmit="return confirm('¿Estás seguro de deshabilitar esta reparación? La reparación se ocultará de la lista pero se mantendrá en la base de datos.');">
+                                @csrf
+                                <button type="submit" 
+                                        class="btn btn-sm btn-secondary" 
+                                        title="Deshabilitar Reparación">
+                                    <i class="fas fa-ban me-1"></i>
+                                    Deshabilitar
+                                </button>
+                            </form>
                             @else
                             <!-- Mostrar botones de editar y eliminar cuando NO esté completada -->
                             <div class="btn-group" role="group">

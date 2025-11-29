@@ -66,7 +66,8 @@ class Repair extends Model
         'status',               // Estado: pending, in_progress, completed, cancelled
         'notes',                // Notas adicionales del técnico
         'estimated_cost',      // Costo estimado de la reparación
-        'final_cost'            // Costo final de la reparación
+        'final_cost',           // Costo final de la reparación
+        'is_active'             // Estado activo/inactivo (para deshabilitar sin eliminar)
     ];
 
     /**
@@ -77,6 +78,7 @@ class Repair extends Model
     protected $casts = [
         'estimated_cost' => 'decimal:2', // Convertir a decimal con 2 decimales
         'final_cost' => 'decimal:2',     // Convertir a decimal con 2 decimales
+        'is_active' => 'boolean',        // Convertir a booleano
     ];
 
     /**

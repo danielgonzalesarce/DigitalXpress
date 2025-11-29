@@ -752,6 +752,9 @@ class AdminController extends Controller
             });
         }
 
+        // Filtrar solo reparaciones activas (no deshabilitadas)
+        $query->where('is_active', true);
+
         // Filtrar por estado si se proporciona
         if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
@@ -953,6 +956,37 @@ class AdminController extends Controller
      * @param Repair $repair Reparación a eliminar
      * @return \Illuminate\Http\RedirectResponse Redirección con mensaje de éxito/error
      */
+    /**
+     * Deshabilitar o habilitar una reparación
+     * 
+     * En lugar de eliminar la reparación, la marca como inactiva (is_active = false).
+     * Esto permite mantener el historial sin mostrar la reparación en las listas activas.
+     * 
+     * @param Repair $repair Reparación a deshabilitar/habilitar
+     * @return \Illuminate\Http\RedirectResponse Redirección con mensaje de éxito/error
+     */
+    public function toggleRepairStatus(Repair $repair)
+    {
+        try {
+            // Cambiar el estado de activo a inactivo o viceversa
+            $repair->is_active = !$repair->is_active;
+            $repair->save();
+
+            // Mensaje según el nuevo estado
+            $message = $repair->is_active 
+                ? 'Reparación "' . $repair->repair_number . '" habilitada exitosamente.'
+                : 'Reparación "' . $repair->repair_number . '" deshabilitada exitosamente.';
+
+            // Redirigir con mensaje de éxito
+            return redirect()->route('admin.repairs')
+                ->with('success', $message);
+        } catch (Exception $e) {
+            // Redirigir con mensaje de error
+            return redirect()->route('admin.repairs')
+                ->with('error', 'Error al cambiar el estado de la reparación: ' . $e->getMessage());
+        }
+    }
+
     public function destroyRepair(Repair $repair)
     {
         try {

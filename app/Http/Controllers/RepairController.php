@@ -67,8 +67,9 @@ class RepairController extends Controller
                 ->with('error', 'Necesitas iniciar sesión para acceder al servicio técnico');
         }
 
-        // Obtener todas las reparaciones del usuario ordenadas: completadas al final, luego por fecha descendente
+        // Obtener todas las reparaciones activas del usuario ordenadas: completadas al final, luego por fecha descendente
         $repairs = Auth::user()->repairs()
+            ->where('is_active', true) // Solo mostrar reparaciones activas (no deshabilitadas)
             ->orderByRaw("CASE WHEN status = 'completed' THEN 1 ELSE 0 END")
             ->orderBy('created_at', 'desc')
             ->get();
