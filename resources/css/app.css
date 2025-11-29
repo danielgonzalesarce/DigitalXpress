@@ -470,3 +470,239 @@ body {
         font-size: 1.1rem;
     }
 }
+
+/* ============================================
+   ESTILOS MEJORADOS PARA BOTONES
+   ============================================ */
+
+/* Botones mejorados con efectos modernos */
+.btn-enhanced {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.btn-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.btn-enhanced:hover::before {
+    left: 100%;
+}
+
+.btn-enhanced i {
+    transition: transform 0.3s ease;
+}
+
+.btn-enhanced:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #007bff;
+    color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.btn-enhanced:hover i {
+    transform: scale(1.1);
+}
+
+.btn-enhanced:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Variantes de color para botones mejorados */
+.btn-enhanced.btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-enhanced.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    border-color: #0056b3;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.btn-enhanced.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-enhanced.btn-success:hover {
+    background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+    border-color: #1e7e34;
+    color: white;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.btn-enhanced.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-enhanced.btn-danger:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    border-color: #c82333;
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.btn-enhanced.btn-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border-color: #17a2b8;
+    color: white;
+}
+
+.btn-enhanced.btn-info:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    border-color: #138496;
+    color: white;
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+}
+
+.btn-enhanced.btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-enhanced.btn-warning:hover {
+    background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
+    border-color: #e0a800;
+    color: #212529;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.btn-enhanced.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-enhanced.btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #545b62 100%);
+    border-color: #5a6268;
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+/* Botones outline mejorados */
+.btn-enhanced.btn-outline-primary {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-enhanced.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-enhanced.btn-outline-success {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-enhanced.btn-outline-success:hover {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-enhanced.btn-outline-danger {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-enhanced.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-enhanced.btn-outline-info {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-color: #17a2b8;
+    color: #17a2b8;
+}
+
+.btn-enhanced.btn-outline-info:hover {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border-color: #17a2b8;
+    color: white;
+}
+
+/* Tamaños mejorados */
+.btn-enhanced.btn-lg {
+    padding: 12px 28px;
+    font-size: 17px;
+    border-radius: 10px;
+}
+
+.btn-enhanced.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+/* Aplicar estilos mejorados a todos los botones principales por defecto */
+.btn-primary:not(.btn-enhanced),
+.btn-success:not(.btn-enhanced),
+.btn-danger:not(.btn-enhanced),
+.btn-info:not(.btn-enhanced),
+.btn-warning:not(.btn-enhanced),
+.btn-secondary:not(.btn-enhanced),
+.btn-outline-primary:not(.btn-enhanced),
+.btn-outline-success:not(.btn-enhanced),
+.btn-outline-danger:not(.btn-enhanced),
+.btn-outline-info:not(.btn-enhanced) {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:not(.btn-enhanced):hover,
+.btn-success:not(.btn-enhanced):hover,
+.btn-danger:not(.btn-enhanced):hover,
+.btn-info:not(.btn-enhanced):hover,
+.btn-warning:not(.btn-enhanced):hover,
+.btn-secondary:not(.btn-enhanced):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary:not(.btn-enhanced):hover,
+.btn-outline-success:not(.btn-enhanced):hover,
+.btn-outline-danger:not(.btn-enhanced):hover,
+.btn-outline-info:not(.btn-enhanced):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

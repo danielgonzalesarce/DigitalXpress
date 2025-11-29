@@ -116,8 +116,8 @@
                         <i class="fas fa-wrench me-2"></i> Mis Reparaciones
                     </h5>
                     @if($repairs->count() > 0)
-                    <a href="{{ route('repairs.create') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus me-1"></i> Nueva Reparación
+                    <a href="{{ route('repairs.create') }}" class="btn btn-enhanced btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> <span>Nueva Reparación</span>
                     </a>
                     @endif
                 </div>
@@ -159,15 +159,15 @@
                                     <td>
                                         @if($repair->status === 'completed')
                                         <button type="button" 
-                                                class="btn btn-sm btn-secondary" 
+                                                class="btn btn-enhanced btn-secondary btn-sm" 
                                                 title="Reparación Terminada"
                                                 disabled>
-                                            <i class="fas fa-check-circle me-1"></i>
-                                            Reparación Terminada
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Reparación Terminada</span>
                                         </button>
                                         @else
-                                        <a href="{{ route('repairs.show', $repair) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i> Ver Detalles
+                                        <a href="{{ route('repairs.show', $repair) }}" class="btn btn-enhanced btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> <span>Ver Detalles</span>
                                         </a>
                                         @endif
                                     </td>
@@ -186,8 +186,8 @@
                         <p class="text-muted mb-4">
                             Cuando solicites una reparación, aparecerá aquí con toda la información y seguimiento.
                         </p>
-                        <a href="{{ route('repairs.create') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i> Solicitar Nueva Reparación
+                        <a href="{{ route('repairs.create') }}" class="btn btn-enhanced btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> <span>Solicitar Nueva Reparación</span>
                         </a>
                     </div>
                     @endif
@@ -209,23 +209,23 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <a href="{{ route('repairs.create') }}" class="btn btn-primary w-100">
-                                <i class="fas fa-plus me-2"></i> Nueva Reparación
+                            <a href="{{ route('repairs.create') }}" class="btn btn-enhanced btn-primary w-100">
+                                <i class="fas fa-plus"></i> <span>Nueva Reparación</span>
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="{{ route('repairs.schedule') }}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-calendar me-2"></i> Agendar Cita
+                            <a href="{{ route('repairs.schedule') }}" class="btn btn-enhanced btn-outline-primary w-100">
+                                <i class="fas fa-calendar"></i> <span>Agendar Cita</span>
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="{{ route('repairs.contact') }}" class="btn btn-outline-success w-100">
-                                <i class="fas fa-phone me-2"></i> Contactar Soporte
+                            <a href="{{ route('repairs.contact') }}" class="btn btn-enhanced btn-outline-success w-100">
+                                <i class="fas fa-phone"></i> <span>Contactar Soporte</span>
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="{{ route('repairs.download-report') }}" class="btn btn-outline-info w-100">
-                                <i class="fas fa-download me-2"></i> Descargar Reporte
+                            <a href="{{ route('repairs.download-report') }}" class="btn btn-enhanced btn-outline-info w-100">
+                                <i class="fas fa-download"></i> <span>Descargar Reporte</span>
                             </a>
                         </div>
                     </div>

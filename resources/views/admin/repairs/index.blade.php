@@ -66,8 +66,8 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-filter"></i> Filtrar
+                <button type="submit" class="btn btn-enhanced btn-primary w-100">
+                    <i class="fas fa-filter"></i> <span>Filtrar</span>
                 </button>
             </div>
         </form>
@@ -103,8 +103,8 @@
     <div class="orders-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">Lista de Reparaciones</h3>
-            <a href="{{ route('admin.repairs.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i> Crear Reparación
+            <a href="{{ route('admin.repairs.create') }}" class="btn btn-enhanced btn-primary">
+                <i class="fas fa-plus"></i> <span>Crear Reparación</span>
             </a>
         </div>
         <div class="table-responsive">
@@ -174,17 +174,17 @@
                                   onsubmit="return confirm('¿Estás seguro de deshabilitar esta reparación? La reparación se ocultará de la lista pero se mantendrá en la base de datos.');">
                                 @csrf
                                 <button type="submit" 
-                                        class="btn btn-sm btn-secondary" 
+                                        class="btn btn-enhanced btn-secondary btn-sm" 
                                         title="Deshabilitar Reparación">
-                                    <i class="fas fa-ban me-1"></i>
-                                    Deshabilitar
+                                    <i class="fas fa-ban"></i>
+                                    <span>Deshabilitar</span>
                                 </button>
                             </form>
                             @else
                             <!-- Mostrar botones de editar y eliminar cuando NO esté completada -->
                             <div class="btn-group" role="group">
                                 <a href="{{ route('admin.repairs.edit', $repair) }}" 
-                                   class="btn btn-sm btn-outline-primary" 
+                                   class="btn btn-enhanced btn-outline-primary btn-sm" 
                                    title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -195,7 +195,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="btn btn-sm btn-outline-danger" 
+                                            class="btn btn-enhanced btn-outline-danger btn-sm" 
                                             title="Eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -209,8 +209,8 @@
                         <td colspan="7" class="text-center py-5">
                             <i class="fas fa-wrench fa-3x text-muted mb-3"></i>
                             <p class="text-muted">No se encontraron reparaciones</p>
-                            <a href="{{ route('admin.repairs.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i> Crear Primera Reparación
+                            <a href="{{ route('admin.repairs.create') }}" class="btn btn-enhanced btn-primary">
+                                <i class="fas fa-plus"></i> <span>Crear Primera Reparación</span>
                             </a>
                         </td>
                     </tr>

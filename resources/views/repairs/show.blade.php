@@ -15,8 +15,8 @@
                     <p class="text-muted mb-0">Número de reparación: <strong>{{ $repair->repair_number }}</strong></p>
                 </div>
                 <div>
-                    <a href="{{ route('repairs.dashboard') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> Volver
+                    <a href="{{ route('repairs.dashboard') }}" class="btn btn-enhanced btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> <span>Volver</span>
                     </a>
                 </div>
             </div>
@@ -199,15 +199,15 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('repairs.contact') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-comments me-2"></i> Contactar Soporte
+                        <a href="{{ route('repairs.contact') }}" class="btn btn-enhanced btn-outline-primary">
+                            <i class="fas fa-comments"></i> <span>Contactar Soporte</span>
                         </a>
-                        <a href="{{ route('repairs.schedule') }}" class="btn btn-outline-success">
-                            <i class="fas fa-calendar me-2"></i> Agendar Cita
+                        <a href="{{ route('repairs.schedule') }}" class="btn btn-enhanced btn-outline-success">
+                            <i class="fas fa-calendar"></i> <span>Agendar Cita</span>
                         </a>
                         @if($repair->status === 'completed')
-                        <a href="{{ route('repairs.download-report') }}" class="btn btn-outline-info">
-                            <i class="fas fa-download me-2"></i> Descargar Reporte
+                        <a href="{{ route('repairs.download-report') }}" class="btn btn-enhanced btn-outline-info">
+                            <i class="fas fa-download"></i> <span>Descargar Reporte</span>
                         </a>
                         @endif
                     </div>

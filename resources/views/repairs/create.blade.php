@@ -179,8 +179,8 @@
 
                         <!-- Botón Enviar -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-paper-plane me-2"></i> Enviar Solicitud
+                            <button type="submit" class="btn btn-enhanced btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> <span>Enviar Solicitud</span>
                             </button>
                         </div>
                     </form>

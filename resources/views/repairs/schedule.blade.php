@@ -193,8 +193,8 @@
 
                         <!-- Botón Enviar -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-calendar-check me-2"></i> Confirmar Cita
+                            <button type="submit" class="btn btn-enhanced btn-primary btn-lg">
+                                <i class="fas fa-calendar-check"></i> <span>Confirmar Cita</span>
                             </button>
                         </div>
                     </form>
