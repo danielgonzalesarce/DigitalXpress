@@ -8,8 +8,10 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex align-items-center mb-3">
-                <a href="{{ route('repairs.dashboard') }}" class="btn btn-outline-secondary me-3">
-                    <i class="fas fa-arrow-left me-2"></i> Volver al Dashboard
+                <a href="{{ route('repairs.dashboard') }}" 
+                   class="btn-back-dashboard me-4">
+                    <i class="fas fa-arrow-left"></i> 
+                    <span>Volver al Dashboard</span>
                 </a>
                 <div>
                     <h1 class="fw-bold text-primary mb-0">
@@ -20,6 +22,68 @@
             </div>
         </div>
     </div>
+
+    <style>
+        /* Estilos mejorados para el botón Volver al Dashboard */
+        .btn-back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-back-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-back-dashboard:hover::before {
+            left: 100%;
+        }
+
+        .btn-back-dashboard i {
+            transition: transform 0.3s ease;
+            color: #007bff;
+        }
+
+        .btn-back-dashboard:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-color: #007bff;
+            color: #007bff;
+            transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+        }
+
+        .btn-back-dashboard:hover i {
+            transform: translateX(-3px);
+        }
+
+        .btn-back-dashboard:active {
+            transform: translateX(-3px) scale(0.98);
+        }
+
+        .btn-back-dashboard span {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 
     <div class="row">
         <!-- Formulario de Cita -->
