@@ -1,174 +1,160 @@
 @echo off
-REM 🚀 Script de Instalación Automática - DigitalXpress (Windows)
-REM Este script instala todas las dependencias necesarias para ejecutar el proyecto
-
-echo ==========================================
-echo 🚀 Instalación de DigitalXpress
-echo ==========================================
+REM ============================================
+REM Script de Instalación Automática - DigitalXpress
+REM Para Windows (PowerShell/Batch)
+REM ============================================
+echo.
+echo ========================================
+echo   INSTALACION AUTOMATICA - DigitalXpress
+echo ========================================
 echo.
 
-REM Verificar PHP
-echo 📋 Verificando requisitos...
-php -v >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ❌ PHP no está instalado. Por favor instala PHP 8.1 o superior.
+REM Verificar si PHP está instalado
+where php >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] PHP no esta instalado o no esta en el PATH
+    echo Por favor instala PHP 8.1 o superior
     pause
     exit /b 1
 )
-echo ✅ PHP encontrado
-php -v
 
-REM Verificar Composer
-composer --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ❌ Composer no está instalado. Por favor instala Composer.
-    echo    Visita: https://getcomposer.org/download/
+REM Verificar si Composer está instalado
+where composer >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Composer no esta instalado o no esta en el PATH
+    echo Por favor instala Composer desde https://getcomposer.org
     pause
     exit /b 1
 )
-echo ✅ Composer encontrado
+
+echo [1/8] Verificando dependencias...
+php --version
 composer --version
-
-REM Verificar Node.js
-node --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ⚠️  Node.js no está instalado. Los assets no se compilarán.
-    echo    Visita: https://nodejs.org/
-    set NODE_INSTALLED=false
-) else (
-    echo ✅ Node.js encontrado
-    node --version
-    set NODE_INSTALLED=true
-)
-
-REM Verificar NPM
-if "%NODE_INSTALLED%"=="true" (
-    npm --version >nul 2>&1
-    if %errorlevel% neq 0 (
-        echo ⚠️  NPM no está instalado.
-        set NPM_INSTALLED=false
-    ) else (
-        echo ✅ NPM encontrado
-        npm --version
-        set NPM_INSTALLED=true
-    )
-)
-
 echo.
-echo 📦 Instalando dependencias de PHP...
-composer install --no-interaction --prefer-dist --optimize-autoloader
-if %errorlevel% neq 0 (
-    echo ❌ Error al instalar dependencias de PHP
+
+echo [2/8] Instalando dependencias de PHP (Composer)...
+call composer install --no-interaction
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Error al instalar dependencias de Composer
     pause
     exit /b 1
 )
-echo ✅ Dependencias de PHP instaladas
-
-REM Instalar dependencias de Node.js si está disponible
-if "%NPM_INSTALLED%"=="true" (
-    echo.
-    echo 📦 Instalando dependencias de Node.js...
-    call npm install
-    if %errorlevel% neq 0 (
-        echo ⚠️  Error al instalar dependencias de Node.js (continuando...)
-    ) else (
-        echo ✅ Dependencias de Node.js instaladas
-    )
-)
-
-REM Copiar archivo .env
 echo.
-echo ⚙️  Configurando archivo .env...
+
+echo [3/8] Verificando archivo .env...
 if not exist .env (
-    if exist .env.example (
-        copy .env.example .env
-        echo ✅ Archivo .env creado desde .env.example
-    ) else (
-        echo ⚠️  Archivo .env.example no encontrado
-    )
+    echo Creando archivo .env desde .env.example...
+    copy .env.example .env
+    echo.
+    echo ========================================
+    echo   CONFIGURACION DE BASE DE DATOS
+    echo ========================================
+    echo.
+    echo Por favor ingresa los datos de tu base de datos PostgreSQL:
+    echo.
+    set /p DB_HOST="Host de PostgreSQL (default: localhost): "
+    if "%DB_HOST%"=="" set DB_HOST=localhost
+    
+    set /p DB_PORT="Puerto de PostgreSQL (default: 5432): "
+    if "%DB_PORT%"=="" set DB_PORT=5432
+    
+    set /p DB_DATABASE="Nombre de la base de datos (default: digitalxpress): "
+    if "%DB_DATABASE%"=="" set DB_DATABASE=digitalxpress
+    
+    set /p DB_USERNAME="Usuario de PostgreSQL (default: postgres): "
+    if "%DB_USERNAME%"=="" set DB_USERNAME=postgres
+    
+    set /p DB_PASSWORD="Contrasena de PostgreSQL: "
+    
+    REM Actualizar .env con los valores proporcionados
+    powershell -Command "(Get-Content .env) -replace 'DB_HOST=.*', 'DB_HOST=%DB_HOST%' | Set-Content .env"
+    powershell -Command "(Get-Content .env) -replace 'DB_PORT=.*', 'DB_PORT=%DB_PORT%' | Set-Content .env"
+    powershell -Command "(Get-Content .env) -replace 'DB_DATABASE=.*', 'DB_DATABASE=%DB_DATABASE%' | Set-Content .env"
+    powershell -Command "(Get-Content .env) -replace 'DB_USERNAME=.*', 'DB_USERNAME=%DB_USERNAME%' | Set-Content .env"
+    powershell -Command "(Get-Content .env) -replace 'DB_PASSWORD=.*', 'DB_PASSWORD=%DB_PASSWORD%' | Set-Content .env"
+    
+    echo.
+    echo Configuracion guardada en .env
 ) else (
-    echo ⚠️  El archivo .env ya existe, no se sobrescribirá
+    echo Archivo .env ya existe, usando configuracion existente...
 )
-
-REM Generar clave de aplicación
 echo.
-echo 🔑 Generando clave de aplicación...
+
+echo [4/8] Generando clave de aplicacion...
 php artisan key:generate --force
-if %errorlevel% neq 0 (
-    echo ⚠️  No se pudo generar la clave (puede que .env no esté configurado)
-) else (
-    echo ✅ Clave de aplicación generada
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Error al generar la clave de aplicacion
+    pause
+    exit /b 1
 )
-
-REM Preguntar sobre la base de datos
 echo.
-echo 🗄️  Configuración de Base de Datos
-set /p MIGRATE="¿Deseas ejecutar las migraciones y seeders ahora? (s/n): "
-if /i "%MIGRATE%"=="s" (
-    echo.
-    echo 📊 Ejecutando migraciones y seeders...
-    php artisan migrate:fresh --seed --force
-    if %errorlevel% neq 0 (
-        echo ❌ Error al ejecutar migraciones
-        echo    Asegúrate de configurar la base de datos en el archivo .env
+
+echo [5/8] Creando base de datos PostgreSQL...
+echo Intentando crear la base de datos...
+REM Leer valores del .env
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_DATABASE=" .env') do set DB_NAME=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_USERNAME=" .env') do set DB_USER=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_PASSWORD=" .env') do set DB_PASS=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_HOST=" .env') do set DB_HOST=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_PORT=" .env') do set DB_PORT=%%a
+
+REM Crear base de datos usando psql si está disponible
+where psql >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    echo Creando base de datos usando psql...
+    set PGPASSWORD=%DB_PASS%
+    psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d postgres -c "CREATE DATABASE %DB_NAME%;" 2>nul
+    if %ERRORLEVEL% EQU 0 (
+        echo Base de datos creada exitosamente!
     ) else (
-        echo ✅ Base de datos configurada
+        echo Advertencia: No se pudo crear la base de datos automaticamente.
+        echo Por favor creala manualmente con: CREATE DATABASE %DB_NAME%;
     )
+    set PGPASSWORD=
 ) else (
-    echo ⚠️  Migraciones omitidas. Ejecuta manualmente:
-    echo    php artisan migrate:fresh --seed
+    echo psql no encontrado. Por favor crea la base de datos manualmente:
+    echo CREATE DATABASE %DB_NAME%;
 )
-
-REM Compilar assets si NPM está disponible
-if "%NPM_INSTALLED%"=="true" (
-    echo.
-    echo 🎨 Compilando assets...
-    call npm run build
-    if %errorlevel% neq 0 (
-        echo ⚠️  Error al compilar assets (continuando...)
-    ) else (
-        echo ✅ Assets compilados
-    )
-)
-
-REM Limpiar caché
 echo.
-echo 🧹 Limpiando caché...
+
+echo [6/8] Ejecutando migraciones...
+php artisan migrate --force
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Error al ejecutar migraciones
+    echo Verifica que la base de datos exista y las credenciales sean correctas
+    pause
+    exit /b 1
+)
+echo.
+
+echo [7/8] Limpiando cache...
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
-echo ✅ Caché limpiado
+echo.
 
+echo [8/8] Creando enlaces simbolicos...
+php artisan storage:link
+if %ERRORLEVEL% NEQ 0 (
+    echo Advertencia: No se pudo crear el enlace simbolico de storage
+)
 echo.
-echo ==========================================
-echo ✅ Instalación completada!
-echo ==========================================
+
+echo ========================================
+echo   INSTALACION COMPLETADA EXITOSAMENTE!
+echo ========================================
 echo.
-echo 📝 Próximos pasos:
+echo El proyecto esta listo para usar.
 echo.
-echo 1. Configura tu base de datos en el archivo .env:
-echo    DB_CONNECTION=pgsql
-echo    DB_HOST=127.0.0.1
-echo    DB_PORT=5432
-echo    DB_DATABASE=digitalxpress
-echo    DB_USERNAME=tu_usuario
-echo    DB_PASSWORD=tu_contraseña
+echo Para iniciar el servidor de desarrollo:
+echo   php artisan serve --port=8081
 echo.
-echo 2. Si no ejecutaste las migraciones, ejecuta:
-echo    php artisan migrate:fresh --seed
+echo Luego abre tu navegador en:
+echo   http://127.0.0.1:8081
 echo.
-echo 3. Inicia el servidor de desarrollo:
-echo    php artisan serve --port=8081
-echo.
-echo 4. Abre tu navegador en:
-echo    http://127.0.0.1:8081
-echo.
-echo 👤 Usuarios de prueba:
-echo    Admin: admin@digitalxpress.com / password
-echo    Cliente: cliente@digitalxpress.com / password
-echo.
-echo ¡Disfruta de DigitalXpress! 🚀
+echo Usuarios de prueba:
+echo   Admin: admin@digitalxpress.com / password
+echo   Cliente: cliente@digitalxpress.com / password
 echo.
 pause
-

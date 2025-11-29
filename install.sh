@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# 🚀 Script de Instalación Automática - DigitalXpress
-# Este script instala todas las dependencias necesarias para ejecutar el proyecto
+# ============================================
+# Script de Instalación Automática - DigitalXpress
+# Para Linux/Mac (Bash)
+# ============================================
 
-echo "=========================================="
-echo "🚀 Instalación de DigitalXpress"
-echo "=========================================="
+echo ""
+echo "========================================"
+echo "  INSTALACION AUTOMATICA - DigitalXpress"
+echo "========================================"
 echo ""
 
 # Colores para output
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Función para verificar si un comando existe
@@ -20,165 +23,160 @@ command_exists() {
 }
 
 # Verificar PHP
-echo -e "${YELLOW}📋 Verificando requisitos...${NC}"
+echo "[1/8] Verificando dependencias..."
 if ! command_exists php; then
-    echo -e "${RED}❌ PHP no está instalado. Por favor instala PHP 8.1 o superior.${NC}"
+    echo -e "${RED}[ERROR] PHP no está instalado${NC}"
+    echo "Por favor instala PHP 8.1 o superior"
     exit 1
 fi
-
-PHP_VERSION=$(php -r 'echo PHP_VERSION;')
-echo -e "${GREEN}✅ PHP encontrado: $PHP_VERSION${NC}"
 
 # Verificar Composer
 if ! command_exists composer; then
-    echo -e "${RED}❌ Composer no está instalado. Por favor instala Composer.${NC}"
-    echo "   Visita: https://getcomposer.org/download/"
+    echo -e "${RED}[ERROR] Composer no está instalado${NC}"
+    echo "Por favor instala Composer desde https://getcomposer.org"
     exit 1
 fi
-echo -e "${GREEN}✅ Composer encontrado${NC}"
 
-# Verificar Node.js
-if ! command_exists node; then
-    echo -e "${YELLOW}⚠️  Node.js no está instalado. Los assets no se compilarán.${NC}"
-    echo "   Visita: https://nodejs.org/"
-    NODE_INSTALLED=false
-else
-    NODE_VERSION=$(node -v)
-    echo -e "${GREEN}✅ Node.js encontrado: $NODE_VERSION${NC}"
-    NODE_INSTALLED=true
-fi
-
-# Verificar NPM
-if [ "$NODE_INSTALLED" = true ]; then
-    if ! command_exists npm; then
-        echo -e "${YELLOW}⚠️  NPM no está instalado.${NC}"
-        NPM_INSTALLED=false
-    else
-        NPM_VERSION=$(npm -v)
-        echo -e "${GREEN}✅ NPM encontrado: $NPM_VERSION${NC}"
-        NPM_INSTALLED=true
-    fi
-fi
-
+php --version
+composer --version
 echo ""
-echo -e "${YELLOW}📦 Instalando dependencias de PHP...${NC}"
-composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Instalar dependencias de Composer
+echo "[2/8] Instalando dependencias de PHP (Composer)..."
+composer install --no-interaction
 if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error al instalar dependencias de PHP${NC}"
+    echo -e "${RED}[ERROR] Error al instalar dependencias de Composer${NC}"
     exit 1
 fi
-echo -e "${GREEN}✅ Dependencias de PHP instaladas${NC}"
-
-# Instalar dependencias de Node.js si está disponible
-if [ "$NPM_INSTALLED" = true ]; then
-    echo ""
-    echo -e "${YELLOW}📦 Instalando dependencias de Node.js...${NC}"
-    npm install
-    
-    if [ $? -ne 0 ]; then
-        echo -e "${YELLOW}⚠️  Error al instalar dependencias de Node.js (continuando...)${NC}"
-    else
-        echo -e "${GREEN}✅ Dependencias de Node.js instaladas${NC}"
-    fi
-fi
-
-# Copiar archivo .env
 echo ""
-echo -e "${YELLOW}⚙️  Configurando archivo .env...${NC}"
+
+# Verificar y crear archivo .env
+echo "[3/8] Verificando archivo .env..."
 if [ ! -f .env ]; then
-    if [ -f .env.example ]; then
-        cp .env.example .env
-        echo -e "${GREEN}✅ Archivo .env creado desde .env.example${NC}"
+    echo "Creando archivo .env desde .env.example..."
+    cp .env.example .env
+    echo ""
+    echo "========================================"
+    echo "  CONFIGURACION DE BASE DE DATOS"
+    echo "========================================"
+    echo ""
+    echo "Por favor ingresa los datos de tu base de datos PostgreSQL:"
+    echo ""
+    
+    read -p "Host de PostgreSQL (default: localhost): " DB_HOST
+    DB_HOST=${DB_HOST:-localhost}
+    
+    read -p "Puerto de PostgreSQL (default: 5432): " DB_PORT
+    DB_PORT=${DB_PORT:-5432}
+    
+    read -p "Nombre de la base de datos (default: digitalxpress): " DB_DATABASE
+    DB_DATABASE=${DB_DATABASE:-digitalxpress}
+    
+    read -p "Usuario de PostgreSQL (default: postgres): " DB_USERNAME
+    DB_USERNAME=${DB_USERNAME:-postgres}
+    
+    read -sp "Contraseña de PostgreSQL: " DB_PASSWORD
+    echo ""
+    
+    # Actualizar .env con los valores proporcionados
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env
+        sed -i '' "s/DB_PORT=.*/DB_PORT=$DB_PORT/" .env
+        sed -i '' "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env
+        sed -i '' "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env
+        sed -i '' "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
     else
-        echo -e "${YELLOW}⚠️  Archivo .env.example no encontrado${NC}"
+        # Linux
+        sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env
+        sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/" .env
+        sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env
+        sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env
+        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
     fi
+    
+    echo ""
+    echo "Configuración guardada en .env"
 else
-    echo -e "${YELLOW}⚠️  El archivo .env ya existe, no se sobrescribirá${NC}"
+    echo "Archivo .env ya existe, usando configuración existente..."
 fi
+echo ""
 
 # Generar clave de aplicación
-echo ""
-echo -e "${YELLOW}🔑 Generando clave de aplicación...${NC}"
+echo "[4/8] Generando clave de aplicación..."
 php artisan key:generate --force
-
 if [ $? -ne 0 ]; then
-    echo -e "${YELLOW}⚠️  No se pudo generar la clave (puede que .env no esté configurado)${NC}"
-else
-    echo -e "${GREEN}✅ Clave de aplicación generada${NC}"
+    echo -e "${RED}[ERROR] Error al generar la clave de aplicación${NC}"
+    exit 1
 fi
-
-# Preguntar sobre la base de datos
 echo ""
-echo -e "${YELLOW}🗄️  Configuración de Base de Datos${NC}"
-echo "¿Deseas ejecutar las migraciones y seeders ahora? (s/n)"
-read -r response
 
-if [[ "$response" =~ ^([sS][iI][mM]|[sS])$ ]]; then
-    echo ""
-    echo -e "${YELLOW}📊 Ejecutando migraciones y seeders...${NC}"
-    php artisan migrate:fresh --seed --force
+# Crear base de datos PostgreSQL
+echo "[5/8] Creando base de datos PostgreSQL..."
+if command_exists psql; then
+    # Leer valores del .env
+    DB_NAME=$(grep "^DB_DATABASE=" .env | cut -d '=' -f2)
+    DB_USER=$(grep "^DB_USERNAME=" .env | cut -d '=' -f2)
+    DB_PASS=$(grep "^DB_PASSWORD=" .env | cut -d '=' -f2)
+    DB_HOST=$(grep "^DB_HOST=" .env | cut -d '=' -f2)
+    DB_PORT=$(grep "^DB_PORT=" .env | cut -d '=' -f2)
     
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}❌ Error al ejecutar migraciones${NC}"
-        echo "   Asegúrate de configurar la base de datos en el archivo .env"
+    echo "Creando base de datos usando psql..."
+    export PGPASSWORD="$DB_PASS"
+    psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Base de datos creada exitosamente!${NC}"
     else
-        echo -e "${GREEN}✅ Base de datos configurada${NC}"
+        echo -e "${YELLOW}Advertencia: No se pudo crear la base de datos automáticamente.${NC}"
+        echo "Por favor créala manualmente con: CREATE DATABASE $DB_NAME;"
     fi
+    unset PGPASSWORD
 else
-    echo -e "${YELLOW}⚠️  Migraciones omitidas. Ejecuta manualmente:${NC}"
-    echo "   php artisan migrate:fresh --seed"
+    echo -e "${YELLOW}psql no encontrado. Por favor crea la base de datos manualmente:${NC}"
+    DB_NAME=$(grep "^DB_DATABASE=" .env | cut -d '=' -f2)
+    echo "CREATE DATABASE $DB_NAME;"
 fi
+echo ""
 
-# Compilar assets si NPM está disponible
-if [ "$NPM_INSTALLED" = true ]; then
-    echo ""
-    echo -e "${YELLOW}🎨 Compilando assets...${NC}"
-    npm run build
-    
-    if [ $? -ne 0 ]; then
-        echo -e "${YELLOW}⚠️  Error al compilar assets (continuando...)${NC}"
-    else
-        echo -e "${GREEN}✅ Assets compilados${NC}"
-    fi
+# Ejecutar migraciones
+echo "[6/8] Ejecutando migraciones..."
+php artisan migrate --force
+if [ $? -ne 0 ]; then
+    echo -e "${RED}[ERROR] Error al ejecutar migraciones${NC}"
+    echo "Verifica que la base de datos exista y las credenciales sean correctas"
+    exit 1
 fi
+echo ""
 
 # Limpiar caché
-echo ""
-echo -e "${YELLOW}🧹 Limpiando caché...${NC}"
+echo "[7/8] Limpiando caché..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
-echo -e "${GREEN}✅ Caché limpiado${NC}"
+echo ""
 
+# Crear enlaces simbólicos
+echo "[8/8] Creando enlaces simbólicos..."
+php artisan storage:link
+if [ $? -ne 0 ]; then
+    echo -e "${YELLOW}Advertencia: No se pudo crear el enlace simbólico de storage${NC}"
+fi
 echo ""
-echo "=========================================="
-echo -e "${GREEN}✅ Instalación completada!${NC}"
-echo "=========================================="
-echo ""
-echo "📝 Próximos pasos:"
-echo ""
-echo "1. Configura tu base de datos en el archivo .env:"
-echo "   DB_CONNECTION=pgsql"
-echo "   DB_HOST=127.0.0.1"
-echo "   DB_PORT=5432"
-echo "   DB_DATABASE=digitalxpress"
-echo "   DB_USERNAME=tu_usuario"
-echo "   DB_PASSWORD=tu_contraseña"
-echo ""
-echo "2. Si no ejecutaste las migraciones, ejecuta:"
-echo "   php artisan migrate:fresh --seed"
-echo ""
-echo "3. Inicia el servidor de desarrollo:"
-echo "   php artisan serve --port=8081"
-echo ""
-echo "4. Abre tu navegador en:"
-echo "   http://127.0.0.1:8081"
-echo ""
-echo "👤 Usuarios de prueba:"
-echo "   Admin: admin@digitalxpress.com / password"
-echo "   Cliente: cliente@digitalxpress.com / password"
-echo ""
-echo "¡Disfruta de DigitalXpress! 🚀"
 
+echo "========================================"
+echo -e "  ${GREEN}INSTALACION COMPLETADA EXITOSAMENTE!${NC}"
+echo "========================================"
+echo ""
+echo "El proyecto está listo para usar."
+echo ""
+echo "Para iniciar el servidor de desarrollo:"
+echo "  php artisan serve --port=8081"
+echo ""
+echo "Luego abre tu navegador en:"
+echo "  http://127.0.0.1:8081"
+echo ""
+echo "Usuarios de prueba:"
+echo "  Admin: admin@digitalxpress.com / password"
+echo "  Cliente: cliente@digitalxpress.com / password"
+echo ""
