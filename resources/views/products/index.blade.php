@@ -526,6 +526,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Aplicar vista guardada al cargar
     switchView(savedView);
+    
+    // Asegurar que el contenido se muestre inmediatamente
+    if (gridView) {
+        gridView.style.display = 'block';
+        gridView.style.opacity = '1';
+        gridView.style.visibility = 'visible';
+    }
 
     // Funcionalidad de filtros automáticos
     const priceFilter = document.getElementById('priceFilter');
