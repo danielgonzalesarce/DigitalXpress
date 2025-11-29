@@ -1097,51 +1097,105 @@
         }
     }
 
-    /* Clases de animación */
+    /* Clases de animación - Los elementos son visibles por defecto */
     .fade-in-up {
-        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in-up:not(.animated) {
         opacity: 0;
+        transform: translateY(40px);
     }
 
     .fade-in-down {
-        animation: fadeInDown 0.8s ease-out forwards;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in-down:not(.animated) {
         opacity: 0;
+        transform: translateY(-40px);
     }
 
     .fade-in-left {
-        animation: fadeInLeft 0.8s ease-out forwards;
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in-left:not(.animated) {
         opacity: 0;
+        transform: translateX(-40px);
     }
 
     .fade-in-right {
-        animation: fadeInRight 0.8s ease-out forwards;
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in-right:not(.animated) {
         opacity: 0;
+        transform: translateX(40px);
     }
 
     .scale-in {
-        animation: scaleIn 0.6s ease-out forwards;
+        opacity: 1;
+        transform: scale(1);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .scale-in:not(.animated) {
         opacity: 0;
+        transform: scale(0.8);
     }
 
     .rotate-in {
-        animation: rotateIn 0.8s ease-out forwards;
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .rotate-in:not(.animated) {
         opacity: 0;
+        transform: rotate(-10deg) scale(0.9);
     }
 
     .bounce-in {
-        animation: bounceIn 0.8s ease-out forwards;
+        opacity: 1;
+        transform: scale(1);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .bounce-in:not(.animated) {
         opacity: 0;
+        transform: scale(0.3);
     }
 
     .slide-in-up {
-        animation: slideInUp 0.8s ease-out forwards;
-        opacity: 0;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
     }
 
-    /* Animación on scroll */
-    .animate-on-scroll {
+    .slide-in-up:not(.animated) {
         opacity: 0;
+        transform: translateY(100px);
+    }
+
+    /* Animación on scroll - Visible por defecto */
+    .animate-on-scroll {
+        opacity: 1;
+        transform: translateY(0);
         transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .animate-on-scroll:not(.animated) {
+        opacity: 0;
+        transform: translateY(30px);
     }
 
     .animate-on-scroll.animated {
@@ -1783,26 +1837,38 @@
 
         // Activar animaciones cuando los elementos entran en el viewport
         function animateOnScroll() {
-            const elements = document.querySelectorAll('.animate-on-scroll');
-            
-            elements.forEach(element => {
-                if (isPartiallyVisible(element) && !element.classList.contains('animated')) {
+            // Animar elementos con clase animate-on-scroll
+            const scrollElements = document.querySelectorAll('.animate-on-scroll:not(.animated)');
+            scrollElements.forEach(element => {
+                if (isPartiallyVisible(element)) {
                     element.classList.add('animated');
                 }
             });
 
             // Animar elementos con clases de animación individuales
-            const animatedElements = document.querySelectorAll('.fade-in-up, .fade-in-down, .fade-in-left, .fade-in-right, .scale-in, .rotate-in, .bounce-in, .slide-in-up');
+            const animatedElements = document.querySelectorAll('.fade-in-up:not(.animated), .fade-in-down:not(.animated), .fade-in-left:not(.animated), .fade-in-right:not(.animated), .scale-in:not(.animated), .rotate-in:not(.animated), .bounce-in:not(.animated), .slide-in-up:not(.animated)');
             
             animatedElements.forEach(element => {
                 if (isPartiallyVisible(element)) {
-                    element.style.opacity = '1';
+                    element.classList.add('animated');
                 }
             });
         }
 
-        // Ejecutar al cargar la página
-        animateOnScroll();
+        // Ejecutar inmediatamente al cargar la página para elementos visibles
+        function initAnimations() {
+            // Animar elementos que ya están visibles
+            const allAnimatedElements = document.querySelectorAll('.animate-on-scroll, .fade-in-up, .fade-in-down, .fade-in-left, .fade-in-right, .scale-in, .rotate-in, .bounce-in, .slide-in-up');
+            
+            allAnimatedElements.forEach(element => {
+                if (isPartiallyVisible(element)) {
+                    element.classList.add('animated');
+                }
+            });
+        }
+
+        // Ejecutar inmediatamente
+        initAnimations();
 
         // Ejecutar al hacer scroll
         let scrollTimeout;
@@ -1812,12 +1878,25 @@
         }, { passive: true });
 
         // Ejecutar al redimensionar la ventana
-        window.addEventListener('resize', animateOnScroll);
-
-        // Animar elementos inmediatamente si están visibles al cargar
-        window.addEventListener('load', function() {
-            setTimeout(animateOnScroll, 100);
+        window.addEventListener('resize', function() {
+            initAnimations();
+            animateOnScroll();
         });
+
+        // Ejecutar cuando la página termine de cargar
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                initAnimations();
+                animateOnScroll();
+            }, 100);
+        });
+
+        // Ejecutar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAnimations);
+        } else {
+            initAnimations();
+        }
 
         // ============================================
         // ANIMACIONES ADICIONALES PARA INTERACTIVIDAD
