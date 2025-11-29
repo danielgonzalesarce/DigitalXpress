@@ -38,12 +38,16 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        // Mostrar productos activos que tengan stock disponible (stock_quantity > 0)
         $query = Product::where('is_active', true)
-            ->where('in_stock', true)
+            ->where(function($q) {
+                $q->where('in_stock', true)
+                  ->orWhere('stock_quantity', '>', 0);
+            })
             ->with('category');
 
         // Filtrar por categoría
-        if ($request->has('category') && $request->category !== 'all') {
+        if ($request->has('category') && $request->category && $request->category !== 'all') {
             $query->whereHas('category', function ($q) use ($request) {
                 $q->where('slug', $request->category);
             });
