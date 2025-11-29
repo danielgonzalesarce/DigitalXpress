@@ -103,11 +103,11 @@
 @endif
 
 <!-- Feature Cards -->
-<section class="py-5 bg-light animate-on-scroll">
+<section class="py-5 bg-light">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-3">
-                <div class="feature-card fade-in-up" style="animation-delay: 0.1s;">
+                <div class="feature-card">
                     <div class="text-primary mb-3">
                         <i class="fas fa-bolt fa-2x"></i>
                     </div>
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card fade-in-up" style="animation-delay: 0.2s;">
+                <div class="feature-card">
                     <div class="text-primary mb-3">
                         <i class="fas fa-shield-alt fa-2x"></i>
                     </div>
@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card fade-in-up" style="animation-delay: 0.3s;">
+                <div class="feature-card">
                     <div class="text-primary mb-3">
                         <i class="fas fa-truck fa-2x"></i>
                     </div>
@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card fade-in-up" style="animation-delay: 0.4s;">
+                <div class="feature-card">
                     <div class="text-primary mb-3">
                         <i class="fas fa-star fa-2x"></i>
                     </div>
@@ -148,16 +148,16 @@
 
 <!-- Featured Products -->
 @if($featuredProducts->count() > 0)
-<section class="py-5 animate-on-scroll">
+<section class="py-5">
     <div class="container">
-        <div class="text-center mb-5 fade-in-down">
+        <div class="text-center mb-5">
             <h2 class="fw-bold">Productos Destacados</h2>
             <p class="text-muted">Los mejores productos seleccionados para ti</p>
         </div>
         <div class="row g-4">
-            @foreach($featuredProducts as $index => $product)
+            @foreach($featuredProducts as $product)
             <div class="col-lg-3 col-md-6">
-                <div class="card product-card h-100 fade-in-up" style="animation-delay: {{ $index * 0.1 }}s;">
+                <div class="card product-card h-100">
                     <div class="position-relative product-image-container">
                         <a href="{{ route('products.show', $product) }}" class="product-image-link">
                             <img src="{{ $product->image_url }}" 
@@ -229,16 +229,16 @@
 
 <!-- Latest Products -->
 @if($latestProducts->count() > 0)
-<section class="py-5 bg-light animate-on-scroll">
+<section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5 fade-in-down">
+        <div class="text-center mb-5">
             <h2 class="fw-bold">Últimos Productos</h2>
             <p class="text-muted">Los productos más recientes en nuestro catálogo</p>
         </div>
         <div class="row g-4">
-            @foreach($latestProducts as $index => $product)
+            @foreach($latestProducts as $product)
             <div class="col-lg-3 col-md-6">
-                <div class="card product-card h-100 fade-in-up" style="animation-delay: {{ $index * 0.1 }}s;">
+                <div class="card product-card h-100">
                     <div class="position-relative product-image-container">
                         <a href="{{ route('products.show', $product) }}" class="product-image-link">
                             <img src="{{ $product->image_url }}" 
@@ -997,10 +997,7 @@
     .hero-section .col-lg-6:first-child .lead {
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
-
-    /* ============================================
-       ANIMACIONES PARA TODA LA PÁGINA
-       ============================================ */
+</style>
 
     /* Animaciones de entrada básicas */
     @keyframes fadeInUp {
