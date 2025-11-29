@@ -849,6 +849,8 @@
         border: 2px solid rgba(255, 255, 255, 0.3);
         position: relative;
         overflow: hidden;
+        z-index: 5; /* Asegurar que esté detrás de los indicadores */
+        margin-bottom: 50px; /* Espacio para los indicadores del carrusel */
     }
 
     .welcome-card::before {
