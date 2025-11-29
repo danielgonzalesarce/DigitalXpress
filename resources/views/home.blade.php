@@ -103,11 +103,11 @@
 @endif
 
 <!-- Feature Cards -->
-<section class="py-5 bg-light">
+<section class="py-5 bg-light animate-on-scroll">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-3">
-                <div class="feature-card">
+                <div class="feature-card fade-in-up" style="animation-delay: 0.1s;">
                     <div class="text-primary mb-3">
                         <i class="fas fa-bolt fa-2x"></i>
                     </div>
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card">
+                <div class="feature-card fade-in-up" style="animation-delay: 0.2s;">
                     <div class="text-primary mb-3">
                         <i class="fas fa-shield-alt fa-2x"></i>
                     </div>
@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card">
+                <div class="feature-card fade-in-up" style="animation-delay: 0.3s;">
                     <div class="text-primary mb-3">
                         <i class="fas fa-truck fa-2x"></i>
                     </div>
@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="feature-card">
+                <div class="feature-card fade-in-up" style="animation-delay: 0.4s;">
                     <div class="text-primary mb-3">
                         <i class="fas fa-star fa-2x"></i>
                     </div>
@@ -148,16 +148,16 @@
 
 <!-- Featured Products -->
 @if($featuredProducts->count() > 0)
-<section class="py-5">
+<section class="py-5 animate-on-scroll">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 fade-in-down">
             <h2 class="fw-bold">Productos Destacados</h2>
             <p class="text-muted">Los mejores productos seleccionados para ti</p>
         </div>
         <div class="row g-4">
-            @foreach($featuredProducts as $product)
+            @foreach($featuredProducts as $index => $product)
             <div class="col-lg-3 col-md-6">
-                <div class="card product-card h-100">
+                <div class="card product-card h-100 fade-in-up" style="animation-delay: {{ $index * 0.1 }}s;">
                     <div class="position-relative product-image-container">
                         <a href="{{ route('products.show', $product) }}" class="product-image-link">
                             <img src="{{ $product->image_url }}" 
@@ -229,16 +229,16 @@
 
 <!-- Latest Products -->
 @if($latestProducts->count() > 0)
-<section class="py-5 bg-light">
+<section class="py-5 bg-light animate-on-scroll">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 fade-in-down">
             <h2 class="fw-bold">Últimos Productos</h2>
             <p class="text-muted">Los productos más recientes en nuestro catálogo</p>
         </div>
         <div class="row g-4">
-            @foreach($latestProducts as $product)
+            @foreach($latestProducts as $index => $product)
             <div class="col-lg-3 col-md-6">
-                <div class="card product-card h-100">
+                <div class="card product-card h-100 fade-in-up" style="animation-delay: {{ $index * 0.1 }}s;">
                     <div class="position-relative product-image-container">
                         <a href="{{ route('products.show', $product) }}" class="product-image-link">
                             <img src="{{ $product->image_url }}" 
@@ -997,6 +997,562 @@
     .hero-section .col-lg-6:first-child .lead {
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
+
+    /* ============================================
+       ANIMACIONES PARA TODA LA PÁGINA
+       ============================================ */
+
+    /* Animaciones de entrada básicas */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes rotateIn {
+        from {
+            opacity: 0;
+            transform: rotate(-10deg) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+    }
+
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Clases de animación */
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .fade-in-down {
+        animation: fadeInDown 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .fade-in-left {
+        animation: fadeInLeft 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .fade-in-right {
+        animation: fadeInRight 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .scale-in {
+        animation: scaleIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    .rotate-in {
+        animation: rotateIn 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .bounce-in {
+        animation: bounceIn 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    .slide-in-up {
+        animation: slideInUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    /* Animación on scroll */
+    .animate-on-scroll {
+        opacity: 0;
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Estilos mejorados para Feature Cards */
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .feature-card:hover::before {
+        left: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .feature-card .text-primary {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .feature-card:hover .text-primary {
+        transform: scale(1.2) rotate(5deg);
+        color: #2563eb !important;
+    }
+
+    .feature-card:hover .text-primary i {
+        animation: iconBounce 0.6s ease-in-out;
+    }
+
+    @keyframes iconBounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .feature-card h5 {
+        transition: color 0.3s ease;
+    }
+
+    .feature-card:hover h5 {
+        color: #2563eb;
+    }
+
+    /* Animaciones mejoradas para Product Cards */
+    .product-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .product-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .product-card:hover::after {
+        opacity: 1;
+    }
+
+    .product-card .card-body {
+        transition: all 0.4s ease;
+    }
+
+    .product-card:hover .card-body {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 1));
+    }
+
+    .product-card .card-title {
+        transition: color 0.3s ease;
+    }
+
+    .product-card:hover .card-title {
+        color: #2563eb;
+    }
+
+    .product-card .btn-primary {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-card .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .product-card .btn-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .product-card .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Animaciones para imágenes de productos */
+    .product-image {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.15) rotate(2deg);
+    }
+
+    /* Animaciones para badges */
+    .badge {
+        transition: all 0.3s ease;
+        animation: badgeFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes badgeFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    .product-card:hover .badge {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Animaciones para precios */
+    .product-card .h5 {
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .h5 {
+        transform: scale(1.1);
+        color: #2563eb !important;
+    }
+
+    /* Animaciones para títulos de sección */
+    section h2 {
+        position: relative;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+        transition: width 0.5s ease;
+        border-radius: 2px;
+    }
+
+    .fade-in-down.animated section h2::after,
+    section:hover h2::after {
+        width: 80px;
+    }
+
+    /* Animaciones para textos */
+    section p.text-muted {
+        transition: all 0.3s ease;
+    }
+
+    section:hover p.text-muted {
+        color: #6b7280 !important;
+    }
+
+    /* Efecto de parallax suave en scroll */
+    @media (prefers-reduced-motion: no-preference) {
+        .hero-section-wrapper {
+            transition: transform 0.3s ease-out;
+        }
+    }
+
+    /* Animaciones para botones del carrusel mejoradas */
+    .hero-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .hero-btn:hover::after {
+        width: 400px;
+        height: 400px;
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animación para el welcome card */
+    .welcome-card {
+        animation: welcomeSlideIn 0.8s ease-out 1.5s forwards;
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    @keyframes welcomeSlideIn {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .welcome-avatar {
+        animation: avatarSpin 3s ease-in-out infinite;
+    }
+
+    @keyframes avatarSpin {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(-5deg);
+        }
+        75% {
+            transform: rotate(5deg);
+        }
+    }
+
+    /* Animaciones para las estrellas de rating */
+    .text-warning i {
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .product-card:hover .text-warning i {
+        animation: starTwinkle 0.6s ease-in-out;
+        transform: scale(1.2);
+    }
+
+    @keyframes starTwinkle {
+        0%, 100% {
+            transform: scale(1) rotate(0deg);
+        }
+        50% {
+            transform: scale(1.3) rotate(180deg);
+        }
+    }
+
+    /* Efecto de brillo en hover para cards */
+    .product-card,
+    .feature-card {
+        position: relative;
+    }
+
+    .product-card::before,
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
+
+    .product-card:hover::before,
+    .feature-card:hover::before {
+        opacity: 1;
+        animation: shine 1.5s ease-in-out;
+    }
+
+    @keyframes shine {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    /* Animación de carga para imágenes */
+    .product-image,
+    .carousel-image {
+        animation: imageLoad 0.6s ease-out;
+    }
+
+    @keyframes imageLoad {
+        from {
+            opacity: 0;
+            filter: blur(10px);
+        }
+        to {
+            opacity: 1;
+            filter: blur(0);
+        }
+    }
+
+    /* Efecto de ondas en hover para botones */
+    .btn-enhanced::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+        opacity: 0;
+    }
+
+    .btn-enhanced:hover::after {
+        width: 300px;
+        height: 300px;
+        opacity: 1;
+    }
+
+    /* Animación de pulso para elementos importantes */
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+    }
+
+    .product-card .badge.bg-danger {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Smooth scroll behavior */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Reducir animaciones para usuarios que prefieren menos movimiento */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 </style>
 
 @push('scripts')
@@ -1195,6 +1751,140 @@
             });
         });
         @endauth
+
+        // ============================================
+        // ANIMACIONES AL HACER SCROLL (Scroll Reveal)
+        // ============================================
+        
+        // Función para verificar si un elemento está en el viewport
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Función para verificar si un elemento está parcialmente visible
+        function isPartiallyVisible(element) {
+            const rect = element.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+            
+            return (
+                rect.top < windowHeight &&
+                rect.bottom > 0 &&
+                rect.left < windowWidth &&
+                rect.right > 0
+            );
+        }
+
+        // Activar animaciones cuando los elementos entran en el viewport
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            
+            elements.forEach(element => {
+                if (isPartiallyVisible(element) && !element.classList.contains('animated')) {
+                    element.classList.add('animated');
+                }
+            });
+
+            // Animar elementos con clases de animación individuales
+            const animatedElements = document.querySelectorAll('.fade-in-up, .fade-in-down, .fade-in-left, .fade-in-right, .scale-in, .rotate-in, .bounce-in, .slide-in-up');
+            
+            animatedElements.forEach(element => {
+                if (isPartiallyVisible(element)) {
+                    element.style.opacity = '1';
+                }
+            });
+        }
+
+        // Ejecutar al cargar la página
+        animateOnScroll();
+
+        // Ejecutar al hacer scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(animateOnScroll, 10);
+        }, { passive: true });
+
+        // Ejecutar al redimensionar la ventana
+        window.addEventListener('resize', animateOnScroll);
+
+        // Animar elementos inmediatamente si están visibles al cargar
+        window.addEventListener('load', function() {
+            setTimeout(animateOnScroll, 100);
+        });
+
+        // ============================================
+        // ANIMACIONES ADICIONALES PARA INTERACTIVIDAD
+        // ============================================
+
+        // Agregar efecto de hover mejorado a los botones
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animación para las tarjetas de productos al hacer hover
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+
+        // Animación para las tarjetas de características
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.text-primary i');
+                if (icon) {
+                    icon.style.animation = 'iconBounce 0.6s ease-in-out';
+                }
+            });
+        });
+
+        // Efecto de parallax suave para el hero section
+        const heroSection = document.querySelector('.hero-section-wrapper');
+        if (heroSection) {
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * 0.3;
+                heroSection.style.transform = `translateY(${rate}px)`;
+            }, { passive: true });
+        }
+
+        // Animación de entrada para el carrusel
+        const carousel = document.querySelector('#productCarousel');
+        if (carousel) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('carousel-animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            observer.observe(carousel);
+        }
+
+        // Agregar clase de animación a los elementos del carrusel cuando cambian
+        const carouselElement = document.getElementById('productCarousel');
+        if (carouselElement) {
+            carouselElement.addEventListener('slide.bs.carousel', function() {
+                const activeItem = this.querySelector('.carousel-item.active');
+                if (activeItem) {
+                    activeItem.style.animation = 'slideIn 0.8s ease-out';
+                }
+            });
+        }
     });
 </script>
 @endpush
