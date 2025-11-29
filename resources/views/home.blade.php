@@ -750,16 +750,18 @@
         animation: fadeInUp 1.4s ease-out;
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
         background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
+        border-radius: 12px;
         backdrop-filter: blur(10px);
         border: 3px solid rgba(0, 0, 0, 0.1);
         box-shadow: 
             0 8px 25px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(0, 0, 0, 0.05) inset;
         transition: all 0.3s ease;
+        width: fit-content; /* Ajustar al contenido */
+        max-width: 100%;
     }
 
     .hero-price-container:hover {
