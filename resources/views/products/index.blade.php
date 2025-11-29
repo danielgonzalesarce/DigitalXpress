@@ -79,9 +79,9 @@
     </div>
 
     <!-- Products Container -->
-    <div id="productsContainer" class="products-container" style="opacity: 1 !important; visibility: visible !important;">
+    <div id="productsContainer" class="products-container">
         <!-- Grid View -->
-        <div id="gridView" class="products-grid view-active" style="opacity: 1 !important; visibility: visible !important; display: block !important;">
+        <div id="gridView" class="products-grid view-active">
             <div class="row g-4">
                 @forelse($products as $product)
                 <div class="col-lg-3 col-md-6">
@@ -170,7 +170,7 @@
         </div>
 
         <!-- List View -->
-        <div id="listView" class="products-list" style="opacity: 1 !important; visibility: visible !important;">
+        <div id="listView" class="products-list">
             @forelse($products as $product)
             <div class="card product-list-item mb-3">
                 <div class="row g-0">
@@ -302,36 +302,16 @@
     }
 
     .products-grid.view-hidden {
-        display: none !important;
+        display: none;
     }
 
     /* Vista de lista */
     .products-list {
         display: none;
-        opacity: 1 !important; /* Cambiar a 1 para que sea visible inmediatamente */
-        /* transition: opacity 0.3s ease; Eliminar transición que causa retraso */
     }
 
     .products-list.view-active {
-        display: block !important;
-        opacity: 1 !important;
-    }
-    
-    /* Asegurar que el contenido siempre sea visible */
-    .products-container {
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-    
-    #gridView, #listView {
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-    
-    #gridView.view-active {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+        display: block;
     }
 
     /* Estilos para items de lista */
@@ -489,15 +469,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar preferencia guardada
     const savedView = localStorage.getItem('productView') || 'grid';
     
-    // Función para cambiar vista - SIN ANIMACIONES
+    // Función para cambiar vista
     function switchView(view) {
         if (view === 'grid') {
             gridView.classList.add('view-active');
             gridView.classList.remove('view-hidden');
-            gridView.style.display = 'block';
-            gridView.style.opacity = '1';
-            gridView.style.visibility = 'visible';
-            
             listView.classList.remove('view-active');
             listView.style.display = 'none';
             
@@ -506,12 +482,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             listView.classList.add('view-active');
             listView.style.display = 'block';
-            listView.style.opacity = '1';
-            listView.style.visibility = 'visible';
-            
             gridView.classList.remove('view-active');
             gridView.classList.add('view-hidden');
-            gridView.style.display = 'none';
             
             listViewBtn.classList.add('active');
             gridViewBtn.classList.remove('active');
@@ -519,17 +491,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Guardar preferencia
         localStorage.setItem('productView', view);
-    }
-    
-    // Asegurar que el contenido se muestre inmediatamente al cargar
-    if (gridView) {
-        gridView.style.opacity = '1';
-        gridView.style.visibility = 'visible';
-        gridView.style.display = 'block';
-    }
-    if (listView) {
-        listView.style.opacity = '1';
-        listView.style.visibility = 'visible';
     }
 
     // Escuchadores de eventos
