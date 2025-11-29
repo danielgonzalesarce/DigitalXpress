@@ -189,45 +189,100 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(30, 30, 30, 0.98) 100%);
+    backdrop-filter: blur(15px);
     z-index: 99999;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
+        backdrop-filter: blur(0px);
     }
     to {
         opacity: 1;
+        backdrop-filter: blur(15px);
     }
 }
 
 .battery-container {
     text-align: center;
     color: white;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 0 100px rgba(59, 130, 246, 0.1);
+    backdrop-filter: blur(20px);
+    animation: containerFloat 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.battery-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes containerFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .battery-message {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    animation: pulseText 1.5s ease-in-out infinite;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 3rem;
+    text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 4px 15px rgba(0, 0, 0, 0.8);
+    animation: pulseText 2s ease-in-out infinite;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes pulseText {
     0%, 100% {
         opacity: 1;
         transform: scale(1);
+        filter: brightness(1);
     }
     50% {
-        opacity: 0.8;
-        transform: scale(1.05);
+        opacity: 0.9;
+        transform: scale(1.02);
+        filter: brightness(1.1);
     }
 }
 
@@ -235,28 +290,33 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
 }
 
 .battery {
-    width: 200px;
-    height: 100px;
+    width: 280px;
+    height: 140px;
     position: relative;
     display: flex;
     align-items: center;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
 }
 
 .battery-body {
-    width: 180px;
-    height: 80px;
-    border: 6px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.3);
+    width: 250px;
+    height: 120px;
+    border: 8px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(30, 30, 30, 0.6) 100%);
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 0 20px rgba(0, 0, 0, 0.5),
-        inset 0 0 20px rgba(0, 0, 0, 0.3);
+        0 0 40px rgba(0, 0, 0, 0.8),
+        0 0 0 2px rgba(255, 255, 255, 0.1) inset,
+        0 10px 30px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
 }
 
 .battery-level {
@@ -265,72 +325,198 @@ main {
     left: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+    background: linear-gradient(to top, #10b981 0%, #34d399 50%, #6ee7b7 100%);
     transition: height 0.1s linear, background 0.3s ease;
     box-shadow: 
-        0 0 20px rgba(16, 185, 129, 0.6),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
-    border-radius: 0 0 6px 6px;
+        0 0 30px rgba(16, 185, 129, 0.8),
+        0 0 60px rgba(16, 185, 129, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.3),
+        inset 0 -10px 30px rgba(16, 185, 129, 0.5);
+    border-radius: 0 0 12px 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.battery-level::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmerLevel 2s ease-in-out infinite;
+}
+
+@keyframes shimmerLevel {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 .battery-level.charging {
-    animation: chargingGlow 1s ease-in-out infinite;
+    animation: chargingGlow 1.5s ease-in-out infinite;
 }
 
 @keyframes chargingGlow {
     0%, 100% {
         box-shadow: 
-            0 0 20px rgba(16, 185, 129, 0.6),
-            inset 0 0 10px rgba(255, 255, 255, 0.2);
+            0 0 30px rgba(16, 185, 129, 0.8),
+            0 0 60px rgba(16, 185, 129, 0.4),
+            inset 0 0 20px rgba(255, 255, 255, 0.3),
+            inset 0 -10px 30px rgba(16, 185, 129, 0.5);
     }
     50% {
         box-shadow: 
-            0 0 30px rgba(16, 185, 129, 0.9),
-            inset 0 0 15px rgba(255, 255, 255, 0.4);
+            0 0 50px rgba(16, 185, 129, 1),
+            0 0 80px rgba(16, 185, 129, 0.6),
+            inset 0 0 30px rgba(255, 255, 255, 0.5),
+            inset 0 -10px 40px rgba(16, 185, 129, 0.7);
     }
 }
 
 .battery-level.discharging {
-    background: linear-gradient(to top, #ef4444 0%, #f87171 100%);
+    background: linear-gradient(to top, #ef4444 0%, #f87171 50%, #fca5a5 100%);
     box-shadow: 
-        0 0 20px rgba(239, 68, 68, 0.6),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: dischargingGlow 1s ease-in-out infinite;
+        0 0 30px rgba(239, 68, 68, 0.8),
+        0 0 60px rgba(239, 68, 68, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.3),
+        inset 0 -10px 30px rgba(239, 68, 68, 0.5);
+    animation: dischargingGlow 1.5s ease-in-out infinite;
 }
 
 @keyframes dischargingGlow {
     0%, 100% {
         box-shadow: 
-            0 0 20px rgba(239, 68, 68, 0.6),
-            inset 0 0 10px rgba(255, 255, 255, 0.2);
+            0 0 30px rgba(239, 68, 68, 0.8),
+            0 0 60px rgba(239, 68, 68, 0.4),
+            inset 0 0 20px rgba(255, 255, 255, 0.3),
+            inset 0 -10px 30px rgba(239, 68, 68, 0.5);
     }
     50% {
         box-shadow: 
-            0 0 30px rgba(239, 68, 68, 0.9),
-            inset 0 0 15px rgba(255, 255, 255, 0.4);
+            0 0 50px rgba(239, 68, 68, 1),
+            0 0 80px rgba(239, 68, 68, 0.6),
+            inset 0 0 30px rgba(255, 255, 255, 0.5),
+            inset 0 -10px 40px rgba(239, 68, 68, 0.7);
     }
 }
 
 .battery-tip {
-    width: 8px;
-    height: 30px;
+    width: 12px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%);
+    border-radius: 0 8px 8px 0;
+    margin-left: -3px;
+    box-shadow: 
+        0 0 15px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    position: relative;
+    z-index: 2;
+}
+
+.battery-tip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 20px;
     background: rgba(255, 255, 255, 0.3);
-    border-radius: 0 4px 4px 0;
-    margin-left: -2px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
 }
 
 .battery-percentage {
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: 900;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    margin-top: 1rem;
+    text-shadow: 
+        0 0 30px currentColor,
+        0 4px 20px rgba(0, 0, 0, 0.8);
+    margin-top: 1.5rem;
     color: #10b981;
     transition: color 0.3s ease;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+    animation: percentagePulse 2s ease-in-out infinite;
+}
+
+@keyframes percentagePulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+    }
 }
 
 .battery-percentage.discharging {
     color: #ef4444;
+}
+
+/* Efectos adicionales para hacer la batería más atractiva */
+.battery-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulseRing 2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes pulseRing {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .battery-container {
+        padding: 2rem;
+        border-radius: 20px;
+    }
+
+    .battery-message {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .battery {
+        width: 220px;
+        height: 110px;
+    }
+
+    .battery-body {
+        width: 200px;
+        height: 90px;
+        border-width: 6px;
+    }
+
+    .battery-tip {
+        width: 10px;
+        height: 30px;
+    }
+
+    .battery-percentage {
+        font-size: 3rem;
+    }
 }
 
 /* Animación de carga (verde) */
