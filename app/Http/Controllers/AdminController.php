@@ -98,8 +98,76 @@ class AdminController extends Controller
                 $query->where('stock_quantity', '<=', 0)->orWhere('in_stock', false);
             })
             ->count();
+        
+        // Nuevas métricas mejoradas
+        $totalOrders = Order::count();
+        $totalOrdersThisMonth = Order::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        $totalOrdersLastMonth = Order::whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->count();
+        $ordersChange = $totalOrdersThisMonth - $totalOrdersLastMonth;
+        
+        $totalRevenue = Order::where('status', '!=', 'cancelled')
+            ->sum('total_amount');
+        $revenueThisMonth = Order::where('status', '!=', 'cancelled')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_amount');
+        $revenueLastMonth = Order::where('status', '!=', 'cancelled')
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->sum('total_amount');
+        $revenueChangePercent = 0;
+        if ($revenueLastMonth > 0) {
+            $revenueChangePercent = round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100, 0);
+        } elseif ($revenueThisMonth > 0) {
+            $revenueChangePercent = 100;
+        }
+        
+        $totalUsers = User::where('email', 'not like', '%@digitalxpress.com')->count();
+        $newUsersThisMonth = User::where('email', 'not like', '%@digitalxpress.com')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        
+        $totalRepairs = Repair::where('is_active', true)->count();
+        $pendingRepairs = Repair::where('is_active', true)->where('status', 'pending')->count();
+        $inProgressRepairs = Repair::where('is_active', true)->where('status', 'in_progress')->count();
+        
+        // Pedidos recientes
         $recentOrders = Order::with(['orderItems.product', 'user'])
             ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+        
+        // Reparaciones recientes
+        $recentRepairs = Repair::with('user')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+        
+        // Actividad reciente (últimas 10 actividades)
+        $recentActivity = ActivityLog::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+        
+        // Estadísticas de ventas por mes (últimos 6 meses)
+        $salesByMonth = Order::where('status', '!=', 'cancelled')
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(total_amount) as total')
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+        
+        // Productos más vendidos (top 5)
+        $topProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
+            ->with('product')
+            ->groupBy('product_id')
+            ->orderBy('total_sold', 'desc')
             ->limit(5)
             ->get();
 
@@ -110,7 +178,21 @@ class AdminController extends Controller
             'inventoryChangePercent',
             'lowStockCount',
             'outOfStockCount',
-            'recentOrders'
+            'totalOrders',
+            'ordersChange',
+            'totalOrdersThisMonth',
+            'revenueThisMonth',
+            'revenueChangePercent',
+            'totalUsers',
+            'newUsersThisMonth',
+            'totalRepairs',
+            'pendingRepairs',
+            'inProgressRepairs',
+            'recentOrders',
+            'recentRepairs',
+            'recentActivity',
+            'salesByMonth',
+            'topProducts'
         ));
     }
 
