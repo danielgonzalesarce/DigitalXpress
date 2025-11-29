@@ -17,6 +17,22 @@
     @stack('styles')
 </head>
 <body>
+    <!-- Overlay de carga/descarga de batería -->
+    <div id="batteryOverlay" class="battery-overlay" style="display: none;">
+        <div class="battery-container">
+            <div class="battery-message" id="batteryMessage">Cargando...</div>
+            <div class="battery-wrapper">
+                <div class="battery">
+                    <div class="battery-body">
+                        <div class="battery-level" id="batteryLevel"></div>
+                    </div>
+                    <div class="battery-tip"></div>
+                </div>
+            </div>
+            <div class="battery-percentage" id="batteryPercentage">0%</div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">

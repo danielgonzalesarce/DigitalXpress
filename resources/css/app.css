@@ -180,6 +180,184 @@ main {
 }
 
 /* ============================================
+   ANIMACIÓN DE BATERÍA PARA LOGIN/LOGOUT
+   ============================================ */
+
+.battery-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.battery-container {
+    text-align: center;
+    color: white;
+}
+
+.battery-message {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    animation: pulseText 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseText {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.battery-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.battery {
+    width: 200px;
+    height: 100px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.battery-body {
+    width: 180px;
+    height: 80px;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 0 20px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.battery-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+    transition: height 0.1s linear, background 0.3s ease;
+    box-shadow: 
+        0 0 20px rgba(16, 185, 129, 0.6),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    border-radius: 0 0 6px 6px;
+}
+
+.battery-level.charging {
+    animation: chargingGlow 1s ease-in-out infinite;
+}
+
+@keyframes chargingGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(16, 185, 129, 0.6),
+            inset 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(16, 185, 129, 0.9),
+            inset 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+}
+
+.battery-level.discharging {
+    background: linear-gradient(to top, #ef4444 0%, #f87171 100%);
+    box-shadow: 
+        0 0 20px rgba(239, 68, 68, 0.6),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    animation: dischargingGlow 1s ease-in-out infinite;
+}
+
+@keyframes dischargingGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(239, 68, 68, 0.6),
+            inset 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(239, 68, 68, 0.9),
+            inset 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+}
+
+.battery-tip {
+    width: 8px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 4px 4px 0;
+    margin-left: -2px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.battery-percentage {
+    font-size: 3rem;
+    font-weight: 900;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    margin-top: 1rem;
+    color: #10b981;
+    transition: color 0.3s ease;
+}
+
+.battery-percentage.discharging {
+    color: #ef4444;
+}
+
+/* Animación de carga (verde) */
+@keyframes chargeBattery {
+    from {
+        height: 0%;
+        background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+    }
+    to {
+        height: 100%;
+        background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+    }
+}
+
+/* Animación de descarga (verde a rojo) */
+@keyframes dischargeBattery {
+    from {
+        height: 100%;
+        background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+    }
+    to {
+        height: 0%;
+        background: linear-gradient(to top, #ef4444 0%, #f87171 100%);
+    }
+}
+
+/* ============================================
    VARIABLES CSS - Tema Claro
    ============================================ */
 :root {
