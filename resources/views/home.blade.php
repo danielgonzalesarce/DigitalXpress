@@ -24,36 +24,50 @@
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <div class="row align-items-center h-100">
                         <div class="col-lg-6 d-flex flex-column justify-content-center">
-                            <div class="mb-2">
+                            <div class="mb-3 hero-badge-container">
                                 @if($product->is_on_sale)
-                    <span class="badge bg-success fs-6 px-3 py-2">Oferta Especial</span>
+                                    <span class="badge-hero badge-hero-success">
+                                        <i class="fas fa-fire me-1"></i> Oferta Especial
+                                    </span>
                                 @else
-                                    <span class="badge bg-primary fs-6 px-3 py-2">Producto Destacado</span>
+                                    <span class="badge-hero badge-hero-primary">
+                                        <i class="fas fa-star me-1"></i> Producto Destacado
+                                    </span>
                                 @endif
-                </div>
-                            <h1 class="display-5 fw-bold mb-2">{{ $product->name }}</h1>
-                            <p class="lead mb-2">{{ $product->category->name ?? 'Tecnología' }}</p>
-                            <p class="mb-3 small">{{ Str::limit($product->short_description ?? $product->description, 100) }}</p>
-                            <div class="d-flex align-items-center mb-3">
+                            </div>
+                            <h1 class="hero-title display-5 fw-bold mb-3">{{ $product->name }}</h1>
+                            <p class="hero-category lead mb-2">
+                                <i class="fas fa-tag me-1"></i> {{ $product->category->name ?? 'Tecnología' }}
+                            </p>
+                            <p class="hero-description mb-4 small">{{ Str::limit($product->short_description ?? $product->description, 100) }}</p>
+                            <div class="d-flex align-items-center mb-4 hero-price-container">
                                 @if($product->is_on_sale)
-                                    <span class="h3 text-success fw-bold me-3">${{ number_format($product->sale_price, 2) }}</span>
-                                    <span class="text-decoration-line-through text-light">${{ number_format($product->price, 2) }}</span>
+                                    <span class="hero-price-sale h2 text-success fw-bold me-3">
+                                        ${{ number_format($product->sale_price, 2) }}
+                                    </span>
+                                    <span class="hero-price-original text-decoration-line-through text-light">
+                                        ${{ number_format($product->price, 2) }}
+                                    </span>
                                 @else
-                                    <span class="h3 text-success fw-bold me-3">${{ number_format($product->price, 2) }}</span>
+                                    <span class="hero-price h2 text-success fw-bold me-3">
+                                        ${{ number_format($product->price, 2) }}
+                                    </span>
                                 @endif
-                </div>
+                            </div>
                             <div class="d-flex gap-3 mb-2">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-success btn-lg px-4">
-                                    Ver Producto
-                    </a>
-                                <a href="{{ route('products.index') }}" class="btn btn-outline-light btn-lg px-4">
-                                    Ver Todos
+                                <a href="{{ route('products.show', $product) }}" class="btn btn-enhanced btn-success btn-lg px-4 hero-btn">
+                                    <i class="fas fa-eye"></i> <span>Ver Producto</span>
                                 </a>
-                </div>
+                                <a href="{{ route('products.index') }}" class="btn btn-enhanced btn-outline-light btn-lg px-4 hero-btn">
+                                    <i class="fas fa-th"></i> <span>Ver Todos</span>
+                                </a>
+                            </div>
                 @auth
-                                <div class="mt-2">
-                                    <div class="alert alert-light d-flex align-items-center py-2" role="alert">
-                            <i class="fas fa-user-circle me-2 text-primary"></i>
+                                <div class="mt-3 welcome-badge">
+                                    <div class="welcome-card d-flex align-items-center py-2 px-3">
+                                        <div class="welcome-avatar me-3">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
                                         <div class="small">
                                             <strong>¡Bienvenido, {{ Auth::user()->name }}!</strong>
                                         </div>
@@ -62,10 +76,10 @@
                             @endauth
                         </div>
                         <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                            <div class="carousel-image-panel product-3d-panel" data-product-index="{{ $index }}">
+                            <div class="carousel-image-panel" data-product-index="{{ $index }}">
                                 <img src="{{ $product->image_url }}" 
                                      alt="{{ $product->name }}" 
-                                     class="carousel-image product-3d-image">
+                                     class="carousel-image">
                             </div>
                         </div>
                     </div>
@@ -353,67 +367,66 @@
         overflow: hidden;
     }
 
-    /* Panel con borde para la imagen del producto - Efecto 3D */
+    /* Panel con borde para la imagen del producto - Mejorado con más efectos */
     .carousel-image-panel {
-        background: #000000;
-        border-radius: 20px;
-        padding: 30px;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        border-radius: 25px;
+        padding: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
-        transition: all 0.5s ease;
-        border: 4px solid #1e3a8a;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 5px solid #1e3a8a;
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+            0 0 40px rgba(30, 58, 138, 0.3);
         width: 100%;
-        max-width: 500px; /* Ancho máximo fijo para el panel */
-        height: 500px; /* Altura fija para el panel */
+        max-width: 500px;
+        height: 500px;
         margin: 0 auto;
-        perspective: 1000px;
-        transform-style: preserve-3d;
+        overflow: hidden;
+        animation: panelFloat 3s ease-in-out infinite;
     }
 
-    /* Animación 3D continua para el panel del carrusel */
-    @keyframes floatPanel3D {
+    @keyframes panelFloat {
         0%, 100% {
-            transform: translateY(0px) rotateY(0deg) rotateX(0deg);
-        }
-        25% {
-            transform: translateY(-8px) rotateY(2deg) rotateX(1deg);
+            transform: translateY(0px) rotate(0deg);
         }
         50% {
-            transform: translateY(-12px) rotateY(0deg) rotateX(0deg);
-        }
-        75% {
-            transform: translateY(-8px) rotateY(-2deg) rotateX(-1deg);
+            transform: translateY(-10px) rotate(1deg);
         }
     }
 
-    .product-3d-panel {
-        animation: floatPanel3D 8s ease-in-out infinite;
+    .carousel-image-panel::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: rotateGlow 8s linear infinite;
+        pointer-events: none;
     }
 
-    .product-3d-panel:hover {
-        animation-play-state: paused;
-        transform: translateY(-20px) translateZ(30px) rotateY(5deg) rotateX(-3deg) !important;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
-                    0 0 40px rgba(59, 130, 246, 0.4),
-                    0 0 80px rgba(59, 130, 246, 0.2);
-    }
-
-    /* Imagen del carrusel con efecto 3D */
-    .product-3d-image {
-        transform-style: preserve-3d;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .product-3d-panel:hover .product-3d-image {
-        transform: translateZ(50px) scale(1.08) rotateY(-5deg);
-        filter: brightness(1.15) contrast(1.1);
+    @keyframes rotateGlow {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     .carousel-image-panel.active {
-        border-color: #1e3a8a;
+        border-color: #3b82f6;
+        box-shadow: 
+            0 25px 70px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+            0 0 60px rgba(59, 130, 246, 0.5);
+        transform: scale(1.02);
     }
 
     #productCarousel .carousel-item {
@@ -427,32 +440,66 @@
 
     #productCarousel .carousel-image {
         width: 100%;
-        height: 440px; /* Altura fija para las imágenes (500px panel - 60px padding) */
-        object-fit: contain; /* Mantiene la proporción sin recortar */
-        transition: transform 0.3s ease;
+        height: 430px;
+        object-fit: contain;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         display: block;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+        animation: imageFloat 4s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
     }
 
-    #productCarousel .carousel-image:hover {
-        transform: scale(1.05);
+    @keyframes imageFloat {
+        0%, 100% {
+            transform: translateY(0px) scale(1);
+        }
+        50% {
+            transform: translateY(-8px) scale(1.02);
+        }
+    }
+
+    .carousel-image-panel:hover .carousel-image {
+        transform: scale(1.08) translateY(-5px);
+        filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.6)) brightness(1.1);
     }
 
     #productCarousel .carousel-control-prev,
     #productCarousel .carousel-control-next {
-        width: 50px;
-        height: 50px;
-        background-color: rgba(255, 255, 255, 0.2);
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
         border-radius: 50%;
         top: 50%;
         transform: translateY(-50%);
-        opacity: 0.8;
-        transition: all 0.3s ease;
+        opacity: 0.9;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     #productCarousel .carousel-control-prev:hover,
     #productCarousel .carousel-control-next:hover {
-        background-color: rgba(255, 255, 255, 0.4);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%);
         opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    #productCarousel .carousel-control-prev-icon,
+    #productCarousel .carousel-control-next-icon {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        transition: transform 0.3s ease;
+    }
+
+    #productCarousel .carousel-control-prev:hover .carousel-control-prev-icon {
+        transform: translateX(-3px);
+    }
+
+    #productCarousel .carousel-control-next:hover .carousel-control-next-icon {
+        transform: translateX(3px);
     }
 
     #productCarousel .carousel-control-prev {
@@ -467,19 +514,50 @@
         bottom: 20px;
     }
 
+    #productCarousel .carousel-indicators {
+        bottom: 30px;
+    }
+
     #productCarousel .carousel-indicators button {
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.5);
-        border: 2px solid rgba(255, 255, 255, 0.8);
-        margin: 0 5px;
-        transition: all 0.3s ease;
+        background-color: rgba(255, 255, 255, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        margin: 0 6px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    #productCarousel .carousel-indicators button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+    }
+
+    #productCarousel .carousel-indicators button:hover {
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(1.3);
+        border-color: rgba(255, 255, 255, 0.9);
     }
 
     #productCarousel .carousel-indicators button.active {
         background-color: rgba(255, 255, 255, 1);
-        transform: scale(1.2);
+        border-color: rgba(255, 255, 255, 1);
+        transform: scale(1.4);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    #productCarousel .carousel-indicators button.active::before {
+        width: 100%;
+        height: 100%;
     }
 
     /* Estilos para efecto hover en imágenes de productos */
@@ -576,6 +654,232 @@
     /* Asegurar que los badges estén sobre el overlay */
     .product-image-container .badge {
         z-index: 10;
+    }
+
+    /* Estilos mejorados para el hero section */
+    .hero-title {
+        animation: fadeInUp 0.8s ease-out;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        line-height: 1.2;
+    }
+
+    .hero-category {
+        animation: fadeInUp 1s ease-out;
+        opacity: 0.95;
+        font-weight: 500;
+    }
+
+    .hero-description {
+        animation: fadeInUp 1.2s ease-out;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .hero-price-container {
+        animation: fadeInUp 1.4s ease-out;
+    }
+
+    .hero-price {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        animation: pulsePrice 2s ease-in-out infinite;
+    }
+
+    .hero-price-sale {
+        text-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        animation: pulsePrice 2s ease-in-out infinite;
+    }
+
+    @keyframes pulsePrice {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .hero-badge-container {
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+    .badge-hero {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        animation: badgePulse 2s ease-in-out infinite;
+        backdrop-filter: blur(10px);
+    }
+
+    .badge-hero-primary {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 100%);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge-hero-success {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(22, 163, 74, 0.9) 100%);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes badgePulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    .hero-btn {
+        animation: fadeInUp 1.6s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .hero-btn:hover::after {
+        width: 300px;
+        height: 300px;
+    }
+
+    .welcome-badge {
+        animation: fadeInUp 1.8s ease-out;
+    }
+
+    .welcome-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+        border-radius: 15px;
+        box-shadow: 
+            0 4px 15px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(59, 130, 246, 0.2) inset;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        border: 2px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .welcome-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(59, 130, 246, 0.3) inset;
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .welcome-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        animation: avatarPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes avatarPulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Efectos de entrada para cada slide */
+    .carousel-item {
+        animation: slideIn 0.8s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Efecto de brillo en el fondo del hero */
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0%, 100% {
+            opacity: 0.5;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    /* Mejorar contraste de texto en el hero */
+    .hero-section .col-lg-6:first-child {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-section .col-lg-6:first-child h1,
+    .hero-section .col-lg-6:first-child p,
+    .hero-section .col-lg-6:first-child .lead {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 </style>
 
