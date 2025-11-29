@@ -147,7 +147,7 @@
                             <br>
                             <small class="text-muted">
                                 <i class="fas fa-check-circle me-1"></i>
-                                Reparación Terminada
+                                Reparación Completa
                             </small>
                             @endif
                         </td>
@@ -170,10 +170,10 @@
                                 @if($repair->status === 'completed')
                                 <button type="button" 
                                         class="btn btn-sm btn-secondary" 
-                                        title="Reparación Terminada"
+                                        title="Reparación Completa"
                                         disabled>
                                     <i class="fas fa-check-circle me-1"></i>
-                                    Reparación Terminada
+                                    Reparación Completa
                                 </button>
                                 @else
                                 <a href="{{ route('admin.repairs.edit', $repair) }}" 
@@ -181,7 +181,6 @@
                                    title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                @endif
                                 <form action="{{ route('admin.repairs.destroy', $repair) }}" 
                                       method="POST" 
                                       class="d-inline"
@@ -194,6 +193,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
