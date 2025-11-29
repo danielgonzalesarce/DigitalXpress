@@ -357,6 +357,30 @@ async function toggleFavorite(productId) {
             } else {
                 btn.classList.add('favorite-active');
             }
+            
+            // Actualizar contador de favoritos inmediatamente
+            if (data.favorites_count !== undefined) {
+                const favoritesBadge = document.querySelector('.nav-link[href*="favoritos"] .badge');
+                if (data.favorites_count > 0) {
+                    if (favoritesBadge) {
+                        favoritesBadge.textContent = data.favorites_count;
+                    } else {
+                        const favoritesLink = document.querySelector('.nav-link[href*="favoritos"]');
+                        if (favoritesLink) {
+                            const badge = document.createElement('span');
+                            badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+                            badge.style.fontSize = '0.7rem';
+                            badge.textContent = data.favorites_count;
+                            favoritesLink.appendChild(badge);
+                        }
+                    }
+                } else {
+                    if (favoritesBadge) {
+                        favoritesBadge.remove();
+                    }
+                }
+            }
+            
             if (data.message) {
                 showNotification(data.message, isFavorite ? 'info' : 'success');
             }

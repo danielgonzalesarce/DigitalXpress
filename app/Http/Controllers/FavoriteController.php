@@ -99,9 +99,11 @@ class FavoriteController extends Controller
 
         // Retornar respuesta según el tipo de petición
         if ($request->ajax()) {
+            $favoritesCount = Favorite::where('user_id', Auth::id())->count();
             return response()->json([
                 'success' => true,
-                'message' => 'Producto agregado a favoritos'
+                'message' => 'Producto agregado a favoritos',
+                'favorites_count' => $favoritesCount
             ]);
         }
 
@@ -131,9 +133,11 @@ class FavoriteController extends Controller
             $favorite->delete();
 
             if (request()->ajax()) {
+                $favoritesCount = Favorite::where('user_id', Auth::id())->count();
                 return response()->json([
                     'success' => true,
-                    'message' => 'Producto eliminado de favoritos'
+                    'message' => 'Producto eliminado de favoritos',
+                    'favorites_count' => $favoritesCount
                 ]);
             }
 
