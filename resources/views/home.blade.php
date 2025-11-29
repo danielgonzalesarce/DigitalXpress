@@ -34,7 +34,7 @@
                                         <i class="fas fa-star me-1"></i> Producto Destacado
                                     </span>
                                 @endif
-                            </div>
+                </div>
                             <h1 class="hero-title display-5 fw-bold mb-3">{{ $product->name }}</h1>
                             <p class="hero-category lead mb-2">
                                 <i class="fas fa-tag me-1"></i> {{ $product->category->name ?? 'Tecnología' }}
@@ -53,15 +53,15 @@
                                         ${{ number_format($product->price, 2) }}
                                     </span>
                                 @endif
-                            </div>
+                </div>
                             <div class="d-flex gap-3 mb-2">
                                 <a href="{{ route('products.show', $product) }}" class="btn btn-enhanced btn-success btn-lg px-4 hero-btn">
                                     <i class="fas fa-eye"></i> <span>Ver Producto</span>
-                                </a>
+                    </a>
                                 <a href="{{ route('products.index') }}" class="btn btn-enhanced btn-outline-light btn-lg px-4 hero-btn">
                                     <i class="fas fa-th"></i> <span>Ver Todos</span>
                                 </a>
-                            </div>
+                </div>
                 @auth
                                 <div class="mt-3 welcome-badge">
                                     <div class="welcome-card d-flex align-items-center py-2 px-3">
@@ -752,136 +752,97 @@
         align-items: center;
         gap: 0.75rem;
         padding: 0.5rem 1rem;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
-        backdrop-filter: blur(15px);
-        border: 2px solid rgba(74, 222, 128, 0.4);
+        backdrop-filter: blur(10px);
+        border: 3px solid rgba(0, 0, 0, 0.1);
         box-shadow: 
-            0 4px 20px rgba(0, 0, 0, 0.5),
-            0 0 20px rgba(74, 222, 128, 0.3),
-            inset 0 0 20px rgba(74, 222, 128, 0.1);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .hero-price-container::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(74, 222, 128, 0.2), transparent);
-        animation: priceShimmer 3s ease-in-out infinite;
-        pointer-events: none;
-    }
-
-    @keyframes priceShimmer {
-        0% {
-            transform: translate(-50%, -50%) rotate(0deg);
-        }
-        100% {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
-    .hero-price-container:hover {
-        transform: scale(1.05);
-        border-color: rgba(74, 222, 128, 0.8);
-        box-shadow: 
-            0 6px 30px rgba(0, 0, 0, 0.6),
-            0 0 30px rgba(74, 222, 128, 0.5),
-            inset 0 0 30px rgba(74, 222, 128, 0.2);
-    }
-
-    .hero-price {
-        color: #4ade80 !important; /* Verde brillante */
-        text-shadow: 
-            0 0 15px rgba(74, 222, 128, 1),
-            0 0 30px rgba(74, 222, 128, 0.8),
-            0 2px 10px rgba(0, 0, 0, 0.9),
-            0 4px 15px rgba(0, 0, 0, 0.7);
-        animation: priceGlow 2s ease-in-out infinite;
-        font-weight: 900 !important;
-        letter-spacing: 1px;
-        filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
-        position: relative;
-        z-index: 1;
+            0 8px 25px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(0, 0, 0, 0.05) inset;
         transition: all 0.3s ease;
     }
 
-    @keyframes priceGlow {
-        0%, 100% {
-            text-shadow: 
-                0 0 15px rgba(74, 222, 128, 1),
-                0 0 30px rgba(74, 222, 128, 0.8),
-                0 2px 10px rgba(0, 0, 0, 0.9),
-                0 4px 15px rgba(0, 0, 0, 0.7);
-            filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
-        }
-        50% {
-            text-shadow: 
-                0 0 20px rgba(74, 222, 128, 1),
-                0 0 40px rgba(74, 222, 128, 1),
-                0 2px 10px rgba(0, 0, 0, 0.9),
-                0 4px 15px rgba(0, 0, 0, 0.7);
-            filter: drop-shadow(0 0 15px rgba(74, 222, 128, 1));
-        }
+    .hero-price-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 12px 35px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(0, 0, 0, 0.1) inset;
     }
 
-    .hero-price-container:hover .hero-price {
-        transform: scale(1.05);
-        animation: pricePulse 0.6s ease-in-out;
+    .hero-price {
+        color: #000000 !important; /* Negro sólido */
+        text-shadow: none;
+        animation: pulsePrice 2s ease-in-out infinite;
+        font-weight: 900 !important;
+        letter-spacing: 1px;
+        font-size: 2.5rem !important;
+        line-height: 1;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
     }
 
-    @keyframes pricePulse {
+    .hero-price::after {
+        content: attr(data-price);
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(135deg, #000000 0%, #333333 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        z-index: -1;
+        filter: blur(2px);
+        opacity: 0.5;
+    }
+
+    .hero-price-sale {
+        color: #000000 !important; /* Negro sólido */
+        text-shadow: none;
+        animation: pulsePrice 2s ease-in-out infinite;
+        font-weight: 900 !important;
+        letter-spacing: 1px;
+        font-size: 2.5rem !important;
+        line-height: 1;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+    }
+
+    .hero-price-sale::after {
+        content: attr(data-price);
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(135deg, #000000 0%, #333333 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        z-index: -1;
+        filter: blur(2px);
+        opacity: 0.5;
+    }
+
+    .hero-price-original {
+        color: rgba(0, 0, 0, 0.4) !important;
+        text-shadow: none;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        font-weight: 600;
+    }
+
+    @keyframes pulsePrice {
         0%, 100% {
             transform: scale(1);
         }
         50% {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
     }
-
-    .hero-price-sale {
-        color: #4ade80 !important; /* Verde brillante */
-        text-shadow: 
-            0 0 15px rgba(74, 222, 128, 1),
-            0 0 30px rgba(74, 222, 128, 0.8),
-            0 2px 10px rgba(0, 0, 0, 0.9),
-            0 4px 15px rgba(0, 0, 0, 0.7);
-        animation: priceGlow 2s ease-in-out infinite;
-        font-weight: 900 !important;
-        letter-spacing: 1px;
-        filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.8));
-        position: relative;
-        z-index: 1;
-        transition: all 0.3s ease;
-    }
-
-    .hero-price-container:hover .hero-price-sale {
-        transform: scale(1.05);
-        animation: pricePulse 0.6s ease-in-out;
-    }
-
-    .hero-price-original {
-        color: rgba(255, 255, 255, 0.7) !important;
-        text-shadow: 
-            0 2px 6px rgba(0, 0, 0, 0.9),
-            0 0 8px rgba(0, 0, 0, 0.6);
-        font-size: 1rem;
-        opacity: 0.9;
-        position: relative;
-        z-index: 1;
-        transition: all 0.3s ease;
-    }
-
-    .hero-price-container:hover .hero-price-original {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-
 
     .hero-badge-container {
         animation: fadeInDown 0.6s ease-out;
