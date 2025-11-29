@@ -302,19 +302,36 @@
     }
 
     .products-grid.view-hidden {
-        display: none;
+        display: none !important;
     }
 
     /* Vista de lista */
     .products-list {
         display: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        opacity: 1 !important; /* Cambiar a 1 para que sea visible inmediatamente */
+        /* transition: opacity 0.3s ease; Eliminar transición que causa retraso */
     }
 
     .products-list.view-active {
-        display: block;
-        opacity: 1;
+        display: block !important;
+        opacity: 1 !important;
+    }
+    
+    /* Asegurar que el contenido siempre sea visible */
+    .products-container {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    #gridView, #listView {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    #gridView.view-active {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     /* Estilos para items de lista */
