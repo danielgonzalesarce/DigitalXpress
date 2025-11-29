@@ -62,10 +62,10 @@
                             @endauth
                         </div>
                         <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                            <div class="carousel-image-panel" data-product-index="{{ $index }}">
+                            <div class="carousel-image-panel product-3d-panel" data-product-index="{{ $index }}">
                                 <img src="{{ $product->image_url }}" 
                                      alt="{{ $product->name }}" 
-                                     class="carousel-image">
+                                     class="carousel-image product-3d-image">
                             </div>
                         </div>
                     </div>
@@ -353,7 +353,7 @@
         overflow: hidden;
     }
 
-    /* Panel con borde para la imagen del producto */
+    /* Panel con borde para la imagen del producto - Efecto 3D */
     .carousel-image-panel {
         background: #000000;
         border-radius: 20px;
@@ -369,6 +369,47 @@
         max-width: 500px; /* Ancho máximo fijo para el panel */
         height: 500px; /* Altura fija para el panel */
         margin: 0 auto;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+    }
+
+    /* Animación 3D continua para el panel del carrusel */
+    @keyframes floatPanel3D {
+        0%, 100% {
+            transform: translateY(0px) rotateY(0deg) rotateX(0deg);
+        }
+        25% {
+            transform: translateY(-8px) rotateY(2deg) rotateX(1deg);
+        }
+        50% {
+            transform: translateY(-12px) rotateY(0deg) rotateX(0deg);
+        }
+        75% {
+            transform: translateY(-8px) rotateY(-2deg) rotateX(-1deg);
+        }
+    }
+
+    .product-3d-panel {
+        animation: floatPanel3D 8s ease-in-out infinite;
+    }
+
+    .product-3d-panel:hover {
+        animation-play-state: paused;
+        transform: translateY(-20px) translateZ(30px) rotateY(5deg) rotateX(-3deg) !important;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+                    0 0 40px rgba(59, 130, 246, 0.4),
+                    0 0 80px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Imagen del carrusel con efecto 3D */
+    .product-3d-image {
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-3d-panel:hover .product-3d-image {
+        transform: translateZ(50px) scale(1.08) rotateY(-5deg);
+        filter: brightness(1.15) contrast(1.1);
     }
 
     .carousel-image-panel.active {
