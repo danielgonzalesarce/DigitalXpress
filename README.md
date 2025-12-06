@@ -3,13 +3,13 @@
 <div align="center">
 
 ![Laravel](https://img.shields.io/badge/Laravel-12.7.1-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17/18-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
 **Una aplicación web completa desarrollada en Laravel que combina una tienda de e-commerce con servicios técnicos especializados.**
 
-[Características](#-características-principales) • [Instalación](#-instalación-rápida) • [Documentación](#-documentación) • [Soporte](#-soporte)
+[Características](#-características-principales) • [Instalación](#-instalación-paso-a-paso) • [Configuración](#-configuración-detallada) • [Soporte](#-soporte-técnico)
 
 </div>
 
@@ -20,28 +20,39 @@
 - [Características Principales](#-características-principales)
 - [Tecnologías Utilizadas](#-tecnologías-utilizadas)
 - [Requisitos del Sistema](#-requisitos-del-sistema)
-- [Instalación Rápida](#-instalación-rápida)
-- [Instalación Manual](#-instalación-manual)
-- [Configuración](#-configuración)
-- [Uso](#-uso)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Comandos Útiles](#-comandos-útiles)
+- [Instalación Paso a Paso](#-instalación-paso-a-paso)
+  - [Verificación de Requisitos](#1-verificación-de-requisitos)
+  - [Clonar el Repositorio](#2-clonar-el-repositorio)
+  - [Instalar Dependencias](#3-instalar-dependencias)
+  - [Configurar Entorno](#4-configurar-entorno)
+  - [Configurar Base de Datos](#5-configurar-base-de-datos)
+  - [Ejecutar Migraciones y Seeders](#6-ejecutar-migraciones-y-seeders)
+  - [Configurar Storage](#7-configurar-storage)
+  - [Compilar Assets](#8-compilar-assets-opcional)
+  - [Iniciar el Servidor](#9-iniciar-el-servidor)
+  - [Verificar Instalación](#10-verificar-instalación)
+- [Configuración Detallada](#-configuración-detallada)
 - [Usuarios de Prueba](#-usuarios-de-prueba)
-- [Documentación](#-documentación)
-- [Contribuciones](#-contribuciones)
-- [Licencia](#-licencia)
+- [Uso del Sistema](#-uso-del-sistema)
+- [Solución de Problemas](#-solución-de-problemas-comunes)
+- [Comandos Útiles](#-comandos-útiles)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Documentación Adicional](#-documentación-adicional)
+- [Soporte Técnico](#-soporte-técnico)
 
 ---
 
 ## 🚀 Características Principales
 
 ### 🛍️ E-commerce Completo
-- ✅ **Catálogo de productos** con 8 categorías específicas
+- ✅ **Catálogo de productos** con 8 categorías específicas (Laptops, Relojes, Televisores, Mouses, Teclados, Audífonos, Celulares, Cámaras)
 - ✅ **Carrito inteligente** que funciona para usuarios registrados e invitados
 - ✅ **Sistema de categorías** organizado y filtrable
 - ✅ **Gestión de stock** en tiempo real
 - ✅ **Precios con descuentos** y ofertas especiales
-- ✅ **Búsqueda avanzada** de productos
+- ✅ **Búsqueda avanzada** de productos con filtros automáticos
+- ✅ **Sistema de favoritos** para usuarios registrados
+- ✅ **Checkout completo** con múltiples métodos de pago
 
 ### 🔧 Servicio Técnico
 - ✅ **Dashboard de reparaciones** completo
@@ -54,12 +65,13 @@
 - ✅ **Autenticación avanzada** con modal personalizado
 - ✅ **Login con Google OAuth** (crear cuenta e iniciar sesión)
 - ✅ **Validaciones robustas** en formularios
-- ✅ **Sistema de roles** (Admin, Cliente, Técnico)
+- ✅ **Sistema de roles** (Admin, Cliente, Técnico, VIP)
 - ✅ **Gestión de sesiones** segura
+- ✅ **Sistema de auditoría** completo
 
 ### 👨‍💼 Panel de Administración
 - ✅ **Dashboard completo** con estadísticas en tiempo real
-- ✅ **Gestión de productos** (CRUD completo)
+- ✅ **Gestión de productos** (CRUD completo) con filtros automáticos
 - ✅ **Gestión de inventario** y stock
 - ✅ **Gestión de pedidos** y órdenes
 - ✅ **Sistema de auditoría** para rastrear actividades
@@ -70,128 +82,169 @@
 
 ## 🛠️ Tecnologías Utilizadas
 
-| Categoría | Tecnología |
-|-----------|-----------|
-| **Backend** | Laravel 12.7.1, PHP 8.3+ |
-| **Base de Datos** | PostgreSQL 17/18 |
-| **Frontend** | Bootstrap 5, HTML5, CSS3, JavaScript |
-| **Autenticación** | Laravel Breeze, Laravel Socialite (Google OAuth) |
-| **PDF** | DomPDF |
-| **Iconos** | Font Awesome 6.0 |
-| **Gestión de Paquetes** | Composer, NPM |
+| Categoría | Tecnología | Versión |
+|-----------|-----------|---------|
+| **Backend** | Laravel | 12.7.1 |
+| **Lenguaje** | PHP | 8.1+ |
+| **Base de Datos** | PostgreSQL | 17/18 |
+| **Frontend** | Bootstrap | 5.x |
+| **Iconos** | Font Awesome | 6.0 |
+| **Autenticación** | Laravel Breeze, Laravel Socialite | - |
+| **PDF** | DomPDF | - |
+| **Gestión de Paquetes** | Composer, NPM | - |
 
 ---
 
 ## 📋 Requisitos del Sistema
 
-### Requisitos Mínimos
+### Requisitos Mínimos Obligatorios
 
-- **PHP**: 8.1 o superior
-- **Composer**: Última versión
-- **PostgreSQL**: 17 o 18
-- **Extensiones PHP**: 
-  - BCMath
-  - Ctype
-  - Fileinfo
-  - JSON
-  - Mbstring
-  - OpenSSL
-  - PDO
-  - PDO_PGSQL
-  - Tokenizer
-  - XML
+#### Software Base
+- **PHP**: 8.1 o superior (recomendado 8.3+)
+- **Composer**: Última versión estable
+- **PostgreSQL**: Versión 17 o 18
+- **Git**: Para clonar el repositorio
 
-### Requisitos Opcionales
+#### Extensiones PHP Requeridas
+Asegúrate de tener habilitadas las siguientes extensiones en tu `php.ini`:
 
-- **Node.js**: 18+ (para compilar assets)
-- **NPM**: Última versión
+```ini
+extension=bcmath
+extension=ctype
+extension=fileinfo
+extension=json
+extension=mbstring
+extension=openssl
+extension=pdo
+extension=pdo_pgsql
+extension=tokenizer
+extension=xml
+extension=gd
+extension=zip
+```
+
+#### Verificar Extensiones PHP
+```bash
+php -m | grep -E "bcmath|ctype|fileinfo|json|mbstring|openssl|pdo|pdo_pgsql|tokenizer|xml|gd|zip"
+```
+
+### Requisitos Opcionales (Recomendados)
+
+- **Node.js**: 18+ (para compilar assets CSS/JS)
+- **NPM**: Última versión estable
+- **PostgreSQL Client Tools**: Para gestión de base de datos
 
 ---
 
-## ⚡ Instalación Rápida
+## 📝 Instalación Paso a Paso
 
-### Método Recomendado: Instalación Automática
+> ⚠️ **IMPORTANTE**: Sigue estos pasos en orden. No omitas ningún paso.
 
-DigitalXpress incluye scripts de instalación automática que configuran todo el proyecto en un solo comando.
+### 1. Verificación de Requisitos
 
-#### 🪟 Windows
+Antes de comenzar, verifica que tienes todo instalado:
 
-**Opción 1: PowerShell (Recomendado)**
-```powershell
-git clone https://github.com/danielgonzalesarce/DigitalXpress.git
-cd DigitalXpress
-.\install.ps1
+#### Verificar PHP
+```bash
+php -v
+# Debe mostrar PHP 8.1 o superior
 ```
 
-**Opción 2: CMD**
-```cmd
-git clone https://github.com/danielgonzalesarce/DigitalXpress.git
-cd DigitalXpress
-install.bat
+#### Verificar Composer
+```bash
+composer --version
+# Debe mostrar la versión de Composer instalada
 ```
 
-#### 🐧 Linux / 🍎 macOS
+#### Verificar PostgreSQL
+```bash
+psql --version
+# Debe mostrar PostgreSQL 17 o 18
+```
+
+#### Verificar Node.js (Opcional)
+```bash
+node -v
+npm -v
+# Debe mostrar Node.js 18+ y NPM
+```
+
+### 2. Clonar el Repositorio
 
 ```bash
+# Clonar el repositorio
 git clone https://github.com/danielgonzalesarce/DigitalXpress.git
+
+# Navegar al directorio del proyecto
 cd DigitalXpress
-chmod +x install.sh
-./install.sh
 ```
 
-### ¿Qué hace el script automáticamente?
+### 3. Instalar Dependencias
 
-El script de instalación ejecuta los siguientes pasos:
-
-1. ✅ Verifica que PHP y Composer estén instalados
-2. ✅ Instala todas las dependencias de PHP (`composer install`)
-3. ✅ Crea el archivo `.env` desde `.env.example`
-4. ✅ Solicita y configura las credenciales de PostgreSQL
-5. ✅ Genera la clave de aplicación Laravel
-6. ✅ Crea la base de datos PostgreSQL (si `psql` está disponible)
-7. ✅ Ejecuta todas las migraciones (`php artisan migrate`)
-8. ✅ Limpia el caché de Laravel
-9. ✅ Crea enlaces simbólicos para storage
-
-> 📖 Para más detalles sobre la instalación automática, consulta [INSTALACION_AUTOMATICA.md](INSTALACION_AUTOMATICA.md)
-
----
-
-## 📝 Instalación Manual
-
-Si prefieres instalar manualmente o el script automático no funciona en tu sistema:
-
-### Paso 1: Clonar el Repositorio
-
+#### Instalar Dependencias de PHP (Composer)
 ```bash
-git clone https://github.com/danielgonzalesarce/DigitalXpress.git
-cd DigitalXpress
+composer install
 ```
 
-### Paso 2: Instalar Dependencias
+> ⏱️ **Tiempo estimado**: 2-5 minutos dependiendo de tu conexión a internet.
 
-   ```bash
-# Instalar dependencias de PHP
-   composer install
-
-# Instalar dependencias de Node.js (opcional)
+#### Instalar Dependencias de Node.js (Opcional)
+```bash
 npm install
-   ```
+```
 
-### Paso 3: Configurar Entorno
+> ⏱️ **Tiempo estimado**: 1-3 minutos.
 
-   ```bash
-# Copiar archivo de configuración
-   cp .env.example .env  # Linux/Mac
-   copy .env.example .env  # Windows
+### 4. Configurar Entorno
 
-# Generar clave de aplicación
-   php artisan key:generate
-   ```
+#### Crear archivo `.env`
+```bash
+# Windows (CMD)
+copy .env.example .env
 
-### Paso 4: Configurar Base de Datos
+# Windows (PowerShell)
+Copy-Item .env.example .env
 
-1. **Editar archivo `.env`** con tus credenciales de PostgreSQL:
+# Linux/Mac
+cp .env.example .env
+```
+
+#### Generar Clave de Aplicación
+```bash
+php artisan key:generate
+```
+
+> ✅ **Verificación**: Deberías ver el mensaje "Application key set successfully."
+
+### 5. Configurar Base de Datos
+
+#### Paso 5.1: Crear Base de Datos en PostgreSQL
+
+**Opción A: Usando psql (Línea de comandos)**
+```bash
+# Conectar a PostgreSQL
+psql -U postgres
+
+# Crear la base de datos
+CREATE DATABASE digitalxpress;
+
+# Verificar que se creó
+\l
+
+# Salir de psql
+\q
+```
+
+**Opción B: Usando pgAdmin (Interfaz gráfica)**
+1. Abre pgAdmin
+2. Conecta a tu servidor PostgreSQL
+3. Click derecho en "Databases" → "Create" → "Database"
+4. Nombre: `digitalxpress`
+5. Click en "Save"
+
+#### Paso 5.2: Configurar Credenciales en `.env`
+
+Abre el archivo `.env` y actualiza las siguientes líneas con tus credenciales de PostgreSQL:
 
 ```env
 DB_CONNECTION=pgsql
@@ -199,56 +252,147 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=digitalxpress
 DB_USERNAME=postgres
-DB_PASSWORD=tu_contraseña
+DB_PASSWORD=tu_contraseña_aqui
 ```
 
-2. **Crear la base de datos** en PostgreSQL:
+> ⚠️ **IMPORTANTE**: Reemplaza `tu_contraseña_aqui` con tu contraseña real de PostgreSQL.
 
-     ```sql
-     CREATE DATABASE digitalxpress;
-     ```
+#### Paso 5.3: Probar Conexión a Base de Datos
 
-### Paso 5: Ejecutar Migraciones
+```bash
+php artisan migrate:status
+```
 
-   ```bash
+> ✅ **Verificación**: Si la conexión es exitosa, verás una tabla con el estado de las migraciones. Si hay error, revisa tus credenciales en `.env`.
+
+### 6. Ejecutar Migraciones y Seeders
+
+#### Ejecutar Migraciones
+```bash
 php artisan migrate --force
-   ```
+```
 
-### Paso 6: Compilar Assets (Opcional)
+> ⏱️ **Tiempo estimado**: 10-30 segundos.
 
-   ```bash
-   npm run build
-   ```
+> ✅ **Verificación**: Deberías ver mensajes como "Migrating: 2025_01_01_000001_create_users_table" y al final "Migration completed successfully."
 
-### Paso 7: Iniciar Servidor de Desarrollo
+#### Ejecutar Seeders (Datos de Prueba)
+```bash
+php artisan db:seed --force
+```
 
-   ```bash
-   php artisan serve --port=8081
-   ```
+> ⏱️ **Tiempo estimado**: 5-10 segundos.
 
-### Paso 8: Acceder a la Aplicación
+> ✅ **Verificación**: Esto creará:
+> - 4 usuarios de prueba (Admin, Cliente, Técnico, VIP)
+> - 8 categorías de productos
+> - Productos de ejemplo
 
-Abre tu navegador en: **http://127.0.0.1:8081**
+### 7. Configurar Storage
+
+#### Crear Enlace Simbólico para Storage
+```bash
+php artisan storage:link
+```
+
+> ✅ **Verificación**: Deberías ver "The [public/storage] link has been connected to [storage/app/public]."
+
+### 8. Compilar Assets (Opcional)
+
+Si instalaste Node.js, puedes compilar los assets:
+
+```bash
+npm run build
+```
+
+> ⏱️ **Tiempo estimado**: 30-60 segundos.
+
+> ℹ️ **Nota**: Si no tienes Node.js instalado, puedes omitir este paso. Los assets ya están compilados en el repositorio.
+
+### 9. Iniciar el Servidor
+
+#### Opción A: Usando Artisan (Recomendado)
+```bash
+php artisan serve --port=8081
+```
+
+#### Opción B: Usando Scripts Incluidos
+```bash
+# Windows
+.\serve.bat
+
+# Linux/Mac
+./serve.sh
+```
+
+> ✅ **Verificación**: Deberías ver un mensaje como:
+> ```
+> INFO  Server running on [http://127.0.0.1:8081]
+> ```
+
+### 10. Verificar Instalación
+
+#### Paso 10.1: Abrir en el Navegador
+
+Abre tu navegador y visita:
+```
+http://127.0.0.1:8081
+```
+
+> ✅ **Verificación**: Deberías ver la página principal de DigitalXpress.
+
+#### Paso 10.2: Probar Login de Administrador
+
+1. Haz clic en "Iniciar Sesión"
+2. Usa las credenciales:
+   - **Email**: `admin@digitalxpress.com`
+   - **Contraseña**: `password`
+3. Deberías ser redirigido al dashboard de administración
+
+#### Paso 10.3: Verificar Panel de Administración
+
+Visita:
+```
+http://127.0.0.1:8081/admin/dashboard
+```
+
+> ✅ **Verificación**: Deberías ver el dashboard con estadísticas y gráficos.
 
 ---
 
-## ⚙️ Configuración
+## ⚙️ Configuración Detallada
 
-### Configurar Autenticación con Google (Opcional)
+### Configurar Autenticación con Google OAuth (Opcional)
 
-Para habilitar el login con Google OAuth:
+Para habilitar el login con Google:
 
-1. **Crear proyecto en Google Cloud Console**
-   - Ve a [Google Cloud Console](https://console.cloud.google.com/)
-   - Crea un nuevo proyecto o selecciona uno existente
-   - Habilita la API de Google+
+#### Paso 1: Crear Proyecto en Google Cloud Console
 
-2. **Crear credenciales OAuth 2.0**
-   - Ve a "Credenciales" → "Crear credenciales" → "ID de cliente OAuth 2.0"
-   - Configura la pantalla de consentimiento OAuth
-   - Agrega URI de redirección autorizado: `http://127.0.0.1:8081/auth/google/callback`
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un nuevo proyecto o selecciona uno existente
+3. Habilita la **API de Google+**
 
-3. **Configurar en `.env`**
+#### Paso 2: Crear Credenciales OAuth 2.0
+
+1. Ve a **"APIs & Services"** → **"Credentials"**
+2. Click en **"Create Credentials"** → **"OAuth client ID"**
+3. Si es la primera vez, configura la **OAuth consent screen**:
+   - Tipo: External
+   - Nombre de la app: DigitalXpress
+   - Email de soporte: tu email
+   - Click en "Save and Continue"
+4. En **"Scopes"**, agrega:
+   - `userinfo.email`
+   - `userinfo.profile`
+5. En **"OAuth Client ID"**:
+   - Tipo: Web application
+   - Nombre: DigitalXpress Web Client
+   - **Authorized redirect URIs**: `http://127.0.0.1:8081/auth/google/callback`
+   - Click en "Create"
+
+#### Paso 3: Configurar en `.env`
+
+Agrega las siguientes líneas a tu archivo `.env`:
 
 ```env
 GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
@@ -256,13 +400,22 @@ GOOGLE_CLIENT_SECRET=tu_client_secret
 GOOGLE_REDIRECT_URI=http://127.0.0.1:8081/auth/google/callback
 ```
 
-4. **Los usuarios podrán iniciar sesión y crear cuenta con Google**
+> ⚠️ **IMPORTANTE**: Reemplaza `tu_client_id` y `tu_client_secret` con los valores reales de Google Cloud Console.
+
+#### Paso 4: Verificar Funcionamiento
+
+1. Visita `http://127.0.0.1:8081`
+2. Haz clic en "Iniciar Sesión"
+3. Deberías ver el botón **"Continuar con Google"**
+4. Al hacer clic, deberías ser redirigido a Google para autenticarte
 
 ### Configurar Correo Electrónico (Opcional)
 
 Para habilitar el envío de correos electrónicos:
 
-1. **Editar `.env`** con tus credenciales SMTP:
+#### Configuración SMTP (Gmail)
+
+Edita el archivo `.env` con tus credenciales SMTP:
 
 ```env
 MAIL_MAILER=smtp
@@ -275,9 +428,49 @@ MAIL_FROM_ADDRESS=tu_email@gmail.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
+> ⚠️ **IMPORTANTE**: Para Gmail, necesitas usar una **Contraseña de aplicación**, no tu contraseña normal. Genera una en: [Google Account Security](https://myaccount.google.com/apppasswords)
+
+#### Probar Envío de Correo
+
+```bash
+php artisan tinker
+```
+
+Luego en la consola:
+```php
+Mail::raw('Test email', function($message) {
+    $message->to('tu_email@ejemplo.com')
+            ->subject('Test Email');
+});
+```
+
 ---
 
-## 🎮 Uso
+## 👤 Usuarios de Prueba
+
+El sistema incluye los siguientes usuarios predefinidos (creados por el seeder):
+
+| Usuario | Email | Contraseña | Rol | Descripción |
+|---------|-------|------------|-----|-------------|
+| **Daniel Admin** | admin@digitalxpress.com | password | Administrador | Acceso completo al sistema |
+| **María García** | cliente@digitalxpress.com | password | Cliente | Usuario estándar de la tienda |
+| **Carlos Técnico** | tecnico@digitalxpress.com | password | Técnico | Acceso al módulo de reparaciones |
+| **Ana VIP** | vip@digitalxpress.com | password | VIP | Usuario con beneficios especiales |
+
+> ⚠️ **IMPORTANTE**: 
+> - **Cambia estas contraseñas en producción**
+> - Todos los usuarios tienen el email verificado automáticamente
+> - Puedes iniciar sesión con cualquiera de estos usuarios para probar diferentes funcionalidades
+
+### Acceder al Panel de Administración
+
+1. Inicia sesión con: `admin@digitalxpress.com` / `password`
+2. Navega a: `http://127.0.0.1:8081/admin/dashboard`
+3. O haz clic en el menú de usuario → "Panel de Administración"
+
+---
+
+## 🎮 Uso del Sistema
 
 ### Iniciar el Servidor de Desarrollo
 
@@ -290,16 +483,224 @@ php artisan serve --port=8081
 ./serve.sh       # Linux/Mac
 ```
 
-### Acceder al Panel de Administración
+### URLs Principales
 
-1. Inicia sesión con un usuario administrador
-2. Navega a: `http://127.0.0.1:8081/admin/dashboard`
+| Ruta | Descripción | Acceso |
+|------|-------------|--------|
+| `http://127.0.0.1:8081` | Página principal | Público |
+| `http://127.0.0.1:8081/productos` | Catálogo de productos | Público |
+| `http://127.0.0.1:8081/reparaciones` | Servicio de reparaciones | Público |
+| `http://127.0.0.1:8081/carrito` | Carrito de compras | Usuarios |
+| `http://127.0.0.1:8081/favoritos` | Lista de favoritos | Usuarios autenticados |
+| `http://127.0.0.1:8081/admin/dashboard` | Panel de administración | Solo Admin |
+| `http://127.0.0.1:8081/admin/products` | Gestión de productos | Solo Admin |
+| `http://127.0.0.1:8081/admin/activity-logs` | Sistema de auditoría | Solo Admin |
 
-### Acceder a la Tienda
+### Funcionalidades Principales
 
-- **Página principal**: `http://127.0.0.1:8081`
-- **Catálogo de productos**: `http://127.0.0.1:8081/productos`
-- **Servicio de reparaciones**: `http://127.0.0.1:8081/reparaciones`
+#### Para Usuarios
+- ✅ Navegar catálogo de productos
+- ✅ Buscar y filtrar productos
+- ✅ Agregar productos al carrito
+- ✅ Agregar productos a favoritos
+- ✅ Realizar compras
+- ✅ Solicitar servicios de reparación
+- ✅ Ver historial de pedidos
+
+#### Para Administradores
+- ✅ Ver dashboard con estadísticas
+- ✅ Gestionar productos (crear, editar, eliminar)
+- ✅ Gestionar categorías
+- ✅ Gestionar pedidos
+- ✅ Gestionar usuarios
+- ✅ Ver sistema de auditoría
+- ✅ Ver reportes y estadísticas
+
+---
+
+## 🔧 Solución de Problemas Comunes
+
+### Error: "Class 'PDO' not found"
+
+**Causa**: Extensión PDO de PHP no está habilitada.
+
+**Solución**:
+1. Abre tu archivo `php.ini`
+2. Busca y descomenta: `extension=pdo`
+3. Reinicia tu servidor web
+
+### Error: "SQLSTATE[08006] [7] could not connect to server"
+
+**Causa**: PostgreSQL no está corriendo o las credenciales son incorrectas.
+
+**Solución**:
+1. Verifica que PostgreSQL esté corriendo:
+   ```bash
+   # Windows
+   services.msc  # Busca "postgresql" en servicios
+   
+   # Linux
+   sudo systemctl status postgresql
+   ```
+2. Verifica las credenciales en `.env`
+3. Prueba la conexión:
+   ```bash
+   psql -U postgres -h 127.0.0.1 -d digitalxpress
+   ```
+
+### Error: "The stream or file could not be opened"
+
+**Causa**: Permisos incorrectos en la carpeta `storage`.
+
+**Solución**:
+```bash
+# Linux/Mac
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
+# Windows (si usas IIS)
+# Asegúrate de que IIS_IUSRS tenga permisos de escritura en storage/
+```
+
+### Error: "No application encryption key has been specified"
+
+**Causa**: No se generó la clave de aplicación.
+
+**Solución**:
+```bash
+php artisan key:generate
+```
+
+### Error: "Route [admin.dashboard] not defined"
+
+**Causa**: Caché de rutas desactualizado.
+
+**Solución**:
+```bash
+php artisan route:clear
+php artisan cache:clear
+php artisan config:clear
+```
+
+### Error: "419 Page Expired" al enviar formularios
+
+**Causa**: Token CSRF expirado o sesión inválida.
+
+**Solución**:
+1. Limpia el caché del navegador
+2. Limpia el caché de Laravel:
+   ```bash
+   php artisan cache:clear
+   php artisan config:clear
+   ```
+3. Verifica que `APP_KEY` esté configurado en `.env`
+
+### Los productos no se muestran
+
+**Causa**: No se ejecutaron los seeders o hay un problema con la base de datos.
+
+**Solución**:
+```bash
+# Verificar que existan productos
+php artisan tinker
+>>> App\Models\Product::count()
+
+# Si es 0, ejecutar seeders
+php artisan db:seed --force
+```
+
+### Error al compilar assets con npm
+
+**Causa**: Node.js no está instalado o versión incorrecta.
+
+**Solución**:
+1. Verifica la versión: `node -v` (debe ser 18+)
+2. Si no está instalado, instálalo desde [nodejs.org](https://nodejs.org/)
+3. Ejecuta: `npm install` y luego `npm run build`
+
+---
+
+## 🔧 Comandos Útiles
+
+### Gestión de Caché
+
+```bash
+# Limpiar caché de aplicación
+php artisan cache:clear
+
+# Limpiar caché de configuración
+php artisan config:clear
+
+# Limpiar caché de vistas
+php artisan view:clear
+
+# Limpiar caché de rutas
+php artisan route:clear
+
+# Limpiar todo el caché de una vez
+php artisan optimize:clear
+```
+
+### Base de Datos
+
+```bash
+# Ver estado de migraciones
+php artisan migrate:status
+
+# Ejecutar migraciones
+php artisan migrate
+
+# Ejecutar migraciones con seeders (CUIDADO: borra datos existentes)
+php artisan migrate:fresh --seed
+
+# Crear nueva migración
+php artisan make:migration create_nombre_tabla_table
+
+# Crear nuevo seeder
+php artisan make:seeder NombreSeeder
+
+# Ejecutar seeders específicos
+php artisan db:seed --class=UserSeeder
+```
+
+### Servidor
+
+```bash
+# Iniciar servidor de desarrollo
+php artisan serve --port=8081
+
+# Iniciar servidor en otro puerto
+php artisan serve --port=8000 --host=0.0.0.0
+
+# Ver todas las rutas disponibles
+php artisan route:list
+```
+
+### Desarrollo
+
+```bash
+# Crear nuevo controlador
+php artisan make:controller NombreController
+
+# Crear nuevo modelo
+php artisan make:model NombreModel
+
+# Crear modelo con migración y controlador
+php artisan make:model NombreModel -mcr
+
+# Abrir consola interactiva (Tinker)
+php artisan tinker
+```
+
+### Storage
+
+```bash
+# Crear enlace simbólico para storage
+php artisan storage:link
+
+# Verificar permisos de storage
+ls -la storage/
+```
 
 ---
 
@@ -318,121 +719,81 @@ DigitalXpress/
 │   ├── Models/                # Modelos Eloquent
 │   ├── Providers/             # Service Providers
 │   ├── Services/              # Servicios de la aplicación
-│   └── Traits/                # Traits reutilizables
+│   └── Traits/                # Traits reutilizables (LogsActivity)
 ├── bootstrap/                 # Archivos de arranque
 ├── config/                    # Archivos de configuración
 ├── database/
 │   ├── migrations/            # Migraciones de base de datos
 │   └── seeders/               # Seeders para datos de prueba
+│       ├── DatabaseSeeder.php
+│       ├── UserSeeder.php
+│       ├── CategorySeeder.php
+│       └── ProductSeeder.php
 ├── public/                    # Archivos públicos (punto de entrada)
+│   ├── index.php             # Punto de entrada principal
+│   └── storage/              # Enlace simbólico a storage/app/public
 ├── resources/
 │   ├── css/                  # Estilos CSS
 │   ├── js/                   # JavaScript
 │   └── views/                # Vistas Blade
 │       ├── admin/            # Vistas del panel admin
 │       ├── auth/             # Vistas de autenticación
-│       └── ...
+│       ├── products/         # Vistas de productos
+│       ├── cart/             # Vistas del carrito
+│       ├── checkout/         # Vistas de checkout
+│       └── favorites/        # Vistas de favoritos
 ├── routes/
 │   ├── auth.php              # Rutas de autenticación
 │   └── web.php               # Rutas web principales
 ├── storage/                  # Archivos de almacenamiento
+│   ├── app/                  # Archivos de la aplicación
+│   ├── framework/            # Archivos del framework
+│   └── logs/                 # Logs de la aplicación
 ├── tests/                    # Pruebas automatizadas
-└── vendor/                   # Dependencias de Composer
+├── vendor/                   # Dependencias de Composer
+├── .env                      # Variables de entorno (NO subir a Git)
+├── .env.example              # Ejemplo de variables de entorno
+├── composer.json             # Dependencias de PHP
+├── package.json              # Dependencias de Node.js
+└── README.md                 # Este archivo
 ```
 
 ---
 
-## 🔧 Comandos Útiles
+## 📚 Documentación Adicional
 
-### Gestión de Caché
-
-```bash
-# Limpiar todo el caché
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-php artisan route:clear
-
-# Limpiar todo de una vez
-php artisan optimize:clear
-```
-
-### Base de Datos
-
-```bash
-# Ejecutar migraciones
-php artisan migrate
-
-# Ejecutar migraciones con seeders
-php artisan migrate:fresh --seed
-
-# Crear nueva migración
-php artisan make:migration create_nombre_tabla_table
-
-# Crear nuevo seeder
-php artisan make:seeder NombreSeeder
-```
-
-### Servidor
-
-```bash
-# Iniciar servidor de desarrollo
-php artisan serve --port=8081
-
-# Iniciar servidor en otro puerto
-php artisan serve --port=8000 --host=0.0.0.0
-```
-
-### Desarrollo
-
-```bash
-# Crear nuevo controlador
-php artisan make:controller NombreController
-
-# Crear nuevo modelo
-php artisan make:model NombreModel
-
-# Crear nuevo modelo con migración y controlador
-php artisan make:model NombreModel -mcr
-```
-
----
-
-## 👤 Usuarios de Prueba
-
-El proyecto incluye usuarios de prueba predefinidos:
-
-| Usuario | Email | Contraseña | Rol |
-|---------|-------|------------|-----|
-| **Daniel Admin** | admin@digitalxpress.com | password | Administrador |
-| **María García** | cliente@digitalxpress.com | password | Cliente |
-| **Carlos Técnico** | tecnico@digitalxpress.com | password | Técnico |
-| **Ana VIP** | vip@digitalxpress.com | password | VIP |
-
-> ⚠️ **Importante**: Cambia las contraseñas en producción.
-
----
-
-## 📱 Categorías de Productos
-
-El sistema incluye 8 categorías principales:
-
-- 💻 **Laptops** - Computadoras portátiles
-- ⌚ **Relojes** - Smartwatches y relojes inteligentes
-- 📺 **Televisores** - Smart TVs y televisores HD
-- 🖱️ **Mouses** - Mouse gaming y ergonómicos
-- ⌨️ **Teclados** - Teclados mecánicos y ergonómicos
-- 🎧 **Audífonos** - Audífonos inalámbricos y con cable
-- 📱 **Celulares** - Smartphones y teléfonos móviles
-- 📷 **Cámaras** - Cámaras digitales y de acción
-
----
-
-## 📚 Documentación
-
-- **[INSTALACION_AUTOMATICA.md](INSTALACION_AUTOMATICA.md)** - Guía completa de instalación automática
+- **[INSTALACION_AUTOMATICA.md](INSTALACION_AUTOMATICA.md)** - Guía completa de instalación automática con scripts
 - **[Laravel Documentation](https://laravel.com/docs)** - Documentación oficial de Laravel
 - **[PostgreSQL Documentation](https://www.postgresql.org/docs/)** - Documentación oficial de PostgreSQL
+- **[Bootstrap Documentation](https://getbootstrap.com/docs/5.0/getting-started/introduction/)** - Documentación de Bootstrap 5
+
+---
+
+## 📞 Soporte Técnico
+
+### Antes de Contactar Soporte
+
+1. ✅ Verifica que seguiste todos los pasos de instalación
+2. ✅ Revisa la sección [Solución de Problemas](#-solución-de-problemas-comunes)
+3. ✅ Revisa los logs en `storage/logs/laravel.log`
+4. ✅ Verifica que todos los requisitos estén cumplidos
+
+### Obtener Ayuda
+
+- 📧 **Abre un Issue** en [GitHub Issues](https://github.com/danielgonzalesarce/DigitalXpress/issues)
+- 🔍 **Revisa los logs**: `storage/logs/laravel.log`
+- 📖 **Consulta la documentación**: [INSTALACION_AUTOMATICA.md](INSTALACION_AUTOMATICA.md)
+
+### Información Útil para Soporte
+
+Si necesitas ayuda, proporciona la siguiente información:
+
+1. **Versión de PHP**: `php -v`
+2. **Versión de Composer**: `composer --version`
+3. **Versión de PostgreSQL**: `psql --version`
+4. **Sistema Operativo**: Windows/Linux/Mac y versión
+5. **Mensaje de error completo** (si aplica)
+6. **Últimas líneas del log**: `tail -n 50 storage/logs/laravel.log`
 
 ---
 
@@ -467,16 +828,6 @@ Este proyecto está bajo la **Licencia MIT**. Ver el archivo `LICENSE` para más
 
 - GitHub: [@danielgonzalesarce](https://github.com/danielgonzalesarce)
 - Repositorio: [DigitalXpress](https://github.com/danielgonzalesarce/DigitalXpress)
-
----
-
-## 📞 Soporte
-
-Si tienes alguna pregunta o necesitas ayuda:
-
-- 📧 Abre un [Issue](https://github.com/danielgonzalesarce/DigitalXpress/issues) en GitHub
-- 📖 Consulta la [documentación de instalación](INSTALACION_AUTOMATICA.md)
-- 🔍 Revisa los logs en `storage/logs/laravel.log`
 
 ---
 
