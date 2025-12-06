@@ -206,10 +206,10 @@ class AdminController extends Controller
      * Listar todos los productos del catálogo
      * 
      * Permite buscar productos por nombre o SKU.
-     * Muestra 20 productos por página ordenados por fecha de creación (más recientes primero).
+     * Muestra TODOS los productos ordenados por fecha de creación (más recientes primero).
      * 
      * @param Request $request Contiene parámetros de búsqueda (search)
-     * @return \Illuminate\View\View Vista con lista de productos paginada
+     * @return \Illuminate\View\View Vista con lista de todos los productos
      */
     public function products(Request $request)
     {
@@ -224,8 +224,44 @@ class AdminController extends Controller
             });
         }
 
-        // Ordenar por fecha de creación descendente y paginar (20 por página)
-        $products = $query->orderBy('created_at', 'desc')->paginate(20);
+        // Filtrar por rango de precios
+        if ($request->has('price_range') && $request->price_range) {
+            switch ($request->price_range) {
+                case 'under_100':
+                    $query->where('price', '<', 100);
+                    break;
+                case '100_500':
+                    $query->whereBetween('price', [100, 500]);
+                    break;
+                case '500_1000':
+                    $query->whereBetween('price', [500, 1000]);
+                    break;
+                case 'over_1000':
+                    $query->where('price', '>', 1000);
+                    break;
+            }
+        }
+
+        // Ordenamiento
+        $sortBy = $request->get('sort', 'newest');
+        switch ($sortBy) {
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'price':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'rating':
+                $query->orderBy('rating', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Obtener TODOS los productos
+        $products = $query->get();
         return view('admin.products.index', compact('products'));
     }
 

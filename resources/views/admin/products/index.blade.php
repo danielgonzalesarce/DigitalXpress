@@ -54,6 +54,36 @@
     </div>
     @endif
 
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12 mb-3">
+            <div class="d-flex gap-2">
+                <div class="flex-grow-1">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" 
+                               id="searchInput"
+                               name="search" 
+                               class="form-control" 
+                               placeholder="Buscar por nombre o SKU..." 
+                               value="{{ request('search') }}"
+                               autocomplete="off">
+                        <span class="input-group-text bg-white d-none" id="searchLoading">
+                            <i class="fas fa-spinner fa-spin text-primary"></i>
+                        </span>
+                        @if(request('search'))
+                        <a href="{{ route('admin.products') }}" class="input-group-text bg-white text-decoration-none" id="clearSearch">
+                            <i class="fas fa-times text-danger"></i>
+                        </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Filters -->
     <div class="row mb-4">
         <div class="col-md-8">
@@ -93,7 +123,7 @@
 
     <!-- Results Count -->
     <div class="mb-4">
-        <p class="text-muted">{{ $products->total() }} productos encontrados</p>
+        <p class="text-muted">{{ $products->count() }} productos encontrados</p>
     </div>
 
     <!-- Products Container -->
@@ -200,12 +230,7 @@
         </div>
     </div>
 
-    <!-- Pagination -->
-    @if($products->hasPages())
-    <div class="mt-4">
-        {{ $products->links() }}
-    </div>
-    @endif
+    <!-- Pagination removed - showing all products -->
 @endsection
 
 @push('styles')
@@ -340,21 +365,83 @@
         localStorage.setItem('adminProductsView', 'list');
     });
 
-    // Filtrar automáticamente al cambiar
-    document.getElementById('priceFilter')?.addEventListener('change', function() {
+    // Función para aplicar filtros automáticamente
+    function applyFilters() {
         const url = new URL(window.location);
-        if (this.value) {
-            url.searchParams.set('price_range', this.value);
+        const searchValue = document.getElementById('searchInput')?.value.trim();
+        const priceFilter = document.getElementById('priceFilter')?.value;
+        const sortFilter = document.getElementById('sortFilter')?.value;
+        const searchLoading = document.getElementById('searchLoading');
+
+        // Mostrar indicador de carga
+        if (searchLoading) {
+            searchLoading.classList.remove('d-none');
+        }
+
+        // Actualizar parámetros de búsqueda
+        if (searchValue) {
+            url.searchParams.set('search', searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+
+        // Actualizar filtro de precio
+        if (priceFilter) {
+            url.searchParams.set('price_range', priceFilter);
         } else {
             url.searchParams.delete('price_range');
         }
+
+        // Actualizar ordenamiento
+        if (sortFilter) {
+            url.searchParams.set('sort', sortFilter);
+        } else {
+            url.searchParams.delete('sort');
+        }
+
+        // Redirigir con los nuevos parámetros
         window.location.href = url.toString();
+    }
+
+    // Búsqueda automática con debounce (espera 500ms después de que el usuario deje de escribir)
+    let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                applyFilters();
+            }, 500); // Espera 500ms antes de aplicar el filtro
+        });
+
+        // También aplicar al presionar Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(searchTimeout);
+                applyFilters();
+            }
+        });
+    }
+
+    // Botón para limpiar búsqueda
+    const clearSearchBtn = document.getElementById('clearSearch');
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        });
+    }
+
+    // Filtrar automáticamente al cambiar precio
+    document.getElementById('priceFilter')?.addEventListener('change', function() {
+        applyFilters();
     });
 
+    // Filtrar automáticamente al cambiar ordenamiento
     document.getElementById('sortFilter')?.addEventListener('change', function() {
-        const url = new URL(window.location);
-        url.searchParams.set('sort', this.value);
-        window.location.href = url.toString();
+        applyFilters();
     });
 </script>
 @endpush

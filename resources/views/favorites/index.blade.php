@@ -5,26 +5,29 @@
 @section('content')
 <div class="container py-5">
     <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1 class="fw-bold">
-                <i class="fas fa-heart text-danger me-2"></i>Mis Favoritos
-            </h1>
-            <p class="text-muted">Productos que has guardado para más tarde</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('products.index') }}" class="btn btn-primary">
+    <div class="favorites-header mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-heart text-danger me-2"></i>Mis Favoritos
+                </h1>
+                <p class="text-muted mb-0">Productos que has guardado para más tarde</p>
+            </div>
+            <a href="{{ route('products.index') }}" class="btn btn-enhanced btn-primary">
                 <i class="fas fa-store me-2"></i>Explorar Productos
             </a>
         </div>
-    </div>
-
-    <!-- Favorites Count -->
-    <div class="mb-4">
-        <p class="text-muted">
-            <i class="fas fa-heart text-danger me-1"></i>
-            <span class="favorites-count">{{ $favorites->total() }}</span> {{ $favorites->total() == 1 ? 'producto guardado' : 'productos guardados' }}
-        </p>
+        
+        <!-- Favorites Count -->
+        <div class="favorites-count-card mt-4">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-heart text-danger fs-5"></i>
+                <span class="fw-semibold">
+                    <span class="favorites-count">{{ $favorites->total() }}</span> 
+                    {{ $favorites->total() == 1 ? 'producto guardado' : 'productos guardados' }}
+                </span>
+            </div>
+        </div>
     </div>
 
     <!-- Favorites Container -->
@@ -40,14 +43,14 @@
                 <i class="fas fa-square me-1"></i>Deseleccionar todos
             </button>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="deleteSelectedFavorites()">
+        <button class="btn btn-enhanced btn-danger btn-sm" onclick="deleteSelectedFavorites()">
             <i class="fas fa-trash me-1"></i>Eliminar seleccionados
         </button>
     </div>
 
     <!-- Selection Mode Toggle -->
-    <div class="mb-3">
-        <button class="btn btn-outline-primary btn-sm" onclick="toggleSelectionMode()" id="selectionModeBtn">
+    <div class="mb-4">
+        <button class="btn btn-outline-primary btn-sm btn-enhanced" onclick="toggleSelectionMode()" id="selectionModeBtn">
             <i class="fas fa-check-square me-1"></i>Modo selección
         </button>
     </div>
@@ -122,7 +125,7 @@
                         @if($product->in_stock)
                             <form action="{{ route('cart.add', $product) }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-primary btn-sm">
+                                <button type="submit" class="btn btn-enhanced btn-primary btn-sm">
                                     <i class="fas fa-cart-plus me-1"></i>Agregar
                                 </button>
                             </form>
@@ -146,13 +149,13 @@
         {{ $favorites->links() }}
     </div>
     @else
-    <div class="text-center py-5">
-        <div class="mb-4">
+    <div class="empty-favorites text-center py-5">
+        <div class="empty-favorites-icon mb-4">
             <i class="fas fa-heart-broken fa-5x text-muted"></i>
         </div>
         <h3 class="fw-bold mb-3">No tienes favoritos aún</h3>
         <p class="text-muted mb-4">Comienza a guardar tus productos favoritos haciendo clic en el corazón</p>
-        <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">
+        <a href="{{ route('products.index') }}" class="btn btn-enhanced btn-primary btn-lg">
             <i class="fas fa-store me-2"></i>Explorar Productos
         </a>
     </div>
@@ -160,28 +163,62 @@
 </div>
 
 <style>
+    /* Header Styles */
+    .favorites-header {
+        padding: 2rem;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .favorites-header h1 {
+        font-size: 2rem;
+        color: #1f2937;
+    }
+
+    .favorites-count-card {
+        padding: 1rem 1.5rem;
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    .favorites-count-card .fw-semibold {
+        color: #1f2937;
+        font-size: 1.1rem;
+    }
+
+    /* Product Card Styles */
     .product-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: none;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     }
 
     .product-image-container {
         overflow: hidden;
         position: relative;
+        background: #f8f9fa;
     }
 
     .product-image {
-        transition: transform 0.3s ease;
+        transition: transform 0.4s ease;
+        width: 100%;
     }
 
     .product-card:hover .product-image {
-        transform: scale(1.05);
+        transform: scale(1.08);
     }
 
     .product-overlay {
@@ -190,7 +227,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -202,10 +239,24 @@
         opacity: 1;
     }
 
+    .btn-view-details {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Favorite Buttons */
     .product-favorite-btn {
         z-index: 10;
         transition: all 0.3s ease;
         border: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .product-favorite-btn.favorite-active {
@@ -221,16 +272,15 @@
     .product-favorite-btn:hover {
         background-color: #dc3545 !important;
         color: white !important;
-        transform: scale(1.1);
-        border-color: #dc3545 !important;
-    }
-
-    .product-favorite-btn:hover i {
-        color: white !important;
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
     }
 
     .product-image-container .badge {
         z-index: 10;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+        font-weight: 600;
     }
 
     .remove-favorite-btn {
@@ -239,35 +289,96 @@
         border: none;
         background-color: #dc3545 !important;
         color: white !important;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .remove-favorite-btn:hover {
         background-color: #bb2d3b !important;
-        transform: scale(1.1);
-        color: white !important;
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
     }
 
     .remove-favorite-btn i {
         color: white !important;
     }
 
+    /* Card Body */
+    .card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .card-title a {
+        color: #1f2937;
+        transition: color 0.2s ease;
+    }
+
+    .card-title a:hover {
+        color: #3b82f6;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+
+    /* Price Styles */
+    .card-body .fw-bold {
+        font-size: 1.5rem;
+        color: #1f2937;
+    }
+
+    .text-danger.fw-bold {
+        color: #dc3545 !important;
+    }
+
+    .text-decoration-line-through {
+        font-size: 0.9rem;
+    }
+
+    /* Checkbox Styles */
     .favorite-checkbox-container {
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(255, 255, 255, 0.95);
         border-radius: 50%;
-        padding: 5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        padding: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
     }
 
     .favorite-checkbox {
         cursor: pointer;
+        width: 24px;
+        height: 24px;
     }
 
-    .favorite-product-item.selected {
-        border: 2px solid #dc3545;
-        border-radius: 8px;
+    .favorite-product-item.selected .product-card {
+        border: 3px solid #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
     }
 
+    /* Bulk Actions Bar */
     #bulkActionsBar {
+        padding: 1.25rem 1.5rem;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         animation: slideDown 0.3s ease-out;
     }
 
@@ -279,6 +390,43 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    /* Empty State */
+    .empty-favorites {
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-favorites-icon {
+        opacity: 0.6;
+    }
+
+    .empty-favorites h3 {
+        color: #1f2937;
+        font-size: 1.75rem;
+    }
+
+    /* Pagination */
+    .pagination {
+        margin-top: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .favorites-header {
+            padding: 1.5rem;
+        }
+
+        .favorites-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .product-card {
+            margin-bottom: 1.5rem;
         }
     }
 </style>
