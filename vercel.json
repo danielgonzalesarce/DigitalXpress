@@ -4,6 +4,12 @@
   "outputDirectory": "dist",
   "installCommand": "composer install --no-dev --optimize-autoloader && npm install",
   "framework": null,
+  "builds": [
+    {
+      "src": "dist/index.php",
+      "use": "@vercel/php"
+    }
+  ],
   "routes": [
     {
       "src": "/build/(.*)",
@@ -42,11 +48,6 @@
   "env": {
     "APP_ENV": "production",
     "APP_DEBUG": "false"
-  },
-  "functions": {
-    "dist/index.php": {
-      "runtime": "php8.2"
-    }
   }
 }
 
