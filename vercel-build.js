@@ -51,12 +51,48 @@ dirsToCopy.forEach(dir => {
   }
 });
 
+// Asegurar que storage tenga los directorios necesarios
+console.log('Setting up storage directories...');
+const storageDirs = [
+  'dist/storage/app/public',
+  'dist/storage/framework/cache',
+  'dist/storage/framework/sessions',
+  'dist/storage/framework/views',
+  'dist/storage/logs'
+];
+storageDirs.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
 console.log('Copying Laravel files...');
 filesToCopy.forEach(file => {
   if (fs.existsSync(file)) {
     fs.copyFileSync(file, path.join('dist', file));
   }
 });
+
+// Ajustar las rutas en index.php para que funcionen en dist
+console.log('Adjusting index.php paths...');
+const indexPath = path.join('dist', 'index.php');
+if (fs.existsSync(indexPath)) {
+  let indexContent = fs.readFileSync(indexPath, 'utf8');
+  // Cambiar __DIR__.'/../vendor' a __DIR__.'/vendor' porque todo está en dist/
+  indexContent = indexContent.replace(
+    /__DIR__\.'\/\.\.\/vendor\/autoload\.php'/g,
+    "__DIR__ . '/vendor/autoload.php'"
+  );
+  indexContent = indexContent.replace(
+    /__DIR__\.'\/\.\.\/bootstrap\/app\.php'/g,
+    "__DIR__ . '/bootstrap/app.php'"
+  );
+  indexContent = indexContent.replace(
+    /__DIR__\.'\/\.\.\/storage\/framework\/maintenance\.php'/g,
+    "__DIR__ . '/storage/framework/maintenance.php'"
+  );
+  fs.writeFileSync(indexPath, indexContent);
+}
 
 console.log('Build completed successfully!');
 
